@@ -524,6 +524,7 @@ export function MatterRecord() {
                 <X className="w-4 h-4" />
               </Button>
             </div>
+
             <div className="space-y-6">
               {/* Client Information - Moved from main content */}
               {client && (
