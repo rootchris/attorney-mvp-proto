@@ -1,5 +1,5 @@
 export type PipelineStage = 'scheduled' | 'complete' | 'signed' | 'lost';
-export type WorkflowStage = 'intake' | 'drafting' | 'review' | 'signing' | 'funding';
+export type WorkflowStage = 'prospect' | 'consult' | 'client_ready_for_draft' | 'drafting' | 'binder_creation' | 'sign_ready' | 'signed' | 'funding' | 'reengage';
 export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'overdue';
 
 export interface Client {
@@ -55,6 +55,17 @@ export interface Document {
   uploadedAt: string;
   size: number;
   url: string;
+  isWealthCounselDoc?: boolean;
+  clientVisible?: boolean;
+}
+
+export interface Note {
+  id: string;
+  matterId: string;
+  content: string;
+  createdBy: string;
+  createdAt: string;
+  taggedColleagues?: string[];
 }
 
 export interface Attorney {

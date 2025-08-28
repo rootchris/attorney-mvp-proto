@@ -217,6 +217,18 @@ export function StreamlinedAttorneyDashboard() {
                     </div>
                     
                     <div className="flex items-center gap-2 ml-4">
+                      {client.matter && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/matter/${client.matter.id}`);
+                          }}
+                        >
+                          View Matter
+                        </Button>
+                      )}
                       <Button 
                         size="sm" 
                         variant="ghost"
@@ -225,7 +237,7 @@ export function StreamlinedAttorneyDashboard() {
                           navigate(`/client/${client.id}`);
                         }}
                       >
-                        View Details
+                        View Client
                       </Button>
                     </div>
                   </div>

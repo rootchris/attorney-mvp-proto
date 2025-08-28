@@ -80,7 +80,7 @@ export const mockMatters: Matter[] = [
     clientId: '1',
     title: 'Johnson Family Trust',
     type: 'Trust',
-    workflowStage: 'review',
+    workflowStage: 'drafting',
     createdAt: '2024-02-28',
     dueDate: '2024-03-15',
     revenue: 8500,
