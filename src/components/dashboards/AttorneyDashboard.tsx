@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { 
   Calendar, 
@@ -11,19 +13,41 @@ import {
   FileText,
   Clock,
   DollarSign,
-  TrendingUp
+  TrendingUp,
+  Eye
 } from "lucide-react";
 
 export function AttorneyDashboard() {
+  const [activeMattersPage, setActiveMattersPage] = useState(1);
+  const [readyForReviewPage, setReadyForReviewPage] = useState(1);
+  const itemsPerPage = 5;
+
   const myClients = mockClients.filter(client => client.assignedAttorney === 'Michael Chen');
   const myTasks = mockTasks.filter(task => task.assignedBy === 'Michael Chen');
   const myMatters = mockMatters.filter(matter => 
     myClients.some(client => client.id === matter.clientId)
   );
 
+  // Filter clients by status
+  const activeClients = myClients.filter(client => client.pipelineStage === 'signed');
+  const readyForReviewClients = myClients.filter(client => client.pipelineStage === 'ready_for_review');
+
+  // Pagination logic
+  const paginateData = (data: any[], currentPage: number) => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return data.slice(startIndex, startIndex + itemsPerPage);
+  };
+
+  const activeClientsData = paginateData(activeClients, activeMattersPage);
+  const readyForReviewData = paginateData(readyForReviewClients, readyForReviewPage);
+
+  const activeTotalPages = Math.ceil(activeClients.length / itemsPerPage);
+  const reviewTotalPages = Math.ceil(readyForReviewClients.length / itemsPerPage);
+
   const stats = {
     totalClients: myClients.length,
-    signedClients: myClients.filter(c => c.pipelineStage === 'signed').length,
+    signedClients: activeClients.length,
+    readyForReview: readyForReviewClients.length,
     pendingTasks: myTasks.filter(t => t.status !== 'completed').length,
     totalRevenue: myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0)
   };
@@ -43,7 +67,7 @@ export function AttorneyDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
@@ -65,8 +89,22 @@ export function AttorneyDashboard() {
                 <CheckCircle className="w-5 h-5 text-green-600" />
               </div>
               <div>
-                <p className="text-legal-caption">Signed Clients</p>
+                <p className="text-legal-caption">Active Matters</p>
                 <p className="text-2xl font-semibold">{stats.signedClients}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-50 rounded-lg">
+                <Eye className="w-5 h-5 text-purple-600" />
+              </div>
+              <div>
+                <p className="text-legal-caption">Ready for Review</p>
+                <p className="text-2xl font-semibold">{stats.readyForReview}</p>
               </div>
             </div>
           </CardContent>
@@ -102,17 +140,17 @@ export function AttorneyDashboard() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Client Pipeline */}
+        {/* Active Matters */}
         <Card className="legal-card">
           <CardHeader className="legal-card-header">
             <CardTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
-              Client Pipeline
+              <CheckCircle className="w-5 h-5" />
+              Active Matters ({activeClients.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="legal-card-content">
             <div className="space-y-4">
-              {myClients.map((client) => (
+              {activeClientsData.map((client) => (
                 <div key={client.id} className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
                   <div className="flex-1">
                     <p className="font-medium">{client.name}</p>
@@ -127,9 +165,101 @@ export function AttorneyDashboard() {
                 </div>
               ))}
             </div>
+            {activeTotalPages > 1 && (
+              <div className="mt-4">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setActiveMattersPage(Math.max(1, activeMattersPage - 1))}
+                        className={activeMattersPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    {[...Array(activeTotalPages)].map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink 
+                          onClick={() => setActiveMattersPage(i + 1)}
+                          isActive={activeMattersPage === i + 1}
+                          className="cursor-pointer"
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setActiveMattersPage(Math.min(activeTotalPages, activeMattersPage + 1))}
+                        className={activeMattersPage === activeTotalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
           </CardContent>
         </Card>
 
+        {/* Ready for Review */}
+        <Card className="legal-card">
+          <CardHeader className="legal-card-header">
+            <CardTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              Ready for Review ({readyForReviewClients.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="legal-card-content">
+            <div className="space-y-4">
+              {readyForReviewData.map((client) => (
+                <div key={client.id} className="flex items-center justify-between p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div className="flex-1">
+                    <p className="font-medium">{client.name}</p>
+                    <p className="text-legal-body">{client.referralSource}</p>
+                    {client.signingDate && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Signed: {new Date(client.signingDate).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                  <StatusBadge status={client.pipelineStage} type="pipeline" />
+                </div>
+              ))}
+            </div>
+            {reviewTotalPages > 1 && (
+              <div className="mt-4">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious 
+                        onClick={() => setReadyForReviewPage(Math.max(1, readyForReviewPage - 1))}
+                        className={readyForReviewPage === 1 ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                    {[...Array(reviewTotalPages)].map((_, i) => (
+                      <PaginationItem key={i}>
+                        <PaginationLink 
+                          onClick={() => setReadyForReviewPage(i + 1)}
+                          isActive={readyForReviewPage === i + 1}
+                          className="cursor-pointer"
+                        >
+                          {i + 1}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext 
+                        onClick={() => setReadyForReviewPage(Math.min(reviewTotalPages, readyForReviewPage + 1))}
+                        className={readyForReviewPage === reviewTotalPages ? "pointer-events-none opacity-50" : "cursor-pointer"}
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-1 gap-6">
         {/* My Tasks */}
         <Card className="legal-card">
           <CardHeader className="legal-card-header">

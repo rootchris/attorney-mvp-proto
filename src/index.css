@@ -151,6 +151,10 @@
   .status-badge-overdue {
     @apply bg-red-50 text-red-700 border border-red-200;
   }
+
+  .status-badge-review {
+    @apply bg-purple-50 text-purple-700 border border-purple-200;
+  }
   
   /* Professional tables */
   .legal-table {

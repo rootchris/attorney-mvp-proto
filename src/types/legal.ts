@@ -1,4 +1,4 @@
-export type PipelineStage = 'scheduled' | 'complete' | 'signed' | 'lost';
+export type PipelineStage = 'scheduled' | 'complete' | 'signed' | 'lost' | 'ready_for_review';
 export type WorkflowStage = 'prospect' | 'consult' | 'client_ready_for_draft' | 'drafting' | 'binder_creation' | 'sign_ready' | 'signed' | 'funding' | 'reengage';
 export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'overdue';
 

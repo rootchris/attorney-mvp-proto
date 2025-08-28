@@ -12,7 +12,8 @@ const getStatusConfig = (status: string, type: string) => {
       scheduled: { label: 'Consult Scheduled', variant: 'status-badge-scheduled' },
       complete: { label: 'Consult Complete', variant: 'status-badge-complete' },
       signed: { label: 'Retainer Signed', variant: 'status-badge-signed' },
-      lost: { label: 'Lost', variant: 'status-badge-lost' }
+      lost: { label: 'Lost', variant: 'status-badge-lost' },
+      ready_for_review: { label: 'Ready for Review', variant: 'status-badge-review' }
     },
     workflow: {
       intake: { label: 'Intake', variant: 'status-badge-scheduled' },
