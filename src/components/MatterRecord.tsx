@@ -305,51 +305,6 @@ export function MatterRecord() {
                   </div>
                 </div>
 
-                {/* Client Info Card */}
-                {client && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <span>Client Information</span>
-                        <Link to={`/client/${client.id}`}>
-                          <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                            View Full Profile
-                            <ChevronRight className="w-4 h-4 ml-1" />
-                          </Button>
-                        </Link>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-col lg:flex-row items-start gap-4">
-                        <Avatar className="w-16 h-16 mx-auto lg:mx-0">
-                          <AvatarImage src="/placeholder.svg" />
-                          <AvatarFallback>{client.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 text-center lg:text-left">
-                          <div>
-                            <h3 className="font-semibold text-lg">{client.name}</h3>
-                            <div className="space-y-1 text-sm text-muted-foreground">
-                              <div className="flex items-center justify-center lg:justify-start gap-2">
-                                <Mail className="w-4 h-4" />
-                                <span className="break-all">{client.email}</span>
-                              </div>
-                              <div className="flex items-center justify-center lg:justify-start gap-2">
-                                <Phone className="w-4 h-4" />
-                                {client.phone}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-sm">
-                            <p><strong>Referral Source:</strong> {client.referralSource}</p>
-                            <p><strong>Assigned Attorney:</strong> {client.assignedAttorney}</p>
-                            <p><strong>Client Since:</strong> {new Date(client.createdAt).toLocaleDateString()}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
                 {/* Workflow Progress */}
                 <Card>
                   <CardHeader>
@@ -565,6 +520,52 @@ export function MatterRecord() {
               </Button>
             </div>
             <div className="space-y-6">
+              {/* Client Information - Moved from main content */}
+              {client && (
+                <div>
+                  <h3 className="font-semibold mb-4">Client Information</h3>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="w-12 h-12">
+                        <AvatarImage src="/placeholder.svg" />
+                        <AvatarFallback className="text-sm">
+                          {client.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h4 className="font-medium">{client.name}</h4>
+                        <p className="text-xs text-muted-foreground">
+                          {client.assignedAttorney}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-3 h-3 text-muted-foreground" />
+                        <span className="break-all text-xs">{client.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-3 h-3 text-muted-foreground" />
+                        <span className="text-xs">{client.phone}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-1 text-xs">
+                      <p><span className="text-muted-foreground">Referral:</span> {client.referralSource}</p>
+                      <p><span className="text-muted-foreground">Client Since:</span> {new Date(client.createdAt).toLocaleDateString()}</p>
+                    </div>
+                    
+                    <Link to={`/client/${client.id}`} className="block">
+                      <Button variant="outline" size="sm" className="w-full">
+                        View Full Profile
+                        <ChevronRight className="w-3 h-3 ml-1" />
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              )}
+
               <div>
                 <h3 className="font-semibold mb-4">Matter Details</h3>
                 <div className="space-y-3 text-sm">
