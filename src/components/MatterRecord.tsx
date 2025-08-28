@@ -251,43 +251,60 @@ export function MatterRecord() {
         <ScrollArea className="flex-1 h-0 p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-sm">Documents</h3>
+              <h3 className="font-semibold text-base">Documents</h3>
               <Button variant="outline" size="sm">
-                <Plus className="w-3 h-3" />
+                <Plus className="w-4 h-4" />
               </Button>
             </div>
             
-            <div className="space-y-2">
+            <div className="space-y-3">
               {mockMatterDocuments.map((doc) => (
-                <div key={doc.id} className="p-2 border rounded-lg">
-                  <div className="flex items-start gap-2">
-                    <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1 mb-1">
-                        <span className="text-xs font-medium truncate">{doc.name}</span>
-                        {doc.isWealthCounselDoc && (
-                          <Badge variant="secondary" className="text-[10px] px-1 py-0">WC</Badge>
-                        )}
-                      </div>
-                      <div className="text-[10px] text-muted-foreground mb-2">
-                        {doc.type} • {formatFileSize(doc.size)}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-muted-foreground">
-                          {doc.uploadedBy}
-                        </span>
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                <div key={doc.id} className="p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-8 h-8 rounded bg-muted flex items-center justify-center">
+                      <FileText className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="flex-1 min-w-0 space-y-2">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="text-sm font-medium truncate">{doc.name}</h4>
+                            {doc.isWealthCounselDoc && (
+                              <Badge variant="secondary" className="text-xs">WC</Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {doc.type} • {formatFileSize(doc.size)}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 w-7 p-0"
+                            title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
+                          >
                             {doc.clientVisible ? (
-                              <Eye className="w-3 h-3 text-green-600" />
+                              <Eye className="w-3.5 h-3.5 text-green-600" />
                             ) : (
-                              <EyeOff className="w-3 h-3 text-gray-400" />
+                              <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
                             )}
                           </Button>
-                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                            <Download className="w-3 h-3" />
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            className="h-7 w-7 p-0"
+                            title="Download document"
+                          >
+                            <Download className="w-3.5 h-3.5 text-muted-foreground" />
                           </Button>
                         </div>
+                      </div>
+                      <div className="flex items-center text-xs text-muted-foreground">
+                        <User className="w-3 h-3 mr-1" />
+                        {doc.uploadedBy}
+                        <span className="mx-2">•</span>
+                        {new Date(doc.uploadedAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
