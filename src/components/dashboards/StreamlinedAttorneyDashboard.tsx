@@ -122,7 +122,7 @@ export function StreamlinedAttorneyDashboard() {
   );
 
   return (
-    <div className="h-[calc(100vh-8rem)] flex flex-col">
+    <div className="h-[calc(100vh-12rem)] flex flex-col">
       {/* Header with Quick Actions */}
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <div>
@@ -145,11 +145,11 @@ export function StreamlinedAttorneyDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
+      <div className="grid grid-cols-3 gap-6 flex-1 min-h-0 overflow-hidden">
         {/* Main Matter List - 2/3 */}
-        <div className="col-span-2 flex flex-col h-full min-h-0">
+        <div className="col-span-2 flex flex-col h-full min-h-0 overflow-hidden">
           {/* Search and Filter Bar */}
-          <Card>
+          <Card className="flex-shrink-0">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="relative flex-1">
@@ -193,7 +193,7 @@ export function StreamlinedAttorneyDashboard() {
           </Card>
 
           {/* Active Matters List */}
-          <Card className="flex-1 flex flex-col min-h-0">
+          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-lg flex items-center justify-between">
                 <span>Active Matters ({filteredMatters.length})</span>
@@ -202,8 +202,8 @@ export function StreamlinedAttorneyDashboard() {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-0 p-0">
-              <div className="flex-1 overflow-y-auto">
+            <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
+              <div className="flex-1 overflow-y-auto min-h-0">
                 <div className="space-y-3 p-6 pr-4">
                 {paginatedMatters.map(matter => (
                   <div 
@@ -319,9 +319,9 @@ export function StreamlinedAttorneyDashboard() {
          </div>
 
           {/* Right Sidebar */}
-          <div className="w-80 space-y-6 flex flex-col h-full">
+          <div className="w-80 flex flex-col h-full min-h-0 overflow-hidden space-y-6">
             {/* Clients Ready for Review */}
-            <Card className="flex-1 flex flex-col min-h-0">
+            <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
               <CardHeader className="flex-shrink-0">
                 <CardTitle className="text-base flex items-center justify-between">
                   <span className="flex items-center gap-2">
@@ -338,8 +338,8 @@ export function StreamlinedAttorneyDashboard() {
                   </div>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col min-h-0 p-0">
-                <div className="flex-1 overflow-y-auto">
+              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
+                <div className="flex-1 overflow-y-auto min-h-0">
                   <div className="space-y-3 p-6 pr-4">
                  {paginatedReviewClients.map(client => (
                    <div 
