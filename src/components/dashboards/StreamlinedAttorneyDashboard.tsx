@@ -1,290 +1,324 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
+import { useState } from "react";
 import { 
   Calendar, 
-  Send, 
   FileText,
-  Clock,
   AlertTriangle,
   CheckCircle2,
-  ArrowRight,
   Users,
   UserPlus,
-  Plus,
-  ClipboardList
+  ClipboardList,
+  Search,
+  Filter,
+  DollarSign,
+  TrendingUp,
+  Target
 } from "lucide-react";
 
 export function StreamlinedAttorneyDashboard() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("name");
+
   const myClients = mockClients.filter(client => client.assignedAttorney === 'Michael Chen');
   const myTasks = mockTasks.filter(task => task.assignedBy === 'Michael Chen');
   const myMatters = mockMatters.filter(matter => 
     myClients.some(client => client.id === matter.clientId)
   );
 
-  // Workflow-based organization
-  const needsIntakeForm = myClients.filter(c => 
-    c.pipelineStage === 'scheduled' && !c.intakeFormSent
-  );
-  
-  const waitingOnIntake = myClients.filter(c => 
-    c.pipelineStage === 'complete' && !c.intakeFormReceived
-  );
-  
-  const readyToDraft = myClients.filter(c => 
-    c.pipelineStage === 'complete' && c.intakeFormReceived && 
-    !myMatters.some(m => m.clientId === c.id)
-  );
+  // Enhanced client data with matter info
+  const enrichedClients = myClients.map(client => {
+    const matter = myMatters.find(m => m.clientId === client.id);
+    return {
+      ...client,
+      matter: matter || null,
+      revenue: matter?.revenue || 0,
+      matterType: matter?.type || 'No Matter',
+      workflowStage: matter?.workflowStage || null
+    };
+  });
 
-  const activeDrafting = myMatters.filter(m => 
-    ['intake', 'drafting', 'review'].includes(m.workflowStage)
-  );
+  // Filter and sort clients
+  const filteredClients = enrichedClients
+    .filter(client => {
+      const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          client.matterType.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus = statusFilter === "all" || client.pipelineStage === statusFilter;
+      return matchesSearch && matchesStatus;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "revenue":
+          return b.revenue - a.revenue;
+        case "status":
+          return a.pipelineStage.localeCompare(b.pipelineStage);
+        case "matterType":
+          return a.matterType.localeCompare(b.matterType);
+        default:
+          return 0;
+      }
+    });
 
-  const overdueItems = myTasks.filter(t => t.status === 'overdue').length;
-  const urgentItems = needsIntakeForm.length + waitingOnIntake.length + readyToDraft.length + overdueItems;
+  // Performance metrics
+  const stats = {
+    totalClients: myClients.length,
+    signedClients: myClients.filter(c => c.pipelineStage === 'signed').length,
+    totalRevenue: myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0),
+    conversionRate: Math.round((myClients.filter(c => c.pipelineStage === 'signed').length / myClients.length) * 100)
+  };
+
+  const pendingTasks = myTasks.filter(t => t.status !== 'completed');
+  const overdueTasks = myTasks.filter(t => t.status === 'overdue');
 
   return (
     <div className="space-y-4">
-      {/* Compact Header with Key Metrics */}
+      {/* Header with Quick Actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-legal-heading">My Workflow</h1>
-          <p className="text-legal-body mt-1">Focus on what needs action today</p>
+          <h1 className="text-legal-heading">Client Management</h1>
+          <p className="text-legal-body mt-1">Manage your client pipeline and workflow</p>
         </div>
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-sm">
-            <div className="flex items-center gap-1">
-              <AlertTriangle className="w-4 h-4 text-orange-500" />
-              <span className="font-medium">{urgentItems}</span>
-              <span className="text-muted-foreground">urgent</span>
-            </div>
-            <div className="w-px h-4 bg-border"></div>
-            <div className="flex items-center gap-1">
-              <Users className="w-4 h-4 text-primary" />
-              <span className="font-medium">{myClients.length}</span>
-              <span className="text-muted-foreground">clients</span>
-            </div>
-          </div>
-          <Button size="sm">
-            <Calendar className="w-4 h-4 mr-2" />
-            Schedule Consult
-          </Button>
-        </div>
-      </div>
-
-      {/* Quick Actions Row */}
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">Quick actions:</span>
-          <Button variant="ghost" size="sm" className="h-8">
-            <UserPlus className="w-3 h-3 mr-1" />
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm">
+            <UserPlus className="w-4 h-4 mr-2" />
             Create Prospect
           </Button>
-          <Button variant="ghost" size="sm" className="h-8">
-            <FileText className="w-3 h-3 mr-1" />
+          <Button variant="outline" size="sm">
+            <FileText className="w-4 h-4 mr-2" />
             Create Matter
           </Button>
-          <Button variant="ghost" size="sm" className="h-8">
-            <ClipboardList className="w-3 h-3 mr-1" />
+          <Button variant="outline" size="sm">
+            <ClipboardList className="w-4 h-4 mr-2" />
             Create Task
           </Button>
         </div>
-        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground">
-          View All <ArrowRight className="w-3 h-3 ml-1" />
-        </Button>
       </div>
 
-      {/* Priority Queue - Items Needing Immediate Action */}
-      {urgentItems > 0 && (
-        <Card className="border-orange-200 bg-orange-50/30">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2 text-orange-700">
-              <AlertTriangle className="w-4 h-4" />
-              Priority Queue ({urgentItems} items)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {needsIntakeForm.map(client => (
-              <div key={client.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                <div className="flex-1">
-                  <p className="font-medium text-sm">{client.name}</p>
-                  <p className="text-xs text-muted-foreground">Send intake form</p>
+      <div className="grid grid-cols-3 gap-6">
+        {/* Main Client List - 2/3 */}
+        <div className="col-span-2 space-y-4">
+          {/* Filters */}
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search clients or matter types..."
+                    className="pl-10"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                  />
                 </div>
-                <Button size="sm" variant="outline">
-                  <Send className="w-3 h-3 mr-1" />
-                  Send
-                </Button>
-              </div>
-            ))}
-            {readyToDraft.map(client => (
-              <div key={client.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                <div className="flex-1">
-                  <p className="font-medium text-sm">{client.name}</p>
-                  <p className="text-xs text-muted-foreground">Create matter & start drafting</p>
+                
+                <div className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-muted-foreground" />
+                  <select 
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    className="px-3 py-2 border rounded-md text-sm bg-background"
+                  >
+                    <option value="all">All Status</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="complete">Complete</option>
+                    <option value="signed">Signed</option>
+                    <option value="lost">Lost</option>
+                  </select>
+                  
+                  <select 
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="px-3 py-2 border rounded-md text-sm bg-background"
+                  >
+                    <option value="name">Sort by Name</option>
+                    <option value="revenue">Sort by Revenue</option>
+                    <option value="status">Sort by Status</option>
+                    <option value="matterType">Sort by Matter Type</option>
+                  </select>
                 </div>
-                <Button size="sm" variant="outline">
-                  <FileText className="w-3 h-3 mr-1" />
-                  Draft
-                </Button>
               </div>
-            ))}
-            {myTasks.filter(t => t.status === 'overdue').map(task => (
-              <div key={task.id} className="flex items-center justify-between p-2 bg-white rounded border">
-                <div className="flex-1">
-                  <p className="font-medium text-sm">{task.title}</p>
-                  <p className="text-xs text-red-600">Overdue - {task.clientName}</p>
-                </div>
-                <StatusBadge status={task.status} type="task" />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      )}
+            </CardContent>
+          </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Prospect Pipeline */}
-        <Card className="legal-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
-              <span>Prospect Pipeline</span>
-              <Badge variant="secondary" className="text-xs">
-                {myClients.filter(c => c.pipelineStage !== 'signed').length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {/* Waiting on Intake */}
-            {waitingOnIntake.length > 0 && (
-              <div>
-                <h4 className="text-xs font-medium text-muted-foreground mb-2">WAITING ON INTAKE</h4>
-                {waitingOnIntake.map(client => (
-                  <div key={client.id} className="flex items-center justify-between p-2 border rounded hover:bg-muted/30">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{client.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {client.consultDate && new Date(client.consultDate).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Clock className="w-4 h-4 text-orange-500 flex-shrink-0" />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Upcoming Consultations */}
-            {myClients.filter(c => c.pipelineStage === 'scheduled').map(client => (
-              <div key={client.id} className="flex items-center justify-between p-2 border rounded hover:bg-muted/30">
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{client.name}</p>
-                  <p className="text-xs text-blue-600">
-                    Consult: {client.consultDate && new Date(client.consultDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <Calendar className="w-4 h-4 text-blue-500 flex-shrink-0" />
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        {/* Active Drafting */}
-        <Card className="legal-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
-              <span>Active Drafting</span>
-              <Badge variant="secondary" className="text-xs">{activeDrafting.length}</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {activeDrafting.map(matter => {
-              const client = myClients.find(c => c.id === matter.clientId);
-              return (
-                <div key={matter.id} className="p-3 border rounded hover:bg-muted/30">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{client?.name}</p>
-                      <p className="text-xs text-muted-foreground">{matter.type}</p>
-                    </div>
-                    <StatusBadge status={matter.workflowStage} type="workflow" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between text-xs">
-                      <span>Progress</span>
-                      <span>{matter.progress}%</span>
-                    </div>
-                    <Progress value={matter.progress} className="h-1" />
-                  </div>
-                  {matter.dueDate && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Due: {new Date(matter.dueDate).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
-            {activeDrafting.length === 0 && (
-              <div className="text-center py-4">
-                <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">All caught up!</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Team Tasks */}
-        <Card className="legal-card">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center justify-between">
-              <span>Team Tasks</span>
-              <Badge variant="secondary" className="text-xs">
-                {myTasks.filter(t => t.status !== 'completed').length}
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {myTasks
-              .filter(t => t.status !== 'completed')
-              .sort((a, b) => {
-                if (a.status === 'overdue' && b.status !== 'overdue') return -1;
-                if (b.status === 'overdue' && a.status !== 'overdue') return 1;
-                if (a.priority === 'high' && b.priority !== 'high') return -1;
-                if (b.priority === 'high' && a.priority !== 'high') return 1;
-                return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
-              })
-              .map(task => (
-                <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{task.title}</p>
-                      <p className="text-xs text-muted-foreground">{task.clientName}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Badge variant="outline" className="text-xs px-1">
-                          {task.assignedTo}
-                        </Badge>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(task.dueDate).toLocaleDateString()}
-                        </span>
+          {/* Client List */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Active Clients ({filteredClients.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {filteredClients.map(client => (
+                  <div key={client.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors">
+                    <div className="flex-1 grid grid-cols-4 gap-4 items-center">
+                      <div>
+                        <p className="font-medium">{client.name}</p>
+                        <p className="text-sm text-muted-foreground">{client.referralSource}</p>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm font-medium">{client.matterType}</p>
+                        {client.workflowStage && (
+                          <StatusBadge status={client.workflowStage} type="workflow" />
+                        )}
+                      </div>
+                      
+                      <div>
+                        <StatusBadge status={client.pipelineStage} type="pipeline" />
+                        {client.consultDate && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {new Date(client.consultDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="text-right">
+                        <p className="font-medium">${client.revenue.toLocaleString()}</p>
+                        {client.revenue > 0 && (
+                          <p className="text-xs text-green-600">Active Revenue</p>
+                        )}
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <StatusBadge status={task.status} type="task" />
-                      {task.priority === 'high' && (
-                        <AlertTriangle className="w-3 h-3 text-orange-500" />
-                      )}
+                    
+                    <div className="flex items-center gap-2 ml-4">
+                      <Button size="sm" variant="ghost">
+                        View
+                      </Button>
                     </div>
                   </div>
-                </div>
-              ))}
-            {myTasks.filter(t => t.status !== 'completed').length === 0 && (
-              <div className="text-center py-4">
-                <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                <p className="text-sm text-muted-foreground">No pending tasks</p>
+                ))}
+                
+                {filteredClients.length === 0 && (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No clients match your current filters</p>
+                  </div>
+                )}
               </div>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Sidebar - 1/3 */}
+        <div className="space-y-4">
+          {/* Performance Metrics - Top Half */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" />
+                Performance
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Users className="w-4 h-4 text-primary" />
+                  </div>
+                  <p className="text-2xl font-bold">{stats.totalClients}</p>
+                  <p className="text-xs text-muted-foreground">Total Clients</p>
+                </div>
+                
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <CheckCircle2 className="w-4 h-4 text-green-600" />
+                  </div>
+                  <p className="text-2xl font-bold">{stats.signedClients}</p>
+                  <p className="text-xs text-muted-foreground">Signed</p>
+                </div>
+                
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                  </div>
+                  <p className="text-2xl font-bold">${(stats.totalRevenue / 1000).toFixed(0)}K</p>
+                  <p className="text-xs text-muted-foreground">Revenue</p>
+                </div>
+                
+                <div className="text-center p-3 bg-muted/30 rounded-lg">
+                  <div className="flex items-center justify-center gap-1 mb-1">
+                    <Target className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <p className="text-2xl font-bold">{stats.conversionRate}%</p>
+                  <p className="text-xs text-muted-foreground">Conversion</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Tasks - Bottom Half */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base flex items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <ClipboardList className="w-4 h-4" />
+                  My Tasks
+                </span>
+                <Badge variant="secondary" className="text-xs">
+                  {pendingTasks.length}
+                </Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {overdueTasks.length > 0 && (
+                <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="w-4 h-4 text-red-600" />
+                    <span className="text-sm font-medium text-red-700">Overdue ({overdueTasks.length})</span>
+                  </div>
+                  {overdueTasks.slice(0, 2).map(task => (
+                    <div key={task.id} className="text-sm">
+                      <p className="font-medium">{task.title}</p>
+                      <p className="text-xs text-red-600">{task.clientName}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {pendingTasks
+                .filter(t => t.status !== 'overdue')
+                .slice(0, 4)
+                .map(task => (
+                  <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm truncate">{task.title}</p>
+                        <p className="text-xs text-muted-foreground">{task.clientName}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Badge variant="outline" className="text-xs px-1">
+                            {task.assignedTo}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(task.dueDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                      </div>
+                      <StatusBadge status={task.status} type="task" />
+                    </div>
+                  </div>
+                ))}
+              
+              {pendingTasks.length === 0 && (
+                <div className="text-center py-4">
+                  <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                  <p className="text-sm text-muted-foreground">All tasks complete!</p>
+                </div>
+              )}
+              
+              {pendingTasks.length > 4 && (
+                <Button variant="ghost" size="sm" className="w-full">
+                  View All Tasks ({pendingTasks.length})
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
