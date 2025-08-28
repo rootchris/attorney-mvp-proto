@@ -31,6 +31,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { mockClients, mockMatters } from '@/data/mockData';
 import { WorkflowStage, Document, Note, Task } from '@/types/legal';
 
@@ -247,7 +248,7 @@ export function MatterRecord() {
         </nav>
 
         {/* Document Repository - Moved from main content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <ScrollArea className="flex-1 p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">Documents</h3>
@@ -294,7 +295,7 @@ export function MatterRecord() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollArea>
       </div>
 
       {/* Main Content */}
@@ -336,8 +337,9 @@ export function MatterRecord() {
 
         <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
           {/* Main Panel */}
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-4 lg:p-6 space-y-6">
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <ScrollArea className="flex-1 p-4 lg:p-6">
+              <div className="space-y-6">
               {/* Matter Header */}
               <div className="space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -506,15 +508,16 @@ export function MatterRecord() {
                   </div>
                 </CardContent>
               </Card>
-            </div>
+              </div>
+            </ScrollArea>
           </div>
 
           {/* Right Sidebar - Matter Details */}
           <div className={`
-            fixed xl:static inset-y-0 right-0 z-30 w-80 border-l bg-card p-4 lg:p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out
+            fixed xl:static inset-y-0 right-0 z-50 w-80 border-l bg-card transform transition-transform duration-300 ease-in-out flex flex-col
             ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} xl:translate-x-0
           `}>
-            <div className="flex justify-between items-center mb-4 xl:hidden">
+            <div className="flex justify-between items-center p-4 xl:hidden border-b">
               <h2 className="font-semibold">Matter Details</h2>
               <Button 
                 variant="ghost" 
@@ -525,7 +528,8 @@ export function MatterRecord() {
               </Button>
             </div>
 
-            <div className="space-y-6">
+            <ScrollArea className="flex-1 p-6">
+              <div className="space-y-6">
               {/* Client Information - Moved from main content */}
               {client && (
                 <div>
@@ -630,7 +634,8 @@ export function MatterRecord() {
                   ))}
                 </div>
               </div>
-            </div>
+              </div>
+            </ScrollArea>
           </div>
         </div>
 
