@@ -205,7 +205,7 @@ export function MatterRecord() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-background">
+    <div className="h-screen flex flex-col lg:flex-row bg-background overflow-hidden">
       {/* Mobile/Tablet Overlay */}
       {sidebarOpen && (
         <div 
@@ -216,7 +216,7 @@ export function MatterRecord() {
 
       {/* Left Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-64 border-r bg-card transform transition-transform duration-300 ease-in-out
+        fixed lg:static inset-y-0 left-0 z-50 w-64 border-r bg-card transform transition-transform duration-300 ease-in-out flex flex-col h-full
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}>
         <div className="flex justify-between items-center p-4 lg:hidden">
@@ -248,7 +248,7 @@ export function MatterRecord() {
         </nav>
 
         {/* Document Repository - Moved from main content */}
-        <ScrollArea className="flex-1 p-4">
+        <ScrollArea className="flex-1 h-0 p-4">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-sm">Documents</h3>
@@ -299,7 +299,7 @@ export function MatterRecord() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden h-full">
         {/* Top Search Bar */}
         <div className="border-b bg-card px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
@@ -338,7 +338,7 @@ export function MatterRecord() {
         <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
           {/* Main Panel */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            <ScrollArea className="flex-1 p-4 lg:p-6">
+            <ScrollArea className="flex-1 h-0 p-4 lg:p-6">
               <div className="space-y-6">
                 {/* Matter Header */}
                 <div className="space-y-4">
@@ -528,7 +528,7 @@ export function MatterRecord() {
               </Button>
             </div>
 
-            <ScrollArea className="flex-1 p-6">
+            <ScrollArea className="flex-1 h-0 p-6">
               <div className="space-y-6">
                 {/* Client Information - Moved from main content */}
               {client && (
