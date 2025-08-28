@@ -216,7 +216,7 @@ export function MatterRecord() {
 
       {/* Left Sidebar */}
       <div className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-64 border-r bg-card transform transition-transform duration-300 ease-in-out flex flex-col h-full
+        fixed lg:static inset-y-0 left-0 z-50 w-80 border-r bg-card transform transition-transform duration-300 ease-in-out flex flex-col h-full
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
       `}>
         <div className="flex justify-between items-center p-4 lg:hidden">
@@ -265,19 +265,25 @@ export function MatterRecord() {
                       <FileText className="w-4 h-4 text-muted-foreground" />
                     </div>
                     <div className="flex-1 min-w-0 space-y-2">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="text-sm font-medium truncate">{doc.name}</h4>
-                            {doc.isWealthCounselDoc && (
-                              <Badge variant="secondary" className="text-xs">WC</Badge>
-                            )}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {doc.type} • {formatFileSize(doc.size)}
-                          </p>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-sm font-medium leading-tight break-words">{doc.name}</h4>
+                          {doc.isWealthCounselDoc && (
+                            <Badge variant="secondary" className="text-xs flex-shrink-0">WC</Badge>
+                          )}
                         </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
+                        <p className="text-xs text-muted-foreground">
+                          {doc.type} • {formatFileSize(doc.size)}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-xs text-muted-foreground min-w-0">
+                          <User className="w-3 h-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">{doc.uploadedBy}</span>
+                          <span className="mx-2 flex-shrink-0">•</span>
+                          <span className="flex-shrink-0">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0 ml-2">
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -299,12 +305,6 @@ export function MatterRecord() {
                             <Download className="w-3.5 h-3.5 text-muted-foreground" />
                           </Button>
                         </div>
-                      </div>
-                      <div className="flex items-center text-xs text-muted-foreground">
-                        <User className="w-3 h-3 mr-1" />
-                        {doc.uploadedBy}
-                        <span className="mx-2">•</span>
-                        {new Date(doc.uploadedAt).toLocaleDateString()}
                       </div>
                     </div>
                   </div>
