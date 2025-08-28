@@ -206,9 +206,10 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Sidebar - 1/3 */}
-        <div className="h-full flex flex-col min-h-0">
-          {/* Performance Metrics - Top Half */}
-          <Card className="flex-shrink-0 mb-4">
+        <div className="h-full overflow-y-auto">
+          <div className="space-y-4 pr-2">
+            {/* Performance Metrics - Top Half */}
+            <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" />
@@ -252,8 +253,8 @@ export function StreamlinedAttorneyDashboard() {
             </CardContent>
           </Card>
 
-          {/* Tasks - Bottom Half */}
-          <Card className="flex-1 flex flex-col min-h-0">
+            {/* Tasks - Bottom Half */}
+            <Card>
             <CardHeader>
               <CardTitle className="text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -265,8 +266,8 @@ export function StreamlinedAttorneyDashboard() {
                 </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 flex-1 overflow-y-auto">
-              <div className="space-y-3 pr-2">
+              <CardContent className="space-y-3">
+                <div className="space-y-3">
                 {overdueTasks.length > 0 && (
                   <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -310,9 +311,10 @@ export function StreamlinedAttorneyDashboard() {
                     <p className="text-sm text-muted-foreground">All tasks complete!</p>
                   </div>
                 )}
-              </div>
-            </CardContent>
-          </Card>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
