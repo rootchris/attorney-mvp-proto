@@ -71,6 +71,13 @@
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    /* Chart colors for enhanced analytics */
+    --chart-1: 217 91% 60%;
+    --chart-2: 221 83% 53%;
+    --chart-3: 212 95% 68%;
+    --chart-4: 216 92% 60%;
+    --chart-5: 210 98% 78%;
   }
 }
 

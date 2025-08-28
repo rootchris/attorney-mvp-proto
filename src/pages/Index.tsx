@@ -3,6 +3,7 @@ import { RoleSelector, UserRole } from '@/components/RoleSelector';
 import { AttorneyDashboard } from '@/components/dashboards/AttorneyDashboard';
 import { ClerkDashboard } from '@/components/dashboards/ClerkDashboard';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
+import { EnhancedAdminDashboard } from '@/components/dashboards/EnhancedAdminDashboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Scale, Building2 } from 'lucide-react';
 
@@ -16,7 +17,7 @@ const Index = () => {
       case 'clerk':
         return <ClerkDashboard />;
       case 'admin':
-        return <AdminDashboard />;
+        return <EnhancedAdminDashboard />;
       default:
         return <AttorneyDashboard />;
     }
