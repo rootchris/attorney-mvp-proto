@@ -1,4 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState } from 'react';
 import { 
   Search, 
   CheckSquare, 
@@ -18,7 +19,9 @@ import {
   Calendar,
   User,
   MessageSquare,
-  ChevronRight
+  ChevronRight,
+  Menu,
+  X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -158,6 +161,8 @@ const workflowStages: { stage: WorkflowStage; label: string; progress: number }[
 
 export function MatterRecord() {
   const { matterId } = useParams();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   
   // Mock data - in real app, fetch based on matterId
   const matter = mockMatters.find(m => m.id === matterId) || mockMatters[0];
@@ -199,9 +204,30 @@ export function MatterRecord() {
   };
 
   return (
-    <div className="h-screen flex bg-background">
+    <div className="min-h-screen flex flex-col lg:flex-row bg-background">
+      {/* Mobile/Tablet Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Left Sidebar */}
-      <div className="w-64 border-r bg-card">        
+      <div className={`
+        fixed lg:static inset-y-0 left-0 z-50 w-64 border-r bg-card transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
+      `}>
+        <div className="flex justify-between items-center p-4 lg:hidden">
+          <h2 className="font-semibold">Navigation</h2>
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => setSidebarOpen(false)}
+          >
+            <X className="w-4 h-4" />
+          </Button>
+        </div>
         <nav className="p-2">
           {sidebarItems.map((item) => (
             <button
@@ -213,7 +239,7 @@ export function MatterRecord() {
               }`}
             >
               <item.icon className="w-4 h-4" />
-              {item.label}
+              <span className="lg:inline">{item.label}</span>
             </button>
           ))}
         </nav>
@@ -222,40 +248,57 @@ export function MatterRecord() {
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Search Bar */}
-        <div className="border-b bg-card px-6 py-4">
+        <div className="border-b bg-card px-4 lg:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="w-5 h-5" />
+              </Button>
               <Link to="/" className="text-muted-foreground hover:text-foreground">
                 <ArrowLeft className="w-5 h-5" />
               </Link>
-              <div className="relative">
+              <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <Input
                   placeholder="Search matters, clients, documents..."
-                  className="pl-10 w-96"
+                  className="pl-10 w-64 lg:w-96"
                 />
               </div>
             </div>
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="xl:hidden"
+              onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
+            >
+              <FileText className="w-4 h-4" />
+              <span className="ml-2 hidden sm:inline">Details</span>
+            </Button>
           </div>
         </div>
 
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
           {/* Main Panel */}
           <div className="flex-1 overflow-y-auto">
-            <div className="p-6 space-y-6">
+            <div className="p-4 lg:p-6 space-y-6">
               {/* Matter Header */}
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
-                    <h1 className="text-3xl font-bold">{matter.title}</h1>
+                    <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
                     <p className="text-muted-foreground">Matter Type: {matter.type}</p>
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="outline">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Add Note
                     </Button>
-                    <Button>
+                    <Button size="sm" className="w-full sm:w-auto">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Task
                     </Button>
@@ -266,10 +309,10 @@ export function MatterRecord() {
                 {client && (
                   <Card>
                     <CardHeader>
-                      <CardTitle className="flex items-center justify-between">
+                      <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <span>Client Information</span>
                         <Link to={`/client/${client.id}`}>
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" className="w-full sm:w-auto">
                             View Full Profile
                             <ChevronRight className="w-4 h-4 ml-1" />
                           </Button>
@@ -277,20 +320,20 @@ export function MatterRecord() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-start gap-4">
-                        <Avatar className="w-16 h-16">
+                      <div className="flex flex-col lg:flex-row items-start gap-4">
+                        <Avatar className="w-16 h-16 mx-auto lg:mx-0">
                           <AvatarImage src="/placeholder.svg" />
                           <AvatarFallback>{client.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 grid grid-cols-2 gap-4">
+                        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-4 text-center lg:text-left">
                           <div>
                             <h3 className="font-semibold text-lg">{client.name}</h3>
                             <div className="space-y-1 text-sm text-muted-foreground">
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-center lg:justify-start gap-2">
                                 <Mail className="w-4 h-4" />
-                                {client.email}
+                                <span className="break-all">{client.email}</span>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center justify-center lg:justify-start gap-2">
                                 <Phone className="w-4 h-4" />
                                 {client.phone}
                               </div>
@@ -314,12 +357,12 @@ export function MatterRecord() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <span className="font-medium">Current Stage: {currentStage.label}</span>
                         <span className="text-sm text-muted-foreground">{currentStage.progress}% Complete</span>
                       </div>
                       <Progress value={currentStage.progress} className="h-2" />
-                      <div className="grid grid-cols-9 gap-2 text-xs">
+                      <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-xs">
                         {workflowStages.map((stage, index) => (
                           <div 
                             key={stage.stage}
@@ -331,7 +374,7 @@ export function MatterRecord() {
                                 : 'bg-gray-100 text-gray-600'
                             }`}
                           >
-                            {stage.label}
+                            <div className="break-words">{stage.label}</div>
                           </div>
                         ))}
                       </div>
@@ -343,9 +386,9 @@ export function MatterRecord() {
               {/* Document Repository */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
+                  <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <span>Document Repository</span>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <Plus className="w-4 h-4 mr-2" />
                       Upload Document
                     </Button>
@@ -354,14 +397,14 @@ export function MatterRecord() {
                 <CardContent>
                   <div className="space-y-3">
                     {mockMatterDocuments.map((doc) => (
-                      <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <FileText className="w-5 h-5 text-muted-foreground" />
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-medium">{doc.name}</span>
+                      <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 border rounded-lg">
+                        <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                          <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5 sm:mt-0" />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                              <span className="font-medium break-words">{doc.name}</span>
                               {doc.isWealthCounselDoc && (
-                                <Badge variant="secondary" className="text-xs">Wealth Counsel</Badge>
+                                <Badge variant="secondary" className="text-xs self-start">Wealth Counsel</Badge>
                               )}
                             </div>
                             <div className="text-sm text-muted-foreground">
@@ -369,7 +412,7 @@ export function MatterRecord() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 self-end sm:self-center">
                           <Button variant="ghost" size="sm">
                             {doc.clientVisible ? (
                               <Eye className="w-4 h-4 text-green-600" />
@@ -399,9 +442,9 @@ export function MatterRecord() {
                         placeholder="Add a note about this matter..."
                         className="min-h-[80px]"
                       />
-                      <div className="flex items-center justify-between">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                         <Select>
-                          <SelectTrigger className="w-48">
+                          <SelectTrigger className="w-full sm:w-48">
                             <SelectValue placeholder="Tag colleagues" />
                           </SelectTrigger>
                           <SelectContent>
@@ -410,14 +453,14 @@ export function MatterRecord() {
                             <SelectItem value="michael">Michael Chen</SelectItem>
                           </SelectContent>
                         </Select>
-                        <Button size="sm">Add Note</Button>
+                        <Button size="sm" className="w-full sm:w-auto">Add Note</Button>
                       </div>
                     </div>
                     
                     <div className="space-y-3">
                       {mockMatterNotes.map((note) => (
                         <div key={note.id} className="p-4 border rounded-lg">
-                          <div className="flex items-start justify-between mb-2">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
                             <div className="flex items-center gap-2">
                               <Avatar className="w-6 h-6">
                                 <AvatarFallback className="text-xs">
@@ -432,13 +475,15 @@ export function MatterRecord() {
                           </div>
                           <p className="text-sm mb-2">{note.content}</p>
                           {note.taggedColleagues && note.taggedColleagues.length > 0 && (
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                               <span className="text-xs text-muted-foreground">Tagged:</span>
-                              {note.taggedColleagues.map((colleague) => (
-                                <Badge key={colleague} variant="outline" className="text-xs">
-                                  {colleague}
-                                </Badge>
-                              ))}
+                              <div className="flex flex-wrap gap-1">
+                                {note.taggedColleagues.map((colleague) => (
+                                  <Badge key={colleague} variant="outline" className="text-xs">
+                                    {colleague}
+                                  </Badge>
+                                ))}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -451,9 +496,9 @@ export function MatterRecord() {
               {/* Tasks Section */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center justify-between">
+                  <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <span>Matter Tasks</span>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
                       <Plus className="w-4 h-4 mr-2" />
                       Create Task
                     </Button>
@@ -462,19 +507,21 @@ export function MatterRecord() {
                 <CardContent>
                   <div className="space-y-3">
                     {mockMatterTasks.map((task) => (
-                      <div key={task.id} className="flex items-start justify-between p-4 border rounded-lg">
+                      <div key={task.id} className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 p-4 border rounded-lg">
                         <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <h4 className="font-medium">{task.title}</h4>
-                            <Badge className={getTaskStatusColor(task.status)}>
-                              {task.status.replace('_', ' ')}
-                            </Badge>
-                            <Badge className={getPriorityColor(task.priority)}>
-                              {task.priority}
-                            </Badge>
+                          <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-2">
+                            <h4 className="font-medium flex-1">{task.title}</h4>
+                            <div className="flex gap-2">
+                              <Badge className={getTaskStatusColor(task.status)}>
+                                {task.status.replace('_', ' ')}
+                              </Badge>
+                              <Badge className={getPriorityColor(task.priority)}>
+                                {task.priority}
+                              </Badge>
+                            </div>
                           </div>
                           <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               Due: {new Date(task.dueDate).toLocaleDateString()}
@@ -485,7 +532,7 @@ export function MatterRecord() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 self-start lg:self-center">
                           <Avatar className="w-8 h-8">
                             <AvatarImage src="/placeholder.svg" />
                             <AvatarFallback className="text-xs">
@@ -503,7 +550,20 @@ export function MatterRecord() {
           </div>
 
           {/* Right Sidebar - Matter Details */}
-          <div className="w-80 border-l bg-card p-6 overflow-y-auto">
+          <div className={`
+            fixed xl:static inset-y-0 right-0 z-30 w-80 border-l bg-card p-4 lg:p-6 overflow-y-auto transform transition-transform duration-300 ease-in-out
+            ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} xl:translate-x-0
+          `}>
+            <div className="flex justify-between items-center mb-4 xl:hidden">
+              <h2 className="font-semibold">Matter Details</h2>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setRightSidebarOpen(false)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
             <div className="space-y-6">
               <div>
                 <h3 className="font-semibold mb-4">Matter Details</h3>
@@ -566,6 +626,14 @@ export function MatterRecord() {
             </div>
           </div>
         </div>
+
+        {/* Mobile/Tablet overlay for right sidebar */}
+        {rightSidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-20 xl:hidden"
+            onClick={() => setRightSidebarOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
