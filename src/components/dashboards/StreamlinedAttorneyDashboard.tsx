@@ -12,7 +12,10 @@ import {
   AlertTriangle,
   CheckCircle2,
   ArrowRight,
-  Users
+  Users,
+  UserPlus,
+  Plus,
+  ClipboardList
 } from "lucide-react";
 
 export function StreamlinedAttorneyDashboard() {
@@ -70,6 +73,28 @@ export function StreamlinedAttorneyDashboard() {
             Schedule Consult
           </Button>
         </div>
+      </div>
+
+      {/* Quick Actions Row */}
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">Quick actions:</span>
+          <Button variant="ghost" size="sm" className="h-8">
+            <UserPlus className="w-3 h-3 mr-1" />
+            Create Prospect
+          </Button>
+          <Button variant="ghost" size="sm" className="h-8">
+            <FileText className="w-3 h-3 mr-1" />
+            Create Matter
+          </Button>
+          <Button variant="ghost" size="sm" className="h-8">
+            <ClipboardList className="w-3 h-3 mr-1" />
+            Create Task
+          </Button>
+        </div>
+        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground">
+          View All <ArrowRight className="w-3 h-3 ml-1" />
+        </Button>
       </div>
 
       {/* Priority Queue - Items Needing Immediate Action */}
@@ -260,28 +285,6 @@ export function StreamlinedAttorneyDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
-
-      {/* Quick Actions Row */}
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">Quick actions:</span>
-          <Button variant="ghost" size="sm" className="h-8">
-            <Send className="w-3 h-3 mr-1" />
-            Bulk Send Intakes
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8">
-            <FileText className="w-3 h-3 mr-1" />
-            Create Matter
-          </Button>
-          <Button variant="ghost" size="sm" className="h-8">
-            <Calendar className="w-3 h-3 mr-1" />
-            Schedule Follow-ups
-          </Button>
-        </div>
-        <Button variant="ghost" size="sm" className="h-8 text-muted-foreground">
-          View All <ArrowRight className="w-3 h-3 ml-1" />
-        </Button>
       </div>
     </div>
   );
