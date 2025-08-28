@@ -6,6 +6,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Calendar, 
   FileText,
@@ -22,6 +23,7 @@ import {
 } from "lucide-react";
 
 export function StreamlinedAttorneyDashboard() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -179,7 +181,11 @@ export function StreamlinedAttorneyDashboard() {
             <CardContent className="flex-1 flex flex-col min-h-0">
               <div className="space-y-3 pr-2 flex-1 overflow-y-auto">
                 {paginatedClients.map(client => (
-                  <div key={client.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors">
+                  <div 
+                    key={client.id} 
+                    className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors cursor-pointer"
+                    onClick={() => navigate(`/client/${client.id}`)}
+                  >
                     <div className="flex-1 grid grid-cols-4 gap-4 items-center">
                       <div>
                         <p className="font-medium">{client.name}</p>
@@ -211,8 +217,15 @@ export function StreamlinedAttorneyDashboard() {
                     </div>
                     
                     <div className="flex items-center gap-2 ml-4">
-                      <Button size="sm" variant="ghost">
-                        View
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/client/${client.id}`);
+                        }}
+                      >
+                        View Details
                       </Button>
                     </div>
                   </div>
