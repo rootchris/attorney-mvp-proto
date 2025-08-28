@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { RoleSelector, UserRole } from '@/components/RoleSelector';
-import { AttorneyDashboard } from '@/components/dashboards/AttorneyDashboard';
+import { StreamlinedAttorneyDashboard } from '@/components/dashboards/StreamlinedAttorneyDashboard';
 import { ClerkDashboard } from '@/components/dashboards/ClerkDashboard';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
 import { EnhancedAdminDashboard } from '@/components/dashboards/EnhancedAdminDashboard';
@@ -13,13 +13,13 @@ const Index = () => {
   const renderDashboard = () => {
     switch (currentRole) {
       case 'attorney':
-        return <AttorneyDashboard />;
+        return <StreamlinedAttorneyDashboard />;
       case 'clerk':
         return <ClerkDashboard />;
       case 'admin':
         return <EnhancedAdminDashboard />;
       default:
-        return <AttorneyDashboard />;
+        return <StreamlinedAttorneyDashboard />;
     }
   };
 

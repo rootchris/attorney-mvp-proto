@@ -11,6 +11,8 @@ export interface Client {
   pipelineStage: PipelineStage;
   consultDate?: string;
   signingDate?: string;
+  intakeFormSent?: boolean;
+  intakeFormReceived?: boolean;
   notes: string;
   createdAt: string;
   assignedAttorney: string;
@@ -25,6 +27,7 @@ export interface Matter {
   createdAt: string;
   dueDate?: string;
   revenue?: number;
+  progress?: number;
   documents: Document[];
 }
 

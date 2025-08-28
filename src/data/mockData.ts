@@ -10,6 +10,8 @@ export const mockClients: Client[] = [
     pipelineStage: 'signed',
     consultDate: '2024-02-15',
     signingDate: '2024-02-28',
+    intakeFormSent: true,
+    intakeFormReceived: true,
     notes: 'Complex family trust with multiple beneficiaries. Owns significant real estate portfolio.',
     createdAt: '2024-02-10',
     assignedAttorney: 'Michael Chen'
@@ -22,6 +24,8 @@ export const mockClients: Client[] = [
     referralSource: 'Google search',
     pipelineStage: 'complete',
     consultDate: '2024-03-01',
+    intakeFormSent: false,
+    intakeFormReceived: false,
     notes: 'Simple will and power of attorney. First-time client, very detail-oriented.',
     createdAt: '2024-02-25',
     assignedAttorney: 'Michael Chen'
@@ -34,9 +38,11 @@ export const mockClients: Client[] = [
     referralSource: 'Attorney referral network',
     pipelineStage: 'scheduled',
     consultDate: '2024-03-15',
+    intakeFormSent: false,
+    intakeFormReceived: false,
     notes: 'High-net-worth individual seeking comprehensive estate planning.',
     createdAt: '2024-03-05',
-    assignedAttorney: 'Jennifer Liu'
+    assignedAttorney: 'Michael Chen'
   },
   {
     id: '4',
@@ -46,9 +52,25 @@ export const mockClients: Client[] = [
     referralSource: 'Previous client',
     pipelineStage: 'lost',
     consultDate: '2024-02-20',
+    intakeFormSent: true,
+    intakeFormReceived: false,
     notes: 'Decided to work with a different firm due to pricing concerns.',
     createdAt: '2024-02-15',
     assignedAttorney: 'Jennifer Liu'
+  },
+  {
+    id: '5',
+    name: 'Lisa Chen',
+    email: 'lisa.chen@email.com',
+    phone: '(555) 567-8901',
+    referralSource: 'Website contact form',
+    pipelineStage: 'complete',
+    consultDate: '2024-03-05',
+    intakeFormSent: true,
+    intakeFormReceived: true,
+    notes: 'Business succession planning for family-owned restaurant chain.',
+    createdAt: '2024-02-28',
+    assignedAttorney: 'Michael Chen'
   }
 ];
 
@@ -62,17 +84,19 @@ export const mockMatters: Matter[] = [
     createdAt: '2024-02-28',
     dueDate: '2024-03-15',
     revenue: 8500,
+    progress: 75,
     documents: []
   },
   {
     id: '2',
-    clientId: '2',
-    title: 'Martinez Will & POA',
-    type: 'Will + Power of Attorney',
+    clientId: '5',
+    title: 'Chen Business Succession Plan',
+    type: 'Business Planning',
     workflowStage: 'drafting',
-    createdAt: '2024-03-01',
-    dueDate: '2024-03-20',
-    revenue: 2500,
+    createdAt: '2024-03-05',
+    dueDate: '2024-03-25',
+    revenue: 12000,
+    progress: 30,
     documents: []
   }
 ];
