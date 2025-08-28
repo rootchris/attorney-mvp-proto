@@ -99,13 +99,10 @@ export function ClientRecord() {
   const sidebarItems = [
     { icon: Search, label: "Search", active: false },
     { icon: CheckSquare, label: "Tasks", active: false },
-    { icon: LayoutGrid, label: "Boards", active: false },
     { icon: List, label: "Lists", active: false },
-    { icon: Building2, label: "Companies", active: false },
     { icon: Users, label: "Contacts", active: true },
     { icon: Activity, label: "Timeline", active: false },
     { icon: Heart, label: "Keep-in-touch", active: false },
-    { icon: Map, label: "Map", active: false },
   ];
 
   const getActivityIcon = (type: string) => {
@@ -120,14 +117,7 @@ export function ClientRecord() {
   return (
     <div className="h-screen flex bg-background">
       {/* Left Sidebar */}
-      <div className="w-64 border-r bg-card">
-        <div className="p-4 border-b">
-          <Button variant="outline" className="w-full justify-start gap-2">
-            <Plus className="w-4 h-4" />
-            Add to Rolodex
-          </Button>
-        </div>
-        
+      <div className="w-64 border-r bg-card">        
         <nav className="p-2">
           {sidebarItems.map((item) => (
             <button
