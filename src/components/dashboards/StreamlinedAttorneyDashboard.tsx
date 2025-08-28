@@ -78,9 +78,9 @@ export function StreamlinedAttorneyDashboard() {
   const overdueTasks = myTasks.filter(t => t.status === 'overdue');
 
   return (
-    <div className="space-y-4">
+    <div className="h-[calc(100vh-8rem)] flex flex-col">
       {/* Header with Quick Actions */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <div>
           <h1 className="text-legal-heading">Client Management</h1>
           <p className="text-legal-body mt-1">Manage your client pipeline and workflow</p>
@@ -101,11 +101,11 @@ export function StreamlinedAttorneyDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
+      <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
         {/* Main Client List - 2/3 */}
-        <div className="col-span-2 space-y-4 flex flex-col h-full">
+        <div className="col-span-2 flex flex-col h-full min-h-0">
           {/* Filters */}
-          <Card className="flex-shrink-0">
+          <Card className="flex-shrink-0 mb-4">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="flex-1 relative">
@@ -206,9 +206,9 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Sidebar - 1/3 */}
-        <div className="space-y-4 h-full flex flex-col">
+        <div className="h-full flex flex-col min-h-0">
           {/* Performance Metrics - Top Half */}
-          <Card className="flex-shrink-0">
+          <Card className="flex-shrink-0 mb-4">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" />
