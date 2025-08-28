@@ -58,10 +58,9 @@ export function StreamlinedAttorneyDashboard() {
     };
   });
 
-  // Clients ready for review (completed matters or no active matters)
+  // Clients ready for review (using the new pipeline stage)
   const clientsReadyForReview = myClients.filter(client => {
-    const hasActiveMatter = activeMatters.some(matter => matter.clientId === client.id);
-    return !hasActiveMatter && client.pipelineStage === 'signed';
+    return client.pipelineStage === 'ready_for_review';
   });
 
   // Filter and sort matters
@@ -347,27 +346,24 @@ export function StreamlinedAttorneyDashboard() {
                    >
                      <div className="flex items-start justify-between">
                        <div className="flex-1 min-w-0">
-                         <p className="font-medium text-sm">{client.name}</p>
-                         <p className="text-xs text-muted-foreground">{client.email}</p>
-                         <div className="flex items-center gap-2 mt-1">
-                           <Badge variant="outline" className="text-xs px-1">
-                             Previous Client
-                           </Badge>
-                           <span className="text-xs text-muted-foreground">
-                             Last Contact: {client.signingDate ? new Date(client.signingDate).toLocaleDateString() : 'Unknown'}
-                           </span>
-                         </div>
+                          <p className="font-medium text-sm">{client.name}</p>
+                          <p className="text-xs text-muted-foreground">{client.email}</p>
+                          <div className="flex items-center gap-2 mt-1">
+                            <StatusBadge status={client.pipelineStage} type="pipeline" />
+                            <span className="text-xs text-muted-foreground">
+                              Signed: {client.signingDate ? new Date(client.signingDate).toLocaleDateString() : 'Unknown'}
+                            </span>
+                          </div>
                        </div>
                        <Button 
                          size="sm" 
                          variant="outline"
-                         onClick={(e) => {
-                           e.stopPropagation();
-                           // In real app, this would open a "Create New Matter" dialog
-                           alert('Create new matter for ' + client.name);
-                         }}
-                       >
-                         Re-engage
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/matter/${client.id}`);
+                          }}
+                        >
+                          Review
                        </Button>
                      </div>
                    </div>
@@ -376,7 +372,7 @@ export function StreamlinedAttorneyDashboard() {
                  {clientsReadyForReview.length === 0 && (
                    <div className="text-center py-4">
                      <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                     <p className="text-sm text-muted-foreground">All clients have active matters!</p>
+                      <p className="text-sm text-muted-foreground">No clients pending review</p>
                    </div>
                  )}
                </div>
