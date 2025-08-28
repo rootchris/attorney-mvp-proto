@@ -25,13 +25,15 @@ import {
 export function StreamlinedAttorneyDashboard() {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("name");
-  const [clientPage, setClientPage] = useState(1);
+  const [matterFilter, setMatterFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("dueDate");
+  const [matterPage, setMatterPage] = useState(1);
   const [taskPage, setTaskPage] = useState(1);
+  const [reviewClientPage, setReviewClientPage] = useState(1);
   
-  const clientsPerPage = 5;
+  const mattersPerPage = 4;
   const tasksPerPage = 3;
+  const reviewClientsPerPage = 3;
 
   const myClients = mockClients.filter(client => client.assignedAttorney === 'Michael Chen');
   const myTasks = mockTasks.filter(task => task.assignedBy === 'Michael Chen');
@@ -39,36 +41,50 @@ export function StreamlinedAttorneyDashboard() {
     myClients.some(client => client.id === matter.clientId)
   );
 
-  // Enhanced client data with matter info
-  const enrichedClients = myClients.map(client => {
-    const matter = myMatters.find(m => m.clientId === client.id);
+  // Active matters (ongoing work)
+  const activeMatters = myMatters.filter(matter => 
+    !['signed', 'funding', 'reengage'].includes(matter.workflowStage)
+  );
+
+  // Enhanced matter data with client info
+  const enrichedMatters = activeMatters.map(matter => {
+    const client = myClients.find(c => c.id === matter.clientId);
     return {
-      ...client,
-      matter: matter || null,
-      revenue: matter?.revenue || 0,
-      matterType: matter?.type || 'No Matter',
-      workflowStage: matter?.workflowStage || null
+      ...matter,
+      clientName: client?.name || 'Unknown Client',
+      clientEmail: client?.email || '',
+      clientPhone: client?.phone || '',
+      assignedAttorney: client?.assignedAttorney || 'Michael Chen'
     };
   });
 
-  // Filter and sort clients
-  const filteredClients = enrichedClients
-    .filter(client => {
-      const matchesSearch = client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          client.matterType.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus = statusFilter === "all" || client.pipelineStage === statusFilter;
-      return matchesSearch && matchesStatus;
+  // Clients ready for review (completed matters or no active matters)
+  const clientsReadyForReview = myClients.filter(client => {
+    const hasActiveMatter = activeMatters.some(matter => matter.clientId === client.id);
+    return !hasActiveMatter && client.pipelineStage === 'signed';
+  });
+
+  // Filter and sort matters
+  const filteredMatters = enrichedMatters
+    .filter(matter => {
+      const matchesSearch = matter.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          matter.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          matter.type.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesFilter = matterFilter === "all" || matter.workflowStage === matterFilter;
+      return matchesSearch && matchesFilter;
     })
     .sort((a, b) => {
       switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name);
+        case "dueDate":
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        case "clientName":
+          return a.clientName.localeCompare(b.clientName);
+        case "workflowStage":
+          return a.workflowStage.localeCompare(b.workflowStage);
         case "revenue":
-          return b.revenue - a.revenue;
-        case "status":
-          return a.pipelineStage.localeCompare(b.pipelineStage);
-        case "matterType":
-          return a.matterType.localeCompare(b.matterType);
+          return (b.revenue || 0) - (a.revenue || 0);
         default:
           return 0;
       }
@@ -76,9 +92,10 @@ export function StreamlinedAttorneyDashboard() {
 
   // Performance metrics
   const stats = {
-    totalClients: myClients.length,
-    signedClients: myClients.filter(c => c.pipelineStage === 'signed').length,
+    activeMatters: activeMatters.length,
+    clientsForReview: clientsReadyForReview.length,
     totalRevenue: myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0),
+    avgMatterValue: myMatters.length > 0 ? myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0) / myMatters.length : 0,
     conversionRate: Math.round((myClients.filter(c => c.pipelineStage === 'signed').length / myClients.length) * 100)
   };
 
@@ -86,16 +103,23 @@ export function StreamlinedAttorneyDashboard() {
   const overdueTasks = myTasks.filter(t => t.status === 'overdue');
 
   // Pagination calculations
-  const totalClientPages = Math.ceil(filteredClients.length / clientsPerPage);
-  const paginatedClients = filteredClients.slice(
-    (clientPage - 1) * clientsPerPage,
-    clientPage * clientsPerPage
+  const totalMatterPages = Math.ceil(filteredMatters.length / mattersPerPage);
+  const totalTaskPages = Math.ceil(pendingTasks.length / tasksPerPage);
+  const totalReviewPages = Math.ceil(clientsReadyForReview.length / reviewClientsPerPage);
+  
+  const paginatedMatters = filteredMatters.slice(
+    (matterPage - 1) * mattersPerPage,
+    matterPage * mattersPerPage
   );
 
-  const totalTaskPages = Math.ceil(pendingTasks.length / tasksPerPage);
   const paginatedTasks = pendingTasks.slice(
     (taskPage - 1) * tasksPerPage,
     taskPage * tasksPerPage
+  );
+
+  const paginatedReviewClients = clientsReadyForReview.slice(
+    (reviewClientPage - 1) * reviewClientsPerPage,
+    reviewClientPage * reviewClientsPerPage
   );
 
   return (
@@ -103,8 +127,8 @@ export function StreamlinedAttorneyDashboard() {
       {/* Header with Quick Actions */}
       <div className="flex items-center justify-between mb-4 flex-shrink-0">
         <div>
-          <h1 className="text-legal-heading">Client Management</h1>
-          <p className="text-legal-body mt-1">Manage your client pipeline and workflow</p>
+          <h1 className="text-legal-heading">Matter Management</h1>
+          <p className="text-legal-body mt-1">Manage active matters and client re-engagement</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
@@ -123,34 +147,35 @@ export function StreamlinedAttorneyDashboard() {
       </div>
 
       <div className="grid grid-cols-3 gap-6 flex-1 min-h-0">
-        {/* Main Client List - 2/3 */}
+        {/* Main Matter List - 2/3 */}
         <div className="col-span-2 flex flex-col h-full min-h-0">
-          {/* Filters */}
-          <Card className="flex-shrink-0 mb-4">
+          {/* Search and Filter Bar */}
+          <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input
-                    placeholder="Search clients or matter types..."
-                    className="pl-10"
+                    placeholder="Search matters, clients, tasks..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
                   />
                 </div>
                 
                 <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-muted-foreground" />
                   <select 
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
+                    value={matterFilter}
+                    onChange={(e) => setMatterFilter(e.target.value)}
                     className="px-3 py-2 border rounded-md text-sm bg-background"
                   >
-                    <option value="all">All Status</option>
-                    <option value="scheduled">Scheduled</option>
-                    <option value="complete">Complete</option>
-                    <option value="signed">Signed</option>
-                    <option value="lost">Lost</option>
+                    <option value="all">All Stages</option>
+                    <option value="prospect">Prospect</option>
+                    <option value="consult">Consultation</option>
+                    <option value="client_ready_for_draft">Ready for Draft</option>
+                    <option value="drafting">Drafting</option>
+                    <option value="binder_creation">Binder Creation</option>
+                    <option value="sign_ready">Ready to Sign</option>
                   </select>
                   
                   <select 
@@ -158,21 +183,21 @@ export function StreamlinedAttorneyDashboard() {
                     onChange={(e) => setSortBy(e.target.value)}
                     className="px-3 py-2 border rounded-md text-sm bg-background"
                   >
-                    <option value="name">Sort by Name</option>
+                    <option value="dueDate">Sort by Due Date</option>
+                    <option value="clientName">Sort by Client</option>
+                    <option value="workflowStage">Sort by Stage</option>
                     <option value="revenue">Sort by Revenue</option>
-                    <option value="status">Sort by Status</option>
-                    <option value="matterType">Sort by Matter Type</option>
                   </select>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          {/* Client List */}
+          {/* Active Matters List */}
           <Card className="flex-1 flex flex-col min-h-0">
             <CardHeader>
               <CardTitle className="text-lg flex items-center justify-between">
-                <span>Active Clients ({filteredClients.length})</span>
+                <span>Active Matters ({filteredMatters.length})</span>
                 <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
                   View All
                 </Button>
@@ -180,79 +205,73 @@ export function StreamlinedAttorneyDashboard() {
             </CardHeader>
             <CardContent className="flex-1 flex flex-col min-h-0">
               <div className="space-y-3 pr-2 flex-1 overflow-y-auto">
-                {paginatedClients.map(client => (
+                {paginatedMatters.map(matter => (
                   <div 
-                    key={client.id} 
+                    key={matter.id} 
                     className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors cursor-pointer"
-                    onClick={() => navigate(`/client/${client.id}`)}
+                    onClick={() => navigate(`/matter/${matter.id}`)}
                   >
                     <div className="flex-1 grid grid-cols-4 gap-4 items-center">
                       <div>
-                        <p className="font-medium">{client.name}</p>
-                        <p className="text-sm text-muted-foreground">{client.referralSource}</p>
+                        <p className="font-medium">{matter.title}</p>
+                        <p className="text-sm text-muted-foreground">{matter.clientName}</p>
                       </div>
                       
                       <div>
-                        <p className="text-sm font-medium">{client.matterType}</p>
-                        {client.workflowStage && (
-                          <StatusBadge status={client.workflowStage} type="workflow" />
-                        )}
+                        <p className="text-sm font-medium">{matter.type}</p>
+                        <StatusBadge status={matter.workflowStage} type="workflow" />
                       </div>
                       
                       <div>
-                        <StatusBadge status={client.pipelineStage} type="pipeline" />
-                        {client.consultDate && (
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {new Date(client.consultDate).toLocaleDateString()}
-                          </p>
-                        )}
+                        <p className="text-sm font-medium">
+                          Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Created: {new Date(matter.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
                       
                       <div className="text-right">
-                        <p className="font-medium">${client.revenue.toLocaleString()}</p>
-                        {client.revenue > 0 && (
-                          <p className="text-xs text-green-600">Active Revenue</p>
-                        )}
+                        <p className="font-medium">${(matter.revenue || 0).toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">Matter Value</p>
                       </div>
                     </div>
                     
                     <div className="flex items-center gap-2 ml-4">
-                      {client.matter && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/matter/${client.matter.id}`);
-                          }}
-                        >
-                          View Matter
-                        </Button>
-                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/client/${matter.clientId}`);
+                        }}
+                      >
+                        View Client
+                      </Button>
                       <Button 
                         size="sm" 
                         variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
-                          navigate(`/client/${client.id}`);
+                          navigate(`/matter/${matter.id}`);
                         }}
                       >
-                        View Client
+                        View Matter
                       </Button>
                     </div>
                   </div>
                 ))}
                 
-                 {filteredClients.length === 0 && (
+                 {filteredMatters.length === 0 && (
                    <div className="text-center py-8">
-                     <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                     <p className="text-muted-foreground">No clients match your current filters</p>
+                     <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                     <p className="text-muted-foreground">No active matters match your current filters</p>
                    </div>
                  )}
                </div>
                
-               {/* Client Pagination */}
-               {totalClientPages > 1 && (
+               {/* Matter Pagination */}
+               {totalMatterPages > 1 && (
                  <div className="flex-shrink-0 border-t pt-4">
                    <Pagination>
                      <PaginationContent>
@@ -261,20 +280,20 @@ export function StreamlinedAttorneyDashboard() {
                            href="#"
                            onClick={(e) => {
                              e.preventDefault();
-                             if (clientPage > 1) setClientPage(clientPage - 1);
+                             if (matterPage > 1) setMatterPage(matterPage - 1);
                            }}
-                           className={clientPage === 1 ? "pointer-events-none opacity-50" : ""}
+                           className={matterPage === 1 ? "pointer-events-none opacity-50" : ""}
                          />
                        </PaginationItem>
-                       {Array.from({ length: totalClientPages }, (_, i) => i + 1).map((page) => (
+                       {Array.from({ length: totalMatterPages }, (_, i) => i + 1).map((page) => (
                          <PaginationItem key={page}>
                            <PaginationLink
                              href="#"
                              onClick={(e) => {
                                e.preventDefault();
-                               setClientPage(page);
+                               setMatterPage(page);
                              }}
-                             isActive={page === clientPage}
+                             isActive={page === matterPage}
                            >
                              {page}
                            </PaginationLink>
@@ -285,180 +304,287 @@ export function StreamlinedAttorneyDashboard() {
                            href="#"
                            onClick={(e) => {
                              e.preventDefault();
-                             if (clientPage < totalClientPages) setClientPage(clientPage + 1);
+                             if (matterPage < totalMatterPages) setMatterPage(matterPage + 1);
                            }}
-                           className={clientPage === totalClientPages ? "pointer-events-none opacity-50" : ""}
+                           className={matterPage === totalMatterPages ? "pointer-events-none opacity-50" : ""}
                          />
                        </PaginationItem>
                      </PaginationContent>
                    </Pagination>
                  </div>
                )}
-            </CardContent>
-          </Card>
-        </div>
+             </CardContent>
+           </Card>
+         </div>
 
-        {/* Sidebar - 1/3 */}
-        <div className="h-full overflow-y-auto">
-          <div className="space-y-4 pr-2">
-            {/* Performance Metrics - Top Half */}
-            <Card>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <TrendingUp className="w-4 h-4" />
-                Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Users className="w-4 h-4 text-primary" />
-                  </div>
-                  <p className="text-2xl font-bold">{stats.totalClients}</p>
-                  <p className="text-xs text-muted-foreground">Total Clients</p>
-                </div>
-                
-                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" />
-                  </div>
-                  <p className="text-2xl font-bold">{stats.signedClients}</p>
-                  <p className="text-xs text-muted-foreground">Signed</p>
-                </div>
-                
-                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <DollarSign className="w-4 h-4 text-green-600" />
-                  </div>
-                  <p className="text-2xl font-bold">${(stats.totalRevenue / 1000).toFixed(0)}K</p>
-                  <p className="text-xs text-muted-foreground">Revenue</p>
-                </div>
-                
-                <div className="text-center p-3 bg-muted/30 rounded-lg">
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <Target className="w-4 h-4 text-blue-600" />
-                  </div>
-                  <p className="text-2xl font-bold">{stats.conversionRate}%</p>
-                  <p className="text-xs text-muted-foreground">Conversion</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+         {/* Right Sidebar */}
+         <div className="w-80 space-y-6">
+           {/* Clients Ready for Review */}
+           <Card className="flex flex-col">
+             <CardHeader>
+               <CardTitle className="text-base flex items-center justify-between">
+                 <span className="flex items-center gap-2">
+                   <UserPlus className="w-4 h-4" />
+                   Clients Ready for Review
+                 </span>
+                 <div className="flex items-center gap-2">
+                   <Badge variant="secondary" className="text-xs">
+                     {clientsReadyForReview.length}
+                   </Badge>
+                   <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                     View All
+                   </Button>
+                 </div>
+               </CardTitle>
+             </CardHeader>
+             <CardContent className="flex-1 flex flex-col">
+               <div className="space-y-3 flex-1">
+                 {paginatedReviewClients.map(client => (
+                   <div 
+                     key={client.id} 
+                     className="p-3 border rounded-lg hover:bg-muted/30 cursor-pointer"
+                     onClick={() => navigate(`/client/${client.id}`)}
+                   >
+                     <div className="flex items-start justify-between">
+                       <div className="flex-1 min-w-0">
+                         <p className="font-medium text-sm">{client.name}</p>
+                         <p className="text-xs text-muted-foreground">{client.email}</p>
+                         <div className="flex items-center gap-2 mt-1">
+                           <Badge variant="outline" className="text-xs px-1">
+                             Previous Client
+                           </Badge>
+                           <span className="text-xs text-muted-foreground">
+                             Last Contact: {client.signingDate ? new Date(client.signingDate).toLocaleDateString() : 'Unknown'}
+                           </span>
+                         </div>
+                       </div>
+                       <Button 
+                         size="sm" 
+                         variant="outline"
+                         onClick={(e) => {
+                           e.stopPropagation();
+                           // In real app, this would open a "Create New Matter" dialog
+                           alert('Create new matter for ' + client.name);
+                         }}
+                       >
+                         Re-engage
+                       </Button>
+                     </div>
+                   </div>
+                 ))}
+                 
+                 {clientsReadyForReview.length === 0 && (
+                   <div className="text-center py-4">
+                     <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                     <p className="text-sm text-muted-foreground">All clients have active matters!</p>
+                   </div>
+                 )}
+               </div>
+               
+               {/* Review Client Pagination */}
+               {totalReviewPages > 1 && (
+                 <div className="flex-shrink-0 border-t pt-4 mt-4">
+                   <Pagination>
+                     <PaginationContent>
+                       <PaginationItem>
+                         <PaginationPrevious 
+                           href="#"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             if (reviewClientPage > 1) setReviewClientPage(reviewClientPage - 1);
+                           }}
+                           className={reviewClientPage === 1 ? "pointer-events-none opacity-50" : ""}
+                         />
+                       </PaginationItem>
+                       {Array.from({ length: totalReviewPages }, (_, i) => i + 1).map((page) => (
+                         <PaginationItem key={page}>
+                           <PaginationLink
+                             href="#"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               setReviewClientPage(page);
+                             }}
+                             isActive={page === reviewClientPage}
+                           >
+                             {page}
+                           </PaginationLink>
+                         </PaginationItem>
+                       ))}
+                       <PaginationItem>
+                         <PaginationNext
+                           href="#"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             if (reviewClientPage < totalReviewPages) setReviewClientPage(reviewClientPage + 1);
+                           }}
+                           className={reviewClientPage === totalReviewPages ? "pointer-events-none opacity-50" : ""}
+                         />
+                       </PaginationItem>
+                     </PaginationContent>
+                   </Pagination>
+                 </div>
+               )}
+             </CardContent>
+           </Card>
 
-            {/* Tasks - Bottom Half */}
+           {/* Performance Metrics */}
+           <Card>
+             <CardHeader>
+               <CardTitle className="text-base flex items-center gap-2">
+                 <TrendingUp className="w-4 h-4" />
+                 Performance
+               </CardTitle>
+             </CardHeader>
+             <CardContent className="space-y-4">
+               <div className="grid grid-cols-2 gap-3">
+                 <div className="text-center p-3 bg-muted/30 rounded-lg">
+                   <div className="flex items-center justify-center gap-1 mb-1">
+                     <FileText className="w-4 h-4 text-primary" />
+                   </div>
+                   <p className="text-2xl font-bold">{stats.activeMatters}</p>
+                   <p className="text-xs text-muted-foreground">Active Matters</p>
+                 </div>
+                 
+                 <div className="text-center p-3 bg-muted/30 rounded-lg">
+                   <div className="flex items-center justify-center gap-1 mb-1">
+                     <UserPlus className="w-4 h-4 text-orange-600" />
+                   </div>
+                   <p className="text-2xl font-bold">{stats.clientsForReview}</p>
+                   <p className="text-xs text-muted-foreground">For Review</p>
+                 </div>
+                 
+                 <div className="text-center p-3 bg-muted/30 rounded-lg">
+                   <div className="flex items-center justify-center gap-1 mb-1">
+                     <DollarSign className="w-4 h-4 text-green-600" />
+                   </div>
+                   <p className="text-2xl font-bold">${(stats.totalRevenue / 1000).toFixed(0)}K</p>
+                   <p className="text-xs text-muted-foreground">Total Revenue</p>
+                 </div>
+                 
+                 <div className="text-center p-3 bg-muted/30 rounded-lg">
+                   <div className="flex items-center justify-center gap-1 mb-1">
+                     <Target className="w-4 h-4 text-blue-600" />
+                   </div>
+                   <p className="text-2xl font-bold">${(stats.avgMatterValue / 1000).toFixed(0)}K</p>
+                   <p className="text-xs text-muted-foreground">Avg Matter</p>
+                 </div>
+               </div>
+             </CardContent>
+           </Card>
+
+            {/* Tasks */}
             <Card className="flex flex-col">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <ClipboardList className="w-4 h-4" />
-                  My Tasks
-                </span>
-                <div className="flex items-center gap-2">
-                  <Badge variant="secondary" className="text-xs">
-                    {pendingTasks.length}
-                  </Badge>
-                  <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
-                    View All
-                  </Button>
-                </div>
-              </CardTitle>
-            </CardHeader>
-              <CardContent className="flex-1 flex flex-col">
-                <div className="space-y-3 flex-1">
-                {overdueTasks.length > 0 && (
-                  <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
-                    <div className="flex items-center gap-2 mb-2">
-                      <AlertTriangle className="w-4 h-4 text-red-600" />
-                      <span className="text-sm font-medium text-red-700">Overdue ({overdueTasks.length})</span>
-                    </div>
-                    {overdueTasks.slice(0, 2).map(task => (
-                      <div key={task.id} className="text-sm">
-                        <p className="font-medium">{task.title}</p>
-                        <p className="text-xs text-red-600">{task.clientName}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                
-                {paginatedTasks
-                  .filter(t => t.status !== 'overdue')
-                  .map(task => (
-                  <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm truncate">{task.title}</p>
-                        <p className="text-xs text-muted-foreground">{task.clientName}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Badge variant="outline" className="text-xs px-1">
-                            {task.assignedTo}
-                          </Badge>
-                          <span className="text-xs text-muted-foreground">
-                            {new Date(task.dueDate).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <StatusBadge status={task.status} type="task" />
-                    </div>
-                  </div>
-                ))}
-                
-                {pendingTasks.length === 0 && (
-                  <div className="text-center py-4">
-                    <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                    <p className="text-sm text-muted-foreground">All tasks complete!</p>
-                  </div>
-                )}
-                </div>
-                
-                {/* Task Pagination */}
-                {totalTaskPages > 1 && (
-                  <div className="flex-shrink-0 border-t pt-4 mt-4">
-                    <Pagination>
-                      <PaginationContent>
-                        <PaginationItem>
-                          <PaginationPrevious 
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (taskPage > 1) setTaskPage(taskPage - 1);
-                            }}
-                            className={taskPage === 1 ? "pointer-events-none opacity-50" : ""}
-                          />
-                        </PaginationItem>
-                        {Array.from({ length: totalTaskPages }, (_, i) => i + 1).map((page) => (
-                          <PaginationItem key={page}>
-                            <PaginationLink
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setTaskPage(page);
-                              }}
-                              isActive={page === taskPage}
-                            >
-                              {page}
-                            </PaginationLink>
-                          </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                          <PaginationNext
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              if (taskPage < totalTaskPages) setTaskPage(taskPage + 1);
-                            }}
-                            className={taskPage === totalTaskPages ? "pointer-events-none opacity-50" : ""}
-                          />
-                        </PaginationItem>
-                      </PaginationContent>
-                    </Pagination>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+             <CardHeader>
+               <CardTitle className="text-base flex items-center justify-between">
+                 <span className="flex items-center gap-2">
+                   <ClipboardList className="w-4 h-4" />
+                   My Tasks
+                 </span>
+                 <div className="flex items-center gap-2">
+                   <Badge variant="secondary" className="text-xs">
+                     {pendingTasks.length}
+                   </Badge>
+                   <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                     View All
+                   </Button>
+                 </div>
+               </CardTitle>
+             </CardHeader>
+               <CardContent className="flex-1 flex flex-col">
+                 <div className="space-y-3 flex-1">
+                 {overdueTasks.length > 0 && (
+                   <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
+                     <div className="flex items-center gap-2 mb-2">
+                       <AlertTriangle className="w-4 h-4 text-red-600" />
+                       <span className="text-sm font-medium text-red-700">Overdue ({overdueTasks.length})</span>
+                     </div>
+                     {overdueTasks.slice(0, 2).map(task => (
+                       <div key={task.id} className="text-sm">
+                         <p className="font-medium">{task.title}</p>
+                         <p className="text-xs text-red-600">{task.clientName}</p>
+                       </div>
+                     ))}
+                   </div>
+                 )}
+                 
+                 {paginatedTasks
+                   .filter(t => t.status !== 'overdue')
+                   .map(task => (
+                   <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
+                     <div className="flex items-start justify-between">
+                       <div className="flex-1 min-w-0">
+                         <p className="font-medium text-sm truncate">{task.title}</p>
+                         <p className="text-xs text-muted-foreground">{task.clientName}</p>
+                         <div className="flex items-center gap-2 mt-1">
+                           <Badge variant="outline" className="text-xs px-1">
+                             {task.assignedTo}
+                           </Badge>
+                           <span className="text-xs text-muted-foreground">
+                             {new Date(task.dueDate).toLocaleDateString()}
+                           </span>
+                         </div>
+                       </div>
+                       <StatusBadge status={task.status} type="task" />
+                     </div>
+                   </div>
+                 ))}
+                 
+                 {pendingTasks.length === 0 && (
+                   <div className="text-center py-4">
+                     <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                     <p className="text-sm text-muted-foreground">All tasks complete!</p>
+                   </div>
+                 )}
+                 </div>
+                 
+                 {/* Task Pagination */}
+                 {totalTaskPages > 1 && (
+                   <div className="flex-shrink-0 border-t pt-4 mt-4">
+                     <Pagination>
+                       <PaginationContent>
+                         <PaginationItem>
+                           <PaginationPrevious 
+                             href="#"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               if (taskPage > 1) setTaskPage(taskPage - 1);
+                             }}
+                             className={taskPage === 1 ? "pointer-events-none opacity-50" : ""}
+                           />
+                         </PaginationItem>
+                         {Array.from({ length: totalTaskPages }, (_, i) => i + 1).map((page) => (
+                           <PaginationItem key={page}>
+                             <PaginationLink
+                               href="#"
+                               onClick={(e) => {
+                                 e.preventDefault();
+                                 setTaskPage(page);
+                               }}
+                               isActive={page === taskPage}
+                             >
+                               {page}
+                             </PaginationLink>
+                           </PaginationItem>
+                         ))}
+                         <PaginationItem>
+                           <PaginationNext
+                             href="#"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               if (taskPage < totalTaskPages) setTaskPage(taskPage + 1);
+                             }}
+                             className={taskPage === totalTaskPages ? "pointer-events-none opacity-50" : ""}
+                           />
+                         </PaginationItem>
+                       </PaginationContent>
+                     </Pagination>
+                   </div>
+                 )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
 }
