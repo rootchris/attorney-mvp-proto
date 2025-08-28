@@ -585,6 +585,5 @@ export function StreamlinedAttorneyDashboard() {
             </div>
           </div>
         </div>
-      </div>
     );
 }
