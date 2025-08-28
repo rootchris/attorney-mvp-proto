@@ -261,9 +261,14 @@ export function StreamlinedAttorneyDashboard() {
                   <ClipboardList className="w-4 h-4" />
                   My Tasks
                 </span>
-                <Badge variant="secondary" className="text-xs">
-                  {pendingTasks.length}
-                </Badge>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary" className="text-xs">
+                    {pendingTasks.length}
+                  </Badge>
+                  <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                    View All
+                  </Button>
+                </div>
               </CardTitle>
             </CardHeader>
               <CardContent className="space-y-3">
