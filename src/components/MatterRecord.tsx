@@ -228,7 +228,9 @@ export function MatterRecord() {
             <X className="w-4 h-4" />
           </Button>
         </div>
-        <nav className="p-2">
+        
+        {/* Navigation */}
+        <nav className="p-2 border-b">
           {sidebarItems.map((item) => (
             <button
               key={item.label}
@@ -243,6 +245,56 @@ export function MatterRecord() {
             </button>
           ))}
         </nav>
+
+        {/* Document Repository - Moved from main content */}
+        <div className="p-4 overflow-y-auto max-h-[calc(100vh-200px)]">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-sm">Documents</h3>
+              <Button variant="outline" size="sm">
+                <Plus className="w-3 h-3" />
+              </Button>
+            </div>
+            
+            <div className="space-y-2">
+              {mockMatterDocuments.map((doc) => (
+                <div key={doc.id} className="p-2 border rounded-lg">
+                  <div className="flex items-start gap-2">
+                    <FileText className="w-4 h-4 text-muted-foreground flex-shrink-0 mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1 mb-1">
+                        <span className="text-xs font-medium truncate">{doc.name}</span>
+                        {doc.isWealthCounselDoc && (
+                          <Badge variant="secondary" className="text-[10px] px-1 py-0">WC</Badge>
+                        )}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground mb-2">
+                        {doc.type} • {formatFileSize(doc.size)}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] text-muted-foreground">
+                          {doc.uploadedBy}
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            {doc.clientVisible ? (
+                              <Eye className="w-3 h-3 text-green-600" />
+                            ) : (
+                              <EyeOff className="w-3 h-3 text-gray-400" />
+                            )}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                            <Download className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
@@ -338,54 +390,7 @@ export function MatterRecord() {
                 </Card>
               </div>
 
-              {/* Document Repository */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <span>Document Repository</span>
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Upload Document
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {mockMatterDocuments.map((doc) => (
-                      <div key={doc.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-3 border rounded-lg">
-                        <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
-                          <FileText className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5 sm:mt-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                              <span className="font-medium break-words">{doc.name}</span>
-                              {doc.isWealthCounselDoc && (
-                                <Badge variant="secondary" className="text-xs self-start">Wealth Counsel</Badge>
-                              )}
-                            </div>
-                            <div className="text-sm text-muted-foreground">
-                              {doc.type} • {formatFileSize(doc.size)} • Uploaded by {doc.uploadedBy}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 self-end sm:self-center">
-                          <Button variant="ghost" size="sm">
-                            {doc.clientVisible ? (
-                              <Eye className="w-4 h-4 text-green-600" />
-                            ) : (
-                              <EyeOff className="w-4 h-4 text-gray-400" />
-                            )}
-                          </Button>
-                          <Button variant="ghost" size="sm">
-                            <Download className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Notes Section */}
+              {/* Notes Section - Moved up in hierarchy */}
               <Card>
                 <CardHeader>
                   <CardTitle>Matter Notes</CardTitle>
@@ -448,7 +453,7 @@ export function MatterRecord() {
                 </CardContent>
               </Card>
 
-              {/* Tasks Section */}
+              {/* Tasks Section - Moved up in hierarchy */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
