@@ -101,11 +101,11 @@ export function StreamlinedAttorneyDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-3 gap-6 h-[calc(100vh-12rem)]">
         {/* Main Client List - 2/3 */}
-        <div className="col-span-2 space-y-4">
+        <div className="col-span-2 space-y-4 flex flex-col h-full">
           {/* Filters */}
-          <Card>
+          <Card className="flex-shrink-0">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="flex-1 relative">
@@ -148,12 +148,12 @@ export function StreamlinedAttorneyDashboard() {
           </Card>
 
           {/* Client List */}
-          <Card>
+          <Card className="flex-1 flex flex-col min-h-0">
             <CardHeader>
               <CardTitle className="text-lg">Active Clients ({filteredClients.length})</CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="flex-1 overflow-y-auto">
+              <div className="space-y-3 pr-2">
                 {filteredClients.map(client => (
                   <div key={client.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors">
                     <div className="flex-1 grid grid-cols-4 gap-4 items-center">
@@ -206,9 +206,9 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Sidebar - 1/3 */}
-        <div className="space-y-4">
+        <div className="space-y-4 h-full flex flex-col">
           {/* Performance Metrics - Top Half */}
-          <Card>
+          <Card className="flex-shrink-0">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <TrendingUp className="w-4 h-4" />
@@ -253,7 +253,7 @@ export function StreamlinedAttorneyDashboard() {
           </Card>
 
           {/* Tasks - Bottom Half */}
-          <Card>
+          <Card className="flex-1 flex flex-col min-h-0">
             <CardHeader>
               <CardTitle className="text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -265,26 +265,26 @@ export function StreamlinedAttorneyDashboard() {
                 </Badge>
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
-              {overdueTasks.length > 0 && (
-                <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
-                  <div className="flex items-center gap-2 mb-2">
-                    <AlertTriangle className="w-4 h-4 text-red-600" />
-                    <span className="text-sm font-medium text-red-700">Overdue ({overdueTasks.length})</span>
-                  </div>
-                  {overdueTasks.slice(0, 2).map(task => (
-                    <div key={task.id} className="text-sm">
-                      <p className="font-medium">{task.title}</p>
-                      <p className="text-xs text-red-600">{task.clientName}</p>
+            <CardContent className="space-y-3 flex-1 overflow-y-auto">
+              <div className="space-y-3 pr-2">
+                {overdueTasks.length > 0 && (
+                  <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="w-4 h-4 text-red-600" />
+                      <span className="text-sm font-medium text-red-700">Overdue ({overdueTasks.length})</span>
                     </div>
-                  ))}
-                </div>
-              )}
-              
-              {pendingTasks
-                .filter(t => t.status !== 'overdue')
-                .slice(0, 4)
-                .map(task => (
+                    {overdueTasks.slice(0, 2).map(task => (
+                      <div key={task.id} className="text-sm">
+                        <p className="font-medium">{task.title}</p>
+                        <p className="text-xs text-red-600">{task.clientName}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                
+                {pendingTasks
+                  .filter(t => t.status !== 'overdue')
+                  .map(task => (
                   <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0">
@@ -303,19 +303,14 @@ export function StreamlinedAttorneyDashboard() {
                     </div>
                   </div>
                 ))}
-              
-              {pendingTasks.length === 0 && (
-                <div className="text-center py-4">
-                  <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                  <p className="text-sm text-muted-foreground">All tasks complete!</p>
-                </div>
-              )}
-              
-              {pendingTasks.length > 4 && (
-                <Button variant="ghost" size="sm" className="w-full">
-                  View All Tasks ({pendingTasks.length})
-                </Button>
-              )}
+                
+                {pendingTasks.length === 0 && (
+                  <div className="text-center py-4">
+                    <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">All tasks complete!</p>
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         </div>
