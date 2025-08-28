@@ -194,7 +194,7 @@ export function StreamlinedAttorneyDashboard() {
 
           {/* Active Matters List */}
           <Card className="flex-1 flex flex-col min-h-0">
-            <CardHeader>
+            <CardHeader className="flex-shrink-0">
               <CardTitle className="text-lg flex items-center justify-between">
                 <span>Active Matters ({filteredMatters.length})</span>
                 <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
@@ -202,8 +202,9 @@ export function StreamlinedAttorneyDashboard() {
                 </Button>
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-0">
-              <div className="space-y-3 pr-2 flex-1 overflow-y-auto">
+            <CardContent className="flex-1 flex flex-col min-h-0 p-0">
+              <div className="flex-1 overflow-y-auto">
+                <div className="space-y-3 p-6 pr-4">
                 {paginatedMatters.map(matter => (
                   <div 
                     key={matter.id} 
@@ -267,11 +268,12 @@ export function StreamlinedAttorneyDashboard() {
                      <p className="text-muted-foreground">No active matters match your current filters</p>
                    </div>
                  )}
-               </div>
-               
-               {/* Matter Pagination */}
-               {totalMatterPages > 1 && (
-                 <div className="flex-shrink-0 border-t pt-4">
+                </div>
+              </div>
+                
+              {/* Matter Pagination */}
+              {totalMatterPages > 1 && (
+                <div className="flex-shrink-0 border-t p-6 pt-4">
                    <Pagination>
                      <PaginationContent>
                        <PaginationItem>
@@ -310,34 +312,35 @@ export function StreamlinedAttorneyDashboard() {
                        </PaginationItem>
                      </PaginationContent>
                    </Pagination>
-                 </div>
-               )}
-             </CardContent>
-           </Card>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
          </div>
 
-         {/* Right Sidebar */}
-         <div className="w-80 space-y-6">
-           {/* Clients Ready for Review */}
-           <Card className="flex flex-col">
-             <CardHeader>
-               <CardTitle className="text-base flex items-center justify-between">
-                 <span className="flex items-center gap-2">
-                   <UserPlus className="w-4 h-4" />
-                   Clients Ready for Review
-                 </span>
-                 <div className="flex items-center gap-2">
-                   <Badge variant="secondary" className="text-xs">
-                     {clientsReadyForReview.length}
-                   </Badge>
-                   <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
-                     View All
-                   </Button>
-                 </div>
-               </CardTitle>
-             </CardHeader>
-             <CardContent className="flex-1 flex flex-col">
-               <div className="space-y-3 flex-1">
+          {/* Right Sidebar */}
+          <div className="w-80 space-y-6 flex flex-col h-full">
+            {/* Clients Ready for Review */}
+            <Card className="flex-1 flex flex-col min-h-0">
+              <CardHeader className="flex-shrink-0">
+                <CardTitle className="text-base flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <UserPlus className="w-4 h-4" />
+                    Clients Ready for Review
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="secondary" className="text-xs">
+                      {clientsReadyForReview.length}
+                    </Badge>
+                    <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                      View All
+                    </Button>
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col min-h-0 p-0">
+                <div className="flex-1 overflow-y-auto">
+                  <div className="space-y-3 p-6 pr-4">
                  {paginatedReviewClients.map(client => (
                    <div 
                      key={client.id} 
@@ -374,12 +377,13 @@ export function StreamlinedAttorneyDashboard() {
                      <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
                       <p className="text-sm text-muted-foreground">No clients pending review</p>
                    </div>
-                 )}
-               </div>
-               
-               {/* Review Client Pagination */}
-               {totalReviewPages > 1 && (
-                 <div className="flex-shrink-0 border-t pt-4 mt-4">
+                  )}
+                </div>
+              </div>
+                
+              {/* Review Client Pagination */}
+              {totalReviewPages > 1 && (
+                <div className="flex-shrink-0 border-t p-6 pt-4">
                    <Pagination>
                      <PaginationContent>
                        <PaginationItem>
@@ -418,10 +422,10 @@ export function StreamlinedAttorneyDashboard() {
                        </PaginationItem>
                      </PaginationContent>
                    </Pagination>
-                 </div>
-               )}
-             </CardContent>
-           </Card>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
 
            {/* Performance Metrics */}
            <Card>

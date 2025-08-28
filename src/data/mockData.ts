@@ -338,6 +338,126 @@ export const mockMatters: Matter[] = [
     revenue: 12000,
     progress: 30,
     documents: []
+  },
+  {
+    id: '3',
+    clientId: '7',
+    title: 'Rodriguez Asset Protection Trust',
+    type: 'Asset Protection',
+    workflowStage: 'client_ready_for_draft',
+    createdAt: '2024-03-10',
+    dueDate: '2024-04-01',
+    revenue: 15000,
+    progress: 20,
+    documents: []
+  },
+  {
+    id: '4',
+    clientId: '9',
+    title: 'Parker Charitable Remainder Trust',
+    type: 'Charitable Trust',
+    workflowStage: 'binder_creation',
+    createdAt: '2024-03-14',
+    dueDate: '2024-04-05',
+    revenue: 18000,
+    progress: 85,
+    documents: []
+  },
+  {
+    id: '5',
+    clientId: '11',
+    title: 'Wilson Guardianship Planning',
+    type: 'Estate Planning',
+    workflowStage: 'drafting',
+    createdAt: '2024-03-18',
+    dueDate: '2024-04-10',
+    revenue: 6500,
+    progress: 40,
+    documents: []
+  },
+  {
+    id: '6',
+    clientId: '13',
+    title: 'Green Blended Family Trust',
+    type: 'Trust',
+    workflowStage: 'sign_ready',
+    createdAt: '2024-03-22',
+    dueDate: '2024-04-12',
+    revenue: 9500,
+    progress: 90,
+    documents: []
+  },
+  {
+    id: '7',
+    clientId: '15',
+    title: 'White Special Needs Trust',
+    type: 'Special Needs Trust',
+    workflowStage: 'drafting',
+    createdAt: '2024-03-26',
+    dueDate: '2024-04-15',
+    revenue: 11000,
+    progress: 55,
+    documents: []
+  },
+  {
+    id: '8',
+    clientId: '17',
+    title: 'Miller Estate Plan Update',
+    type: 'Estate Planning',
+    workflowStage: 'client_ready_for_draft',
+    createdAt: '2024-03-30',
+    dueDate: '2024-04-18',
+    revenue: 7200,
+    progress: 25,
+    documents: []
+  },
+  {
+    id: '9',
+    clientId: '19',
+    title: 'Taylor Charitable Lead Trust',
+    type: 'Charitable Trust',
+    workflowStage: 'binder_creation',
+    createdAt: '2024-04-03',
+    dueDate: '2024-04-20',
+    revenue: 16500,
+    progress: 80,
+    documents: []
+  },
+  {
+    id: '10',
+    clientId: '1',
+    title: 'Johnson Pour-Over Will',
+    type: 'Will',
+    workflowStage: 'drafting',
+    createdAt: '2024-04-05',
+    dueDate: '2024-04-22',
+    revenue: 3500,
+    progress: 60,
+    documents: []
+  },
+  {
+    id: '11',
+    clientId: '7',
+    title: 'Rodriguez ILIT Setup',
+    type: 'Insurance Trust',
+    workflowStage: 'client_ready_for_draft',
+    createdAt: '2024-04-07',
+    dueDate: '2024-04-25',
+    revenue: 8800,
+    progress: 15,
+    documents: []
+  },
+  {
+    id: '12',
+    clientId: '11',
+    title: 'Wilson Healthcare Directives',
+    type: 'Healthcare Planning',
+    workflowStage: 'sign_ready',
+    createdAt: '2024-04-09',
+    dueDate: '2024-04-28',
+    revenue: 2200,
+    progress: 95,
+    documents: []
   }
 ];
 
