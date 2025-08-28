@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { useState } from "react";
 import { 
@@ -24,6 +25,11 @@ export function StreamlinedAttorneyDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
+  const [clientPage, setClientPage] = useState(1);
+  const [taskPage, setTaskPage] = useState(1);
+  
+  const clientsPerPage = 5;
+  const tasksPerPage = 3;
 
   const myClients = mockClients.filter(client => client.assignedAttorney === 'Michael Chen');
   const myTasks = mockTasks.filter(task => task.assignedBy === 'Michael Chen');
@@ -76,6 +82,19 @@ export function StreamlinedAttorneyDashboard() {
 
   const pendingTasks = myTasks.filter(t => t.status !== 'completed');
   const overdueTasks = myTasks.filter(t => t.status === 'overdue');
+
+  // Pagination calculations
+  const totalClientPages = Math.ceil(filteredClients.length / clientsPerPage);
+  const paginatedClients = filteredClients.slice(
+    (clientPage - 1) * clientsPerPage,
+    clientPage * clientsPerPage
+  );
+
+  const totalTaskPages = Math.ceil(pendingTasks.length / tasksPerPage);
+  const paginatedTasks = pendingTasks.slice(
+    (taskPage - 1) * tasksPerPage,
+    taskPage * tasksPerPage
+  );
 
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col">
@@ -150,11 +169,16 @@ export function StreamlinedAttorneyDashboard() {
           {/* Client List */}
           <Card className="flex-1 flex flex-col min-h-0">
             <CardHeader>
-              <CardTitle className="text-lg">Active Clients ({filteredClients.length})</CardTitle>
+              <CardTitle className="text-lg flex items-center justify-between">
+                <span>Active Clients ({filteredClients.length})</span>
+                <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                  View All
+                </Button>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 overflow-y-auto">
-              <div className="space-y-3 pr-2">
-                {filteredClients.map(client => (
+            <CardContent className="flex-1 flex flex-col min-h-0">
+              <div className="space-y-3 pr-2 flex-1 overflow-y-auto">
+                {paginatedClients.map(client => (
                   <div key={client.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors">
                     <div className="flex-1 grid grid-cols-4 gap-4 items-center">
                       <div>
@@ -194,13 +218,57 @@ export function StreamlinedAttorneyDashboard() {
                   </div>
                 ))}
                 
-                {filteredClients.length === 0 && (
-                  <div className="text-center py-8">
-                    <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No clients match your current filters</p>
-                  </div>
-                )}
-              </div>
+                 {filteredClients.length === 0 && (
+                   <div className="text-center py-8">
+                     <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                     <p className="text-muted-foreground">No clients match your current filters</p>
+                   </div>
+                 )}
+               </div>
+               
+               {/* Client Pagination */}
+               {totalClientPages > 1 && (
+                 <div className="flex-shrink-0 border-t pt-4">
+                   <Pagination>
+                     <PaginationContent>
+                       <PaginationItem>
+                         <PaginationPrevious 
+                           href="#"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             if (clientPage > 1) setClientPage(clientPage - 1);
+                           }}
+                           className={clientPage === 1 ? "pointer-events-none opacity-50" : ""}
+                         />
+                       </PaginationItem>
+                       {Array.from({ length: totalClientPages }, (_, i) => i + 1).map((page) => (
+                         <PaginationItem key={page}>
+                           <PaginationLink
+                             href="#"
+                             onClick={(e) => {
+                               e.preventDefault();
+                               setClientPage(page);
+                             }}
+                             isActive={page === clientPage}
+                           >
+                             {page}
+                           </PaginationLink>
+                         </PaginationItem>
+                       ))}
+                       <PaginationItem>
+                         <PaginationNext
+                           href="#"
+                           onClick={(e) => {
+                             e.preventDefault();
+                             if (clientPage < totalClientPages) setClientPage(clientPage + 1);
+                           }}
+                           className={clientPage === totalClientPages ? "pointer-events-none opacity-50" : ""}
+                         />
+                       </PaginationItem>
+                     </PaginationContent>
+                   </Pagination>
+                 </div>
+               )}
             </CardContent>
           </Card>
         </div>
@@ -254,7 +322,7 @@ export function StreamlinedAttorneyDashboard() {
           </Card>
 
             {/* Tasks - Bottom Half */}
-            <Card>
+            <Card className="flex flex-col">
             <CardHeader>
               <CardTitle className="text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -271,8 +339,8 @@ export function StreamlinedAttorneyDashboard() {
                 </div>
               </CardTitle>
             </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="space-y-3">
+              <CardContent className="flex-1 flex flex-col">
+                <div className="space-y-3 flex-1">
                 {overdueTasks.length > 0 && (
                   <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -288,7 +356,7 @@ export function StreamlinedAttorneyDashboard() {
                   </div>
                 )}
                 
-                {pendingTasks
+                {paginatedTasks
                   .filter(t => t.status !== 'overdue')
                   .map(task => (
                   <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
@@ -317,6 +385,50 @@ export function StreamlinedAttorneyDashboard() {
                   </div>
                 )}
                 </div>
+                
+                {/* Task Pagination */}
+                {totalTaskPages > 1 && (
+                  <div className="flex-shrink-0 border-t pt-4 mt-4">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious 
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (taskPage > 1) setTaskPage(taskPage - 1);
+                            }}
+                            className={taskPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                        {Array.from({ length: totalTaskPages }, (_, i) => i + 1).map((page) => (
+                          <PaginationItem key={page}>
+                            <PaginationLink
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTaskPage(page);
+                              }}
+                              isActive={page === taskPage}
+                            >
+                              {page}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                          <PaginationNext
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              if (taskPage < totalTaskPages) setTaskPage(taskPage + 1);
+                            }}
+                            className={taskPage === totalTaskPages ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
