@@ -340,9 +340,9 @@ export function MatterRecord() {
           <div className="flex-1 flex flex-col overflow-hidden">
             <ScrollArea className="flex-1 p-4 lg:p-6">
               <div className="space-y-6">
-              {/* Matter Header */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                {/* Matter Header */}
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
                     <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
                     <p className="text-muted-foreground">Matter Type: {matter.type}</p>
@@ -530,7 +530,7 @@ export function MatterRecord() {
 
             <ScrollArea className="flex-1 p-6">
               <div className="space-y-6">
-              {/* Client Information - Moved from main content */}
+                {/* Client Information - Moved from main content */}
               {client && (
                 <div>
                   <h3 className="font-semibold mb-4">Client Information</h3>
