@@ -8,15 +8,15 @@
 
 @layer base {
   :root {
-    /* Base colors - Clean professional palette */
-    --background: 0 0% 100%;
+    /* Base colors - Warm professional palette with off-white background */
+    --background: 20 14% 96%;
     --foreground: 0 0% 9%;
     
     /* Surface colors */
-    --card: 0 0% 100%;
+    --card: 20 14% 98%;
     --card-foreground: 0 0% 9%;
     
-    --popover: 0 0% 100%;
+    --popover: 20 14% 98%;
     --popover-foreground: 0 0% 9%;
     
     /* Primary - Professional blue for legal industry */
@@ -26,16 +26,16 @@
     --primary-light: 217 91% 95%;
     
     /* Secondary - Sophisticated grays */
-    --secondary: 0 0% 96%;
+    --secondary: 20 14% 94%;
     --secondary-foreground: 0 0% 9%;
     --secondary-hover: 0 0% 92%;
     
     /* Muted tones */
-    --muted: 0 0% 96%;
+    --muted: 20 14% 94%;
     --muted-foreground: 0 0% 45%;
     
     /* Accent */
-    --accent: 0 0% 96%;
+    --accent: 20 14% 94%;
     --accent-foreground: 0 0% 9%;
     
     /* Status colors */
