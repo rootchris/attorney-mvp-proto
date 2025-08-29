@@ -187,7 +187,7 @@ export function StreamlinedAttorneyDashboard() {
             </Card>
 
             {/* Active Matters List */}
-            <Card className="flex-shrink-0 max-h-96 flex flex-col overflow-hidden">
+            <Card className="flex-shrink-0 max-h-[32rem] flex flex-col overflow-hidden">
               <CardHeader className="flex-shrink-0">
                 <CardTitle className="text-lg flex items-center justify-between">
                   <span>Active Matters ({filteredMatters.length})</span>
@@ -196,21 +196,21 @@ export function StreamlinedAttorneyDashboard() {
                   </Button>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-80">
+              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[28rem]">
                 <div className="flex-1 overflow-y-auto min-h-0">
-                  <div className="space-y-3 p-4 sm:p-6 pr-2 sm:pr-4">
+                  <div className="space-y-2 p-3 sm:p-4 pr-2">
                     {paginatedMatters.map(matter => {
                       const client = myClients.find(c => c.id === matter.clientId);
                       return (
                         <div 
                           key={matter.id}
-                          className="p-3 sm:p-4 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
+                          className="p-2 sm:p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
                           onClick={() => window.open(`/matter/${matter.id}`, '_blank')}
                         >
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
                             <div className="flex-1 min-w-0">
-                              <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 mb-2">
-                                <h3 className="font-semibold text-sm sm:text-base truncate">{matter.title}</h3>
+                              <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
+                                <h3 className="font-semibold text-xs sm:text-sm truncate">{matter.title}</h3>
                                 <div className="flex flex-wrap gap-1">
                                   <StatusBadge status={matter.workflowStage} type="workflow" />
                                   <Badge variant="outline" className="text-xs whitespace-nowrap">
@@ -218,10 +218,10 @@ export function StreamlinedAttorneyDashboard() {
                                   </Badge>
                                 </div>
                               </div>
-                              <p className="text-xs sm:text-sm text-muted-foreground mb-2 truncate">
+                              <p className="text-xs text-muted-foreground mb-1 truncate">
                                 Client: {client?.name}
                               </p>
-                              <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4 text-xs text-muted-foreground">
+                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-xs text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                   <Calendar className="w-3 h-3" />
                                   Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
@@ -234,32 +234,30 @@ export function StreamlinedAttorneyDashboard() {
                             </div>
                             
                             <div className="flex flex-col items-end text-right">
-                              <span className="font-bold text-sm sm:text-base">${matter.revenue?.toLocaleString()}</span>
-                              <span className="text-xs text-muted-foreground">Est. Value</span>
-                              <div className="flex gap-1 mt-2">
+                              <span className="font-bold text-xs sm:text-sm">${matter.revenue?.toLocaleString()}</span>
+                              <span className="text-xs text-muted-foreground">Value</span>
+                              <div className="flex gap-1 mt-1">
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="h-8 px-2 text-xs"
+                                  className="h-6 px-1 text-xs"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     window.open(`/client/${client?.id}`, '_blank');
                                   }}
                                 >
-                                  <Eye className="w-3 h-3 sm:mr-1" />
-                                  <span className="hidden sm:inline">Client</span>
+                                  <Eye className="w-3 h-3" />
                                 </Button>
                                 <Button
                                   variant="default"
                                   size="sm"
-                                  className="h-8 px-2 text-xs"
+                                  className="h-6 px-1 text-xs"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     window.open(`/matter/${matter.id}`, '_blank');
                                   }}
                                 >
-                                  <FileText className="w-3 h-3 sm:mr-1" />
-                                  <span className="hidden sm:inline">Matter</span>
+                                  <FileText className="w-3 h-3" />
                                 </Button>
                               </div>
                             </div>
