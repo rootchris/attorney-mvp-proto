@@ -24,7 +24,10 @@ import {
   ChevronRight,
   Eye,
   Clock,
-  BarChart3
+  BarChart3,
+  Mail,
+  Phone,
+  User
 } from "lucide-react";
 
 export function StreamlinedAttorneyDashboard() {
@@ -192,32 +195,38 @@ export function StreamlinedAttorneyDashboard() {
               </CardContent>
             </Card>
 
-            {/* Active Matters / Prospects Section with Toggle */}
-            <Tabs defaultValue="matters" className="flex-shrink-0">
-              <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-fit grid-cols-2 bg-muted/50 border border-border p-1 rounded-lg">
-                  <TabsTrigger 
-                    value="matters" 
-                    className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-foreground transition-all px-4 py-2 rounded-md"
-                  >
-                    <FileText className="w-4 h-4" />
-                    <span className="font-medium">Active Matters</span>
-                    <Badge variant="secondary" className="ml-1 text-xs">{filteredMatters.length}</Badge>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="prospects" 
-                    className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-foreground transition-all px-4 py-2 rounded-md"
-                  >
-                    <Users className="w-4 h-4" />
-                    <span className="font-medium">Prospects</span>
-                    <Badge variant="secondary" className="ml-1 text-xs">{prospects.length}</Badge>
-                  </TabsTrigger>
-                </TabsList>
+            {/* Matters & Prospects Card with Integrated Tabs */}
+            <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
+              {/* Card Header with Integrated Tabs */}
+              <div className="border-b bg-muted/20">
+                <div className="px-4 sm:px-6 pt-4 pb-2">
+                  <Tabs defaultValue="matters" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 bg-background/60 h-11 p-1 border border-border/50">
+                      <TabsTrigger 
+                        value="matters" 
+                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
+                      >
+                        <FileText className="w-4 h-4" />
+                        <span className="font-medium">Active Matters</span>
+                        <Badge variant="secondary" className="ml-1 text-xs">{filteredMatters.length}</Badge>
+                      </TabsTrigger>
+                      <TabsTrigger 
+                        value="prospects" 
+                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
+                      >
+                        <Users className="w-4 h-4" />
+                        <span className="font-medium">Prospects</span>
+                        <Badge variant="secondary" className="ml-1 text-xs">{prospects.length}</Badge>
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </div>
               </div>
 
-              <TabsContent value="matters">
-                <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
-                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
+              {/* Card Content with Tab Content */}
+              <Tabs defaultValue="matters" className="flex-1 flex flex-col min-h-0">
+                <TabsContent value="matters" className="flex-1 flex flex-col min-h-0 mt-0">
+                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
                     <div className="flex-1 overflow-y-auto min-h-0">
                       <div className="space-y-2 p-3 sm:p-4 pr-2">
                         {paginatedMatters.map(matter => {
@@ -333,12 +342,10 @@ export function StreamlinedAttorneyDashboard() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              </TabsContent>
+                </TabsContent>
 
-              <TabsContent value="prospects">
-                <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
-                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
+                <TabsContent value="prospects" className="flex-1 flex flex-col min-h-0 mt-0">
+                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
                     <div className="flex-1 overflow-y-auto min-h-0">
                       <div className="space-y-2 p-3 sm:p-4 pr-2">
                          {prospects.map(prospect => {
@@ -454,9 +461,9 @@ export function StreamlinedAttorneyDashboard() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+                </TabsContent>
+              </Tabs>
+            </Card>
           </div>
 
           {/* Clients To Engage Section */}
