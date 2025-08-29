@@ -3,12 +3,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { StatusBadge } from "@/components/StatusBadge";
 import { RevenueChart } from "@/components/charts/RevenueChart";
 import { AttorneyPerformanceChart } from "@/components/charts/AttorneyPerformanceChart";
 import { PipelineFunnelChart } from "@/components/charts/PipelineFunnelChart";
 import { AdminFilters, AdminFilterState } from "@/components/admin/AdminFilters";
 import { mockClients, mockTasks, mockMatters, mockAttorneys } from "@/data/mockData";
+import ashleyAvatar from "@/assets/ashley-avatar.jpg";
+import erinAvatar from "@/assets/erin-avatar.jpg";
 import { 
   BarChart3, 
   Users, 
@@ -296,27 +299,44 @@ export function CleanAdminDashboard() {
               </CardContent>
             </Card>
 
-            {/* Attorney Quick Stats */}
+            {/* Attorney Leaderboard */}
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm">Attorney Performance</CardTitle>
+                <CardTitle className="text-sm">Attorney Leaderboard</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {mockAttorneys.slice(0, 3).map((attorney) => (
-                    <div key={attorney.id} className="p-2 border border-border rounded">
-                      <div className="flex items-center justify-between mb-1">
-                        <p className="text-xs font-medium">{attorney.name}</p>
-                        <Badge variant="outline" className="text-xs">{attorney.conversionRate}%</Badge>
+                  {/* Expanded attorney list with leaderboard styling */}
+                  {[
+                    { id: '1', name: 'Crosby', email: 'crosby@firm.com', mtdRevenue: 125000, totalMatters: 8, conversionRate: 92, avatar: '/lovable-uploads/48b04003-693b-4ebf-a070-afcdb65aa0ca.png' },
+                    { id: '2', name: 'Erin', email: 'erin@firm.com', mtdRevenue: 98000, totalMatters: 6, conversionRate: 88, avatar: erinAvatar },
+                    { id: '3', name: 'Ashley', email: 'ashley@firm.com', mtdRevenue: 87500, totalMatters: 7, conversionRate: 85, avatar: ashleyAvatar },
+                    { id: '4', name: 'Michael Chen', email: 'michael@firm.com', mtdRevenue: 76000, totalMatters: 5, conversionRate: 78, avatar: null },
+                    { id: '5', name: 'Jennifer Liu', email: 'jennifer@firm.com', mtdRevenue: 69500, totalMatters: 4, conversionRate: 82, avatar: null },
+                    { id: '6', name: 'Robert Anderson', email: 'robert@firm.com', mtdRevenue: 62000, totalMatters: 6, conversionRate: 75, avatar: null }
+                  ].map((attorney, index) => (
+                    <div key={attorney.id} className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
+                        <div className="text-xs font-semibold text-primary w-6 text-center">
+                          #{index + 1}
+                        </div>
+                        <Avatar className="h-8 w-8">
+                          {attorney.avatar && <AvatarImage src={attorney.avatar} alt={attorney.name} />}
+                          <AvatarFallback className="text-xs">{attorney.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                        </Avatar>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-medium truncate">{attorney.name}</p>
+                          <p className="text-xs text-muted-foreground truncate">{attorney.email}</p>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground">
-                        <span>${attorney.revenue.toLocaleString()}</span>
-                        <span>{attorney.activeMatters} matters</span>
+                      <div className="text-right">
+                        <p className="text-xs font-semibold">${attorney.mtdRevenue.toLocaleString()}</p>
+                        <p className="text-xs text-muted-foreground">{attorney.totalMatters} matters</p>
                       </div>
                     </div>
                   ))}
-                  <Button variant="ghost" size="sm" className="w-full text-xs">
-                    View All Attorneys
+                  <Button variant="ghost" size="sm" className="w-full text-xs mt-3">
+                    View Full Leaderboard
                   </Button>
                 </div>
               </CardContent>
