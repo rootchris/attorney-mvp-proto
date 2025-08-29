@@ -423,7 +423,7 @@ export function MatterRecord() {
                                     )}
                                   </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>
+                                <TooltipContent className="z-50">
                                   <p>
                                     {doc.clientVisible 
                                       ? "This document is visible in the Client's Folder" 
