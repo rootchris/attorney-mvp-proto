@@ -175,7 +175,7 @@ export function MatterRecord() {
   
   // Mock team data
   const matterTeam = [
-    { id: '1', name: 'Crosby', role: 'Matter Owner', avatar: null, isOwner: true },
+    { id: '1', name: 'Crosby', role: 'Matter Owner', avatar: '/lovable-uploads/48b04003-693b-4ebf-a070-afcdb65aa0ca.png', isOwner: true },
     { id: '2', name: 'Erin', role: 'Supporting Attorney', avatar: erinAvatar, isOwner: false },
     { id: '3', name: 'Ashley', role: 'Paralegal', avatar: ashleyAvatar, isOwner: false }
   ];
