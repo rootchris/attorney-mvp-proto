@@ -139,179 +139,183 @@ export function StreamlinedAttorneyDashboard() {
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden px-4 sm:px-6 py-4 gap-6">
-        {/* Main Matter List */}
-        <div className="flex-1 lg:flex-[2] flex flex-col min-h-0 overflow-hidden">
-          {/* Search and Filter Bar */}
-          <Card className="flex-shrink-0">
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search matters..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                
-                <div className="flex flex-col xs:flex-row gap-2">
-                  <Select value={stageFilter} onValueChange={setStageFilter}>
-                    <SelectTrigger className="w-full xs:w-32">
-                      <SelectValue placeholder="All Stages" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Stages</SelectItem>
-                      <SelectItem value="drafting">Drafting</SelectItem>
-                      <SelectItem value="review">Review</SelectItem>
-                      <SelectItem value="signed">Signed</SelectItem>
-                    </SelectContent>
-                  </Select>
+        {/* Main Content - Matters and Clients */}
+        <div className="flex-1 lg:flex-[2] flex flex-col min-h-0 overflow-hidden space-y-6">
+          
+          {/* Active Matters Section */}
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+            {/* Search and Filter Bar */}
+            <Card className="flex-shrink-0">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                    <Input
+                      placeholder="Search matters..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
                   
-                  <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-full xs:w-40">
-                      <SelectValue placeholder="Sort by" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dueDate">Due Date</SelectItem>
-                      <SelectItem value="created">Created</SelectItem>
-                      <SelectItem value="value">Value</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex flex-col xs:flex-row gap-2">
+                    <Select value={stageFilter} onValueChange={setStageFilter}>
+                      <SelectTrigger className="w-full xs:w-32">
+                        <SelectValue placeholder="All Stages" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Stages</SelectItem>
+                        <SelectItem value="drafting">Drafting</SelectItem>
+                        <SelectItem value="review">Review</SelectItem>
+                        <SelectItem value="signed">Signed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="w-full xs:w-40">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="dueDate">Due Date</SelectItem>
+                        <SelectItem value="created">Created</SelectItem>
+                        <SelectItem value="value">Value</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Active Matters List */}
-          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            <CardHeader className="flex-shrink-0">
-              <CardTitle className="text-lg flex items-center justify-between">
-                <span>Active Matters ({filteredMatters.length})</span>
-                <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
-                  View All
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
-              <div className="flex-1 overflow-y-auto min-h-0">
-                <div className="space-y-3 p-4 sm:p-6 pr-2 sm:pr-4">
-                  {paginatedMatters.map(matter => {
-                    const client = myClients.find(c => c.id === matter.clientId);
-                    return (
-                      <div 
-                        key={matter.id}
-                        className="p-3 sm:p-4 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
-                        onClick={() => window.open(`/matter/${matter.id}`, '_blank')}
-                      >
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
-                          <div className="flex-1 min-w-0">
-                            <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 mb-2">
-                              <h3 className="font-semibold text-sm sm:text-base truncate">{matter.title}</h3>
-                              <div className="flex flex-wrap gap-1">
-                                <StatusBadge status={matter.workflowStage} type="workflow" />
-                                <Badge variant="outline" className="text-xs whitespace-nowrap">
-                                  {matter.type}
-                                </Badge>
+            {/* Active Matters List */}
+            <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
+              <CardHeader className="flex-shrink-0">
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <span>Active Matters ({filteredMatters.length})</span>
+                  <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                    View All
+                  </Button>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <div className="space-y-3 p-4 sm:p-6 pr-2 sm:pr-4">
+                    {paginatedMatters.map(matter => {
+                      const client = myClients.find(c => c.id === matter.clientId);
+                      return (
+                        <div 
+                          key={matter.id}
+                          className="p-3 sm:p-4 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
+                          onClick={() => window.open(`/matter/${matter.id}`, '_blank')}
+                        >
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-2 mb-2">
+                                <h3 className="font-semibold text-sm sm:text-base truncate">{matter.title}</h3>
+                                <div className="flex flex-wrap gap-1">
+                                  <StatusBadge status={matter.workflowStage} type="workflow" />
+                                  <Badge variant="outline" className="text-xs whitespace-nowrap">
+                                    {matter.type}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <p className="text-xs sm:text-sm text-muted-foreground mb-2 truncate">
+                                Client: {client?.name}
+                              </p>
+                              <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4 text-xs text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <Clock className="w-3 h-3" />
+                                  Created: {new Date(matter.createdAt).toLocaleDateString()}
+                                </div>
                               </div>
                             </div>
-                            <p className="text-xs sm:text-sm text-muted-foreground mb-2 truncate">
-                              Client: {client?.name}
-                            </p>
-                            <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4 text-xs text-muted-foreground">
-                              <div className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
+                            
+                            <div className="flex flex-col items-end text-right">
+                              <span className="font-bold text-sm sm:text-base">${matter.revenue?.toLocaleString()}</span>
+                              <span className="text-xs text-muted-foreground">Est. Value</span>
+                              <div className="flex gap-1 mt-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 px-2 text-xs"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open(`/client/${client?.id}`, '_blank');
+                                  }}
+                                >
+                                  <Eye className="w-3 h-3 sm:mr-1" />
+                                  <span className="hidden sm:inline">Client</span>
+                                </Button>
+                                <Button
+                                  variant="default"
+                                  size="sm"
+                                  className="h-8 px-2 text-xs"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    window.open(`/matter/${matter.id}`, '_blank');
+                                  }}
+                                >
+                                  <FileText className="w-3 h-3 sm:mr-1" />
+                                  <span className="hidden sm:inline">Matter</span>
+                                </Button>
                               </div>
-                              <div className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                Created: {new Date(matter.createdAt).toLocaleDateString()}
-                              </div>
-                            </div>
-                          </div>
-                          
-                          <div className="flex flex-col items-end text-right">
-                            <span className="font-bold text-sm sm:text-base">${matter.revenue?.toLocaleString()}</span>
-                            <span className="text-xs text-muted-foreground">Est. Value</span>
-                            <div className="flex gap-1 mt-2">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="h-8 px-2 text-xs"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  window.open(`/client/${client?.id}`, '_blank');
-                                }}
-                              >
-                                <Eye className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Client</span>
-                              </Button>
-                              <Button
-                                variant="default"
-                                size="sm"
-                                className="h-8 px-2 text-xs"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  window.open(`/matter/${matter.id}`, '_blank');
-                                }}
-                              >
-                                <FileText className="w-3 h-3 sm:mr-1" />
-                                <span className="hidden sm:inline">Matter</span>
-                              </Button>
                             </div>
                           </div>
                         </div>
+                      );
+                    })}
+                    
+                    {filteredMatters.length === 0 && (
+                      <div className="text-center py-8">
+                        <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-muted-foreground">No active matters match your current filters</p>
                       </div>
-                    );
-                  })}
+                    )}
+                  </div>
+                </div>
                   
-                  {filteredMatters.length === 0 && (
-                    <div className="text-center py-8">
-                      <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-muted-foreground">No active matters match your current filters</p>
+                {/* Pagination */}
+                <div className="flex-shrink-0 border-t p-3 sm:p-4">
+                  <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
+                    <div className="text-xs sm:text-sm text-muted-foreground text-center xs:text-left">
+                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredMatters.length)} of {filteredMatters.length} matters
                     </div>
-                  )}
-                </div>
-              </div>
-                
-              {/* Pagination */}
-              <div className="flex-shrink-0 border-t p-3 sm:p-4">
-                <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
-                  <div className="text-xs sm:text-sm text-muted-foreground text-center xs:text-left">
-                    Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredMatters.length)} of {filteredMatters.length} matters
-                  </div>
-                  
-                  <div className="flex items-center gap-1 justify-center xs:justify-end">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                      disabled={currentPage === 1}
-                      className="px-2 sm:px-3"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                      <span className="hidden sm:inline ml-1">Previous</span>
-                    </Button>
                     
-                    <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-muted rounded">
-                      Page {currentPage} of {totalPages}
-                    </span>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                      disabled={currentPage === totalPages}
-                      className="px-2 sm:px-3"
-                    >
-                      <span className="hidden sm:inline mr-1">Next</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </Button>
+                    <div className="flex items-center gap-1 justify-center xs:justify-end">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-2 sm:px-3"
+                      >
+                        <ChevronLeft className="w-4 h-4" />
+                        <span className="hidden sm:inline ml-1">Previous</span>
+                      </Button>
+                      
+                      <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-muted rounded">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-2 sm:px-3"
+                      >
+                        <span className="hidden sm:inline mr-1">Next</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Clients To Engage Section */}
           <Card className="flex-shrink-0">
