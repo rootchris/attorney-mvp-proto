@@ -239,36 +239,64 @@ export function MatterRecord() {
               </div>
 
               {/* Workflow Progress */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Matter Progress</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                      <span className="font-medium">Current Stage: {currentStage.label}</span>
-                      <span className="text-sm text-muted-foreground">{currentStage.progress}% Complete</span>
-                    </div>
-                    <Progress value={currentStage.progress} className="h-2" />
-                    <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-xs">
-                      {workflowStages.map((stage, index) => (
-                        <div 
-                          key={stage.stage}
-                          className={`text-center p-2 rounded ${
-                            stage.stage === 'drafting' 
-                              ? 'bg-primary text-primary-foreground' 
-                              : stage.progress < currentStage.progress 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-gray-100 text-gray-600'
-                          }`}
-                        >
-                          <div className="break-words">{stage.label}</div>
-                        </div>
-                      ))}
-                    </div>
+              <div className="bg-card rounded-lg border p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium">Matter Progress</h3>
+                  <span className="text-sm text-muted-foreground">{currentStage.progress}% Complete</span>
+                </div>
+                
+                {/* Horizontal Step Indicator */}
+                <div className="relative">
+                  {/* Progress Line */}
+                  <div className="absolute top-4 left-6 right-6 h-0.5 bg-muted">
+                    <div 
+                      className="h-full bg-primary transition-all duration-300"
+                      style={{ width: `${(currentStage.progress / 100) * 100}%` }}
+                    />
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  {/* Stage Indicators */}
+                  <div className="flex justify-between items-start">
+                    {workflowStages.slice(0, 6).map((stage, index) => {
+                      const isCompleted = stage.progress < currentStage.progress;
+                      const isCurrent = stage.stage === 'drafting';
+                      const isActive = isCompleted || isCurrent;
+                      
+                      return (
+                        <div key={stage.stage} className="flex flex-col items-center text-center min-w-0 flex-1">
+                          {/* Circle Indicator */}
+                          <div 
+                            className={`w-8 h-8 rounded-full border-2 flex items-center justify-center relative z-10 transition-colors ${
+                              isCurrent 
+                                ? 'bg-primary border-primary text-primary-foreground' 
+                                : isCompleted
+                                ? 'bg-primary border-primary text-primary-foreground'
+                                : 'bg-background border-muted-foreground/30 text-muted-foreground'
+                            }`}
+                          >
+                            {isCompleted ? (
+                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                              </svg>
+                            ) : (
+                              <span className="text-xs font-medium">{index + 1}</span>
+                            )}
+                          </div>
+                          
+                          {/* Stage Label */}
+                          <div className="mt-2 px-1">
+                            <div className={`text-xs font-medium break-words leading-tight ${
+                              isActive ? 'text-foreground' : 'text-muted-foreground'
+                            }`}>
+                              {stage.label}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
