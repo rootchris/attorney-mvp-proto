@@ -195,14 +195,22 @@ export function StreamlinedAttorneyDashboard() {
             {/* Active Matters / Prospects Section with Toggle */}
             <Tabs defaultValue="matters" className="flex-shrink-0">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-fit grid-cols-2">
-                  <TabsTrigger value="matters" className="flex items-center gap-2">
+                <TabsList className="grid w-fit grid-cols-2 bg-muted/50 border border-border p-1 rounded-lg">
+                  <TabsTrigger 
+                    value="matters" 
+                    className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-foreground transition-all px-4 py-2 rounded-md"
+                  >
                     <FileText className="w-4 h-4" />
-                    Active Matters ({filteredMatters.length})
+                    <span className="font-medium">Active Matters</span>
+                    <Badge variant="secondary" className="ml-1 text-xs">{filteredMatters.length}</Badge>
                   </TabsTrigger>
-                  <TabsTrigger value="prospects" className="flex items-center gap-2">
+                  <TabsTrigger 
+                    value="prospects" 
+                    className="flex items-center gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm data-[state=active]:text-foreground transition-all px-4 py-2 rounded-md"
+                  >
                     <Users className="w-4 h-4" />
-                    Prospects ({prospects.length})
+                    <span className="font-medium">Prospects</span>
+                    <Badge variant="secondary" className="ml-1 text-xs">{prospects.length}</Badge>
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -333,94 +341,109 @@ export function StreamlinedAttorneyDashboard() {
                   <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
                     <div className="flex-1 overflow-y-auto min-h-0">
                       <div className="space-y-2 p-3 sm:p-4 pr-2">
-                        {prospects.map(prospect => {
-                          // Get engagement type from referral source or notes
-                          const getEngagementType = (client: typeof prospect) => {
-                            if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
-                            if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
-                            if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
-                            if (client.notes?.toLowerCase().includes('succession')) return 'Succession Planning';
-                            return 'Estate Planning';
-                          };
+                         {prospects.map(prospect => {
+                           // Get engagement type from referral source or notes
+                           const getEngagementType = (client: typeof prospect) => {
+                             if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
+                             if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
+                             if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
+                             if (client.notes?.toLowerCase().includes('succession')) return 'Succession Planning';
+                             return 'Estate Planning';
+                           };
 
-                          const getStatusLabel = (stage: string) => {
-                            switch (stage) {
-                              case 'scheduled': return 'Consultation Scheduled';
-                              case 'complete': return 'Consultation Complete';
-                              case 'ready_for_review': return 'Ready for Review';
-                              default: return 'Pending Contact';
-                            }
-                          };
+                           const getStatusLabel = (stage: string) => {
+                             switch (stage) {
+                               case 'scheduled': return 'Consultation Scheduled';
+                               case 'complete': return 'Consultation Complete';
+                               case 'ready_for_review': return 'Ready for Review';
+                               default: return 'Pending Contact';
+                             }
+                           };
 
-                          return (
-                            <div 
-                              key={prospect.id}
-                              className="p-2 sm:p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
-                              onClick={() => window.open(`/client/${prospect.id}`, '_blank')}
-                            >
-                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
-                                    <h3 className="font-semibold text-xs sm:text-sm truncate">{prospect.name}</h3>
-                                    <StatusBadge status={prospect.pipelineStage} type="pipeline" />
-                                  </div>
-                                  <p className="text-xs text-muted-foreground mb-1 truncate">
-                                    {prospect.email} • {prospect.phone}
-                                  </p>
-                                  <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-xs text-muted-foreground">
-                                    <div className="flex items-center gap-1">
-                                      <Calendar className="w-3 h-3" />
-                                      Entered: {new Date(prospect.createdAt).toLocaleDateString()}
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                      <FileText className="w-3 h-3" />
-                                      Type: {getEngagementType(prospect)}
-                                    </div>
-                                  </div>
-                                  <div className="mt-1">
-                                    <Badge variant="outline" className="text-xs">
-                                      {getStatusLabel(prospect.pipelineStage)}
-                                    </Badge>
-                                  </div>
-                                </div>
-                                
-                                <div className="flex flex-col items-end text-right">
-                                  <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
-                                    <Users className="w-3 h-3" />
-                                    <span>Referral</span>
-                                  </div>
-                                  <p className="text-xs text-muted-foreground truncate max-w-24">
-                                    {prospect.referralSource}
-                                  </p>
-                                  <div className="flex gap-1 mt-1">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-6 px-1 text-xs"
-                                      onClick={(e) => {
+                           return (
+                             <div 
+                               key={prospect.id}
+                               className="p-4 border rounded-lg hover:shadow-md transition-all duration-200 bg-card cursor-pointer group border-border/60 hover:border-border"
+                               onClick={() => window.open(`/client/${prospect.id}`, '_blank')}
+                             >
+                               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
+                                 <div className="flex-1 space-y-3">
+                                   {/* Header with name and status */}
+                                   <div className="flex items-start justify-between gap-3">
+                                     <div className="flex-1">
+                                       <h3 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
+                                         {prospect.name}
+                                       </h3>
+                                       <p className="text-sm text-muted-foreground mt-1">
+                                         {prospect.email} • {prospect.phone}
+                                       </p>
+                                     </div>
+                                     <StatusBadge status={prospect.pipelineStage} type="pipeline" />
+                                   </div>
+                                   
+                                   {/* Engagement info */}
+                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                                     <div className="flex items-center gap-2 text-muted-foreground">
+                                       <Calendar className="w-4 h-4 text-primary/60" />
+                                       <div>
+                                         <span className="font-medium text-foreground">Date Entered:</span>
+                                         <span className="ml-1">{new Date(prospect.createdAt).toLocaleDateString()}</span>
+                                       </div>
+                                     </div>
+                                     <div className="flex items-center gap-2 text-muted-foreground">
+                                       <FileText className="w-4 h-4 text-primary/60" />
+                                       <div>
+                                         <span className="font-medium text-foreground">Engagement:</span>
+                                         <span className="ml-1">{getEngagementType(prospect)}</span>
+                                       </div>
+                                     </div>
+                                   </div>
+                                   
+                                   {/* Status and referral info */}
+                                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/50">
+                                     <div className="flex items-center gap-2">
+                                       <Badge variant="outline" className="text-xs font-medium">
+                                         {getStatusLabel(prospect.pipelineStage)}
+                                       </Badge>
+                                     </div>
+                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                       <Users className="w-4 h-4 text-primary/60" />
+                                       <span className="font-medium text-foreground">Referred by:</span>
+                                       <span className="truncate max-w-32">{prospect.referralSource}</span>
+                                     </div>
+                                   </div>
+                                 </div>
+                                 
+                                 {/* Action buttons */}
+                                 <div className="flex lg:flex-col gap-2 lg:items-end">
+                                   <Button
+                                     variant="outline"
+                                     size="sm"
+                                     className="px-3 text-xs"
+                                     onClick={(e) => {
                                         e.stopPropagation();
                                         window.open(`/client/${prospect.id}`, '_blank');
                                       }}
                                     >
                                       <Eye className="w-3 h-3" />
                                     </Button>
-                                    <Button
-                                      variant="default"
-                                      size="sm"
-                                      className="h-6 px-1 text-xs"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        // TODO: Add contact action
-                                      }}
-                                    >
-                                      <UserPlus className="w-3 h-3" />
-                                    </Button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })}
+                                     <Button
+                                       variant="default"
+                                       size="sm"
+                                       className="px-3 text-xs"
+                                       onClick={(e) => {
+                                         e.stopPropagation();
+                                         // TODO: Add contact action
+                                       }}
+                                     >
+                                       <UserPlus className="w-3 h-3 mr-1" />
+                                       <span className="hidden sm:inline">Contact</span>
+                                     </Button>
+                                   </div>
+                                 </div>
+                               </div>
+                             );
+                           })}
                         
                         {prospects.length === 0 && (
                           <div className="text-center py-8">
