@@ -266,63 +266,10 @@ export function MatterRecord() {
           <div className="p-4 lg:p-6">
             {/* Matter Header */}
             <div className="space-y-4 mb-6">
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-                <div className="flex-1">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
                   <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
                   <p className="text-muted-foreground">Matter Type: {matter.type}</p>
-                </div>
-                
-                {/* Team Section */}
-                <div className="bg-card rounded-lg border p-4 min-w-0 lg:min-w-[320px]">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-sm">Matter Team</h3>
-                    <Button variant="ghost" size="sm" className="h-7 px-2">
-                      <UserPlus className="w-4 h-4 mr-1" />
-                      <span className="text-xs">Add</span>
-                    </Button>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    {matterTeam.map((member) => (
-                      <div key={member.id} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 min-w-0">
-                          <Avatar className="w-8 h-8">
-                            {member.avatar ? (
-                              <AvatarImage src={member.avatar} alt={member.name} />
-                            ) : (
-                              <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                                {member.name.slice(0, 2).toUpperCase()}
-                              </AvatarFallback>
-                            )}
-                          </Avatar>
-                          <div className="min-w-0">
-                            <div className="flex items-center gap-1">
-                              <p className="text-sm font-medium truncate">{member.name}</p>
-                              {member.isOwner && (
-                                <Badge variant="secondary" className="text-xs px-1.5 py-0">Owner</Badge>
-                              )}
-                            </div>
-                            <p className="text-xs text-muted-foreground truncate">{member.role}</p>
-                          </div>
-                        </div>
-                        
-                        {!member.isOwner && (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
-                                <MoreVertical className="w-3 h-3" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-32">
-                              <DropdownMenuItem className="text-destructive focus:text-destructive">
-                                Remove
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        )}
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
 
@@ -666,6 +613,59 @@ export function MatterRecord() {
 
           <ScrollArea className="flex-1 h-0 p-6">
             <div className="space-y-6">
+              {/* Matter Team */}
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold">Matter Team</h3>
+                  <Button variant="ghost" size="sm" className="h-7 px-2">
+                    <UserPlus className="w-4 h-4 mr-1" />
+                    <span className="text-xs">Add</span>
+                  </Button>
+                </div>
+                
+                <div className="space-y-3">
+                  {matterTeam.map((member) => (
+                    <div key={member.id} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <Avatar className="w-8 h-8">
+                          {member.avatar ? (
+                            <AvatarImage src={member.avatar} alt={member.name} />
+                          ) : (
+                            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                              {member.name.slice(0, 2).toUpperCase()}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1">
+                            <p className="text-sm font-medium truncate">{member.name}</p>
+                            {member.isOwner && (
+                              <Badge variant="secondary" className="text-xs px-1.5 py-0">Owner</Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">{member.role}</p>
+                        </div>
+                      </div>
+                      
+                      {!member.isOwner && (
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                              <MoreVertical className="w-3 h-3" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-32">
+                            <DropdownMenuItem className="text-destructive focus:text-destructive">
+                              Remove
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* Client Information */}
               {client && (
                 <div>
@@ -754,22 +754,6 @@ export function MatterRecord() {
                 </div>
               </div>
 
-              <div>
-                <h3 className="font-semibold mb-4">Team Members</h3>
-                <div className="space-y-2">
-                  {['Michael Chen', 'Lisa Park', 'David Kim'].map((member) => (
-                    <div key={member} className="flex items-center gap-2">
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src="/placeholder.svg" />
-                        <AvatarFallback className="text-xs">
-                          {member.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm">{member}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </ScrollArea>
         </div>
