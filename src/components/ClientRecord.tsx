@@ -166,7 +166,7 @@ export function ClientRecord() {
           <p>You have <strong>10 emails</strong>, <strong>4 events</strong>, and <strong>1 note</strong>.</p>
           <p className="text-muted-foreground">Your last interaction was a email on Aug 27, 2025.</p>
         </div>
-        <Button variant="outline" size="sm" className="w-full mt-3 text-blue-600">
+        <Button variant="outline" size="sm" className="w-full mt-3 text-primary">
           Add Keep-in-touch Reminder
         </Button>
       </div>
@@ -200,7 +200,7 @@ export function ClientRecord() {
 
         <div>
           <label className="text-xs text-muted-foreground">Phone numbers</label>
-          <Button variant="link" size="sm" className="h-auto p-0 text-blue-600">
+          <Button variant="link" size="sm" className="h-auto p-0 text-primary">
             Add phone number
           </Button>
         </div>
@@ -222,7 +222,7 @@ export function ClientRecord() {
           </Badge>
           <Badge variant="secondary">startups</Badge>
         </div>
-        <Button variant="link" size="sm" className="h-auto p-0 text-blue-600 mt-2">
+        <Button variant="link" size="sm" className="h-auto p-0 text-primary mt-2">
           <Plus className="w-3 h-3 mr-1" />
           Add to list
         </Button>
@@ -233,7 +233,7 @@ export function ClientRecord() {
       {/* Tags */}
       <div>
         <label className="text-xs text-muted-foreground">Tags</label>
-        <Button variant="link" size="sm" className="h-auto p-0 text-blue-600 mt-2">
+        <Button variant="link" size="sm" className="h-auto p-0 text-primary mt-2">
           <Plus className="w-3 h-3 mr-1" />
           Add tag
         </Button>
@@ -328,16 +328,16 @@ export function ClientRecord() {
                   {/* Social/Contact Icons */}
                   <ScrollArea className="w-full">
                     <div className="flex items-center gap-2 mt-4 pb-2 justify-center sm:justify-start">
-                      <button className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
+                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <Mail className="w-4 h-4" />
                       </button>
-                      <button className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
+                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <Building2 className="w-4 h-4" />
                       </button>
-                      <button className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
+                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <Linkedin className="w-4 h-4" />
                       </button>
-                      <button className="p-2 rounded-lg bg-blue-100 text-blue-600 hover:bg-blue-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
+                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
                         <Users className="w-4 h-4" />
                       </button>
                       <button className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
@@ -355,7 +355,7 @@ export function ClientRecord() {
               </div>
               
               <div className="flex items-center gap-2 justify-center md:justify-end">
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 touch-manipulation min-h-[44px]">
+                <Button size="sm" className="touch-manipulation min-h-[44px]">
                   Add note
                 </Button>
                 <Button size="sm" variant="outline" className="touch-manipulation min-h-[44px]">
@@ -373,40 +373,40 @@ export function ClientRecord() {
                 <TabsList className="bg-transparent border-none p-0 h-auto flex w-max min-w-full justify-start">
                   <TabsTrigger 
                     value="overview" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
                     Overview
                   </TabsTrigger>
                   <TabsTrigger 
                     value="team" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
                   >
                     <span className="whitespace-nowrap">Team connections</span>
                     <Badge variant="secondary" className="ml-1 flex-shrink-0">1</Badge>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="tasks" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
                     Tasks
                   </TabsTrigger>
                   <TabsTrigger 
                     value="companies" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
                   >
                     <span className="whitespace-nowrap">Companies</span>
                     <Badge variant="secondary" className="ml-1 flex-shrink-0">4</Badge>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="linkedin" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-1"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-1"
                   >
                     <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
                     <span className="whitespace-nowrap">LinkedIn</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="updates" 
-                    className="border-b-2 border-transparent data-[state=active]:border-blue-600 rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
                     Updates
                   </TabsTrigger>
