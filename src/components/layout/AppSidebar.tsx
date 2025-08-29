@@ -240,10 +240,7 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
                       <SidebarMenuItem>
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
-                            className={groupActive 
-                              ? "font-semibold relative after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-foreground" 
-                              : "hover:bg-accent/50 transition-colors duration-200"
-                            }
+                            className="hover:bg-accent/50 transition-colors duration-200"
                             tooltip={item.title}
                           >
                             <item.icon className="w-4 h-4" />
@@ -291,7 +288,7 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
                         to={item.url || "#"}
                         className={({ isActive }) => 
                           isActive 
-                            ? "relative font-semibold after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-foreground" 
+                            ? "font-semibold relative after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-foreground" 
                             : "hover:bg-accent/50 transition-colors duration-200"
                         }
                       >
