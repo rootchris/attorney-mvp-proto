@@ -21,7 +21,9 @@ import {
   MessageSquare,
   ChevronRight,
   Menu,
-  X
+  X,
+  UserPlus,
+  MoreVertical
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,6 +37,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import erinAvatar from '@/assets/erin-avatar.jpg';
+import ashleyAvatar from '@/assets/ashley-avatar.jpg';
 import { mockClients, mockMatters } from '@/data/mockData';
 import { WorkflowStage, Document, Note, Task } from '@/types/legal';
 
@@ -168,6 +173,13 @@ export function MatterRecord() {
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   const [documentFilter, setDocumentFilter] = useState<'all' | 'wealth-counsel' | 'own-docs'>('all');
   
+  // Mock team data
+  const matterTeam = [
+    { id: '1', name: 'Crosby', role: 'Matter Owner', avatar: null, isOwner: true },
+    { id: '2', name: 'Erin', role: 'Supporting Attorney', avatar: erinAvatar, isOwner: false },
+    { id: '3', name: 'Ashley', role: 'Paralegal', avatar: ashleyAvatar, isOwner: false }
+  ];
+  
   // Mock data - in real app, fetch based on matterId
   const matter = mockMatters.find(m => m.id === matterId) || mockMatters[0];
   const client = mockClients.find(c => c.id === matter.clientId);
@@ -254,10 +266,63 @@ export function MatterRecord() {
           <div className="p-4 lg:p-6">
             {/* Matter Header */}
             <div className="space-y-4 mb-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                <div className="flex-1">
                   <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
                   <p className="text-muted-foreground">Matter Type: {matter.type}</p>
+                </div>
+                
+                {/* Team Section */}
+                <div className="bg-card rounded-lg border p-4 min-w-0 lg:min-w-[320px]">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-medium text-sm">Matter Team</h3>
+                    <Button variant="ghost" size="sm" className="h-7 px-2">
+                      <UserPlus className="w-4 h-4 mr-1" />
+                      <span className="text-xs">Add</span>
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {matterTeam.map((member) => (
+                      <div key={member.id} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Avatar className="w-8 h-8">
+                            {member.avatar ? (
+                              <AvatarImage src={member.avatar} alt={member.name} />
+                            ) : (
+                              <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                                {member.name.slice(0, 2).toUpperCase()}
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-1">
+                              <p className="text-sm font-medium truncate">{member.name}</p>
+                              {member.isOwner && (
+                                <Badge variant="secondary" className="text-xs px-1.5 py-0">Owner</Badge>
+                              )}
+                            </div>
+                            <p className="text-xs text-muted-foreground truncate">{member.role}</p>
+                          </div>
+                        </div>
+                        
+                        {!member.isOwner && (
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                                <MoreVertical className="w-3 h-3" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-32">
+                              <DropdownMenuItem className="text-destructive focus:text-destructive">
+                                Remove
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
