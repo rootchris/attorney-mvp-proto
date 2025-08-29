@@ -408,69 +408,8 @@ export function StreamlinedAttorneyDashboard() {
             </Card>
           </div>
 
-          {/* Clients Ready for Review - Independent Scroll */}
-          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden max-h-80">
-            <CardHeader className="flex-shrink-0">
-              <CardTitle className="text-sm sm:text-base flex items-center justify-between">
-                <span className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-blue-600" />
-                  <span className="hidden sm:inline">Ready for Review</span>
-                  <span className="sm:hidden">Review</span>
-                </span>
-                <div className="flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground hidden sm:inline">Priority</span>
-                </div>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
-              <div className="flex-1 overflow-y-auto min-h-0">
-                <div className="space-y-3 p-4 sm:p-6 pr-2 sm:pr-4">
-                  {paginatedReviewClients.map(client => (
-                    <div 
-                      key={client.id} 
-                      className="p-3 border rounded-lg hover:bg-muted/30 cursor-pointer"
-                      onClick={() => navigate(`/client/${client.id}`)}
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm">{client.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{client.email}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <StatusBadge status={client.pipelineStage} type="pipeline" />
-                            <span className="text-xs text-muted-foreground">
-                              Due: {client.signingDate ? new Date(client.signingDate).toLocaleDateString() : 'TBD'}
-                            </span>
-                          </div>
-                        </div>
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="text-xs px-2"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/client/${client.id}`);
-                          }}
-                        >
-                          Review
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {clientsReadyForReview.length === 0 && (
-                    <div className="text-center py-4">
-                      <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">No clients pending review</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Tasks - Independent Scroll */}
-          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden max-h-80">
+          {/* Tasks - Expanded Height */}
+          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden max-h-[32rem]">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-sm sm:text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -503,7 +442,7 @@ export function StreamlinedAttorneyDashboard() {
                     </div>
                   )}
                   
-                  {pendingTasks.slice(0, 3).map(task => (
+                  {pendingTasks.slice(0, 5).map(task => (
                     <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
