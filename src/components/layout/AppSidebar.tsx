@@ -337,12 +337,12 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
           <SidebarMenuItem>
             <SidebarMenuButton className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="w-6 h-6">
-                <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" />
-                <AvatarFallback>MC</AvatarFallback>
+                <AvatarImage src="/lovable-uploads/48b04003-693b-4ebf-a070-afcdb65aa0ca.png" />
+                <AvatarFallback>CE</AvatarFallback>
               </Avatar>
               {!isCollapsed && (
                 <div className="flex-1 text-left">
-                  <p className="text-sm font-medium">Michael Chen</p>
+                  <p className="text-sm font-medium">Crosby Elliot</p>
                   <p className="text-xs text-muted-foreground">Senior Attorney</p>
                 </div>
               )}
