@@ -33,7 +33,8 @@ import {
   Map,
   ArrowLeft,
   Menu,
-  Info
+  Info,
+  Check
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -43,6 +44,7 @@ export function ClientRecord() {
   const [activeTab, setActiveTab] = useState("overview");
   const [rightPanelView, setRightPanelView] = useState("details");
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
+  const [isAddedToWealthCounsel, setIsAddedToWealthCounsel] = useState(false);
   const isMobile = useIsMobile();
 
   // Mock client data - in real app this would come from API
@@ -121,8 +123,40 @@ export function ClientRecord() {
     }
   };
 
+  const WealthCounselButton = () => (
+    <div className="mb-6">
+      <Button
+        onClick={() => setIsAddedToWealthCounsel(!isAddedToWealthCounsel)}
+        className={`w-full h-16 text-base font-medium transition-all duration-200 ${
+          isAddedToWealthCounsel
+            ? "bg-green-600 hover:bg-green-700 text-white"
+            : "bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white"
+        }`}
+        disabled={false}
+      >
+        <div className="flex items-center gap-3">
+          {/* Wealth Counsel Logo Placeholder */}
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+            {isAddedToWealthCounsel ? (
+              <Check className="w-5 h-5" />
+            ) : (
+              <div className="w-6 h-6 bg-gradient-to-r from-teal-200 to-cyan-200 rounded-full flex items-center justify-center">
+                <div className="text-teal-800 font-bold text-xs">WC</div>
+              </div>
+            )}
+          </div>
+          <span>
+            {isAddedToWealthCounsel ? "Added to Wealth Counsel" : "Add to Wealth Counsel"}
+          </span>
+        </div>
+      </Button>
+    </div>
+  );
+
   const RightSidebarContent = () => (
     <div className="space-y-6">
+      <WealthCounselButton />
+      
       {/* Your interaction */}
       <div>
         <h3 className="font-medium mb-3">Your interaction</h3>
