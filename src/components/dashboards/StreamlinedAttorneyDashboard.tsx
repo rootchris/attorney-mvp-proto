@@ -315,10 +315,10 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Right Sidebar - Performance & Tasks */}
-        <div className="flex-1 lg:max-w-80 flex flex-col space-y-4 sm:space-y-6 min-h-0 overflow-hidden">
-          {/* Performance Metrics */}
-          <div className="grid grid-cols-2 lg:grid-cols-1 gap-4 lg:space-y-4 lg:block">
-            <Card className="lg:mb-4">
+        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-hidden">
+          {/* Performance Metrics - Fixed Height */}
+          <div className="flex-shrink-0">
+            <Card>
               <CardHeader className="flex-shrink-0 pb-3">
                 <CardTitle className="text-sm sm:text-base flex items-center justify-between">
                   <span className="flex items-center gap-2">
@@ -355,8 +355,8 @@ export function StreamlinedAttorneyDashboard() {
             </Card>
           </div>
 
-          {/* Clients Ready for Review */}
-          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          {/* Clients Ready for Review - Independent Scroll */}
+          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden max-h-80">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-sm sm:text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
@@ -416,8 +416,8 @@ export function StreamlinedAttorneyDashboard() {
             </CardContent>
           </Card>
 
-          {/* Tasks */}
-          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          {/* Tasks - Independent Scroll */}
+          <Card className="flex-1 flex flex-col min-h-0 overflow-hidden max-h-80">
             <CardHeader className="flex-shrink-0">
               <CardTitle className="text-sm sm:text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
