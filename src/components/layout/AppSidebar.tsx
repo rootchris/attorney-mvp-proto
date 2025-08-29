@@ -202,12 +202,14 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
       
       <SidebarHeader className="border-b px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-bold text-sm">
-            FS
-          </div>
+          <img 
+            src="/lovable-uploads/689355fb-d2ad-4bbc-ab39-21cab7a8edb2.png" 
+            alt="TheFolder"
+            className="w-8 h-8 object-contain"
+          />
           {!isCollapsed && (
             <div className="flex-1">
-              <h2 className="font-semibold text-base">FirmStride</h2>
+              <h2 className="font-semibold text-base">TheFolder</h2>
               <p className="text-xs text-muted-foreground">Legal Practice Suite</p>
             </div>
           )}
