@@ -197,34 +197,32 @@ export function StreamlinedAttorneyDashboard() {
 
             {/* Matters & Prospects Card with Integrated Tabs */}
             <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
-              {/* Card Header with Integrated Tabs */}
-              <div className="border-b bg-muted/20">
-                <div className="px-4 sm:px-6 pt-4 pb-2">
-                  <Tabs defaultValue="matters" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-background/60 h-11 p-1 border border-border/50">
+              <Tabs defaultValue="matters" className="flex-1 flex flex-col min-h-0">
+                {/* Card Header with Integrated Tabs */}
+                <div className="border-b bg-muted/20">
+                  <div className="px-4 sm:px-6 pt-4 pb-2">
+                    <TabsList className="grid w-full grid-cols-2 bg-background/60 h-12 p-1 border border-border/50">
                       <TabsTrigger 
                         value="matters" 
-                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
+                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=inactive]:hover:bg-muted/50 transition-all duration-200"
                       >
                         <FileText className="w-4 h-4" />
                         <span className="font-medium">Active Matters</span>
-                        <Badge variant="secondary" className="ml-1 text-xs">{filteredMatters.length}</Badge>
+                        <Badge variant="secondary" className="ml-1 text-xs data-[state=active]:bg-primary-foreground/20 data-[state=active]:text-primary-foreground">{filteredMatters.length}</Badge>
                       </TabsTrigger>
                       <TabsTrigger 
                         value="prospects" 
-                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm transition-all duration-200"
+                        className="flex items-center gap-2 text-sm font-medium data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-lg data-[state=inactive]:hover:bg-muted/50 transition-all duration-200"
                       >
                         <Users className="w-4 h-4" />
                         <span className="font-medium">Prospects</span>
-                        <Badge variant="secondary" className="ml-1 text-xs">{prospects.length}</Badge>
+                        <Badge variant="secondary" className="ml-1 text-xs data-[state=active]:bg-primary-foreground/20 data-[state=active]:text-primary-foreground">{prospects.length}</Badge>
                       </TabsTrigger>
                     </TabsList>
-                  </Tabs>
+                  </div>
                 </div>
-              </div>
 
-              {/* Card Content with Tab Content */}
-              <Tabs defaultValue="matters" className="flex-1 flex flex-col min-h-0">
+                {/* Card Content with Tab Content */}
                 <TabsContent value="matters" className="flex-1 flex flex-col min-h-0 mt-0">
                   <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
                     <div className="flex-1 overflow-y-auto min-h-0">
