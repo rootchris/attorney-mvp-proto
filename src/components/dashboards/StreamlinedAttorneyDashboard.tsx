@@ -122,32 +122,36 @@ export function StreamlinedAttorneyDashboard() {
   );
 
   return (
-    <div className="h-[calc(100vh-12rem)] flex flex-col">
+    <div className="flex flex-col h-full">
       {/* Header with Quick Actions */}
-      <div className="flex items-center justify-between mb-4 flex-shrink-0">
-        <div>
-          <h1 className="text-legal-heading">Matter Management</h1>
-          <p className="text-legal-body mt-1">Manage active matters and client re-engagement</p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <UserPlus className="w-4 h-4 mr-2" />
-            Create Prospect
-          </Button>
-          <Button variant="outline" size="sm">
-            <FileText className="w-4 h-4 mr-2" />
-            Create Matter
-          </Button>
-          <Button variant="outline" size="sm">
-            <ClipboardList className="w-4 h-4 mr-2" />
-            Create Task
-          </Button>
+      <div className="flex-shrink-0 border-b bg-card px-6 py-4">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold">Matter Management</h1>
+            <p className="text-muted-foreground">Manage active matters and client re-engagement</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Create Prospect
+            </Button>
+            <Button variant="outline" size="sm">
+              <FileText className="w-4 h-4 mr-2" />
+              Create Matter
+            </Button>
+            <Button size="sm">
+              <ClipboardList className="w-4 h-4 mr-2" />
+              Create Task
+            </Button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 flex-1 min-h-0 overflow-hidden">
-        {/* Main Matter List - 2/3 */}
-        <div className="col-span-2 flex flex-col h-full min-h-0 overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 flex overflow-hidden px-6 py-4">
+        <div className="grid grid-cols-3 gap-6 w-full min-h-0">
+          {/* Main Matter List - 2/3 */}
+          <div className="col-span-2 flex flex-col h-full min-h-0 overflow-hidden">
           {/* Search and Filter Bar */}
           <Card className="flex-shrink-0">
             <CardContent className="p-4">
@@ -316,10 +320,10 @@ export function StreamlinedAttorneyDashboard() {
                 )}
               </CardContent>
             </Card>
-         </div>
+          </div>
 
-          {/* Right Sidebar */}
-          <div className="w-80 flex flex-col h-full min-h-0 overflow-hidden space-y-6">
+          {/* Right Sidebar - Performance & Tasks */}
+          <div className="flex flex-col space-y-6 min-h-0 overflow-hidden">
             {/* Clients Ready for Review */}
             <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
               <CardHeader className="flex-shrink-0">
@@ -580,10 +584,11 @@ export function StreamlinedAttorneyDashboard() {
                      </Pagination>
                    </div>
                  )}
-                </CardContent>
-              </Card>
-            </div>
+                 </CardContent>
+            </Card>
           </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
