@@ -4,6 +4,7 @@ import { StreamlinedAttorneyDashboard } from '@/components/dashboards/Streamline
 import { ClerkDashboard } from '@/components/dashboards/ClerkDashboard';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
 import { EnhancedAdminDashboard } from '@/components/dashboards/EnhancedAdminDashboard';
+import { CleanAdminDashboard } from '@/components/dashboards/CleanAdminDashboard';
 import { Card, CardContent } from '@/components/ui/card';
 import { Scale, Building2 } from 'lucide-react';
 
@@ -21,7 +22,7 @@ const Index = ({ currentRole, onRoleChange }: IndexProps) => {
       case 'clerk':
         return <ClerkDashboard />;
       case 'admin':
-        return <EnhancedAdminDashboard />;
+        return <CleanAdminDashboard />;
       default:
         return <StreamlinedAttorneyDashboard />;
     }
