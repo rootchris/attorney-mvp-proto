@@ -74,6 +74,36 @@ export function CleanAdminDashboard() {
               </div>
             </div>
 
+            {/* Quick Actions */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center gap-2">
+                  <Activity className="w-5 h-5" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Button variant="outline" className="justify-start">
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Matter
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <Users className="w-4 h-4 mr-2" />
+                    Add Client
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Schedule
+                  </Button>
+                  <Button variant="outline" className="justify-start">
+                    <BarChart3 className="w-4 h-4 mr-2" />
+                    Reports
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Key Metrics - Hero Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Card className="border-l-4 border-l-primary">
@@ -182,35 +212,6 @@ export function CleanAdminDashboard() {
               </Card>
             )}
 
-            {/* Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Activity className="w-5 h-5" />
-                  Quick Actions
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  <Button variant="outline" className="justify-start">
-                    <Plus className="w-4 h-4 mr-2" />
-                    New Matter
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Users className="w-4 h-4 mr-2" />
-                    Add Client
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Schedule
-                  </Button>
-                  <Button variant="outline" className="justify-start">
-                    <BarChart3 className="w-4 h-4 mr-2" />
-                    Reports
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Analytics Charts */}
             <div className="space-y-6">
