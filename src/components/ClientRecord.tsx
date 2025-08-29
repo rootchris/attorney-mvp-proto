@@ -135,14 +135,16 @@ export function ClientRecord() {
         disabled={false}
       >
         <div className="flex items-center gap-3">
-          {/* Wealth Counsel Logo Placeholder */}
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+          {/* Wealth Counsel Logo */}
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center p-1">
             {isAddedToWealthCounsel ? (
               <Check className="w-5 h-5" />
             ) : (
-              <div className="w-6 h-6 bg-gradient-to-r from-teal-200 to-cyan-200 rounded-full flex items-center justify-center">
-                <div className="text-teal-800 font-bold text-xs">WC</div>
-              </div>
+              <img 
+                src="/lovable-uploads/14b38707-140d-4b73-a1ec-440ea4ca4120.png" 
+                alt="Wealth Counsel Logo" 
+                className="w-6 h-6 object-contain"
+              />
             )}
           </div>
           <span>
