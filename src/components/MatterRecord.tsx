@@ -423,7 +423,11 @@ export function MatterRecord() {
                                     )}
                                   </Button>
                                 </TooltipTrigger>
-                                <TooltipContent className="z-50">
+                                <TooltipContent 
+                                  className="z-[9999] bg-popover border border-border shadow-md"
+                                  side="top"
+                                  sideOffset={5}
+                                >
                                   <p>
                                     {doc.clientVisible 
                                       ? "This document is visible in the Client's Folder" 
