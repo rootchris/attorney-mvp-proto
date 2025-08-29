@@ -258,7 +258,7 @@ export function CleanAdminDashboard() {
       </div>
 
       {/* Right Sidebar - Independently Scrollable */}
-      <div className="w-80 border-l border-border bg-muted/30">
+      <div className="w-96 border-l border-border bg-muted/30 flex-shrink-0">
         <ScrollArea className="h-full">
           <div className="p-4 space-y-4">
             {/* Quick Filters */}
@@ -306,7 +306,7 @@ export function CleanAdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {/* Expanded attorney list with leaderboard styling */}
+                  {/* Expanded attorney list with leaderboard styling - optimized for sidebar */}
                   {[
                     { id: '1', name: 'Crosby', email: 'crosby@firm.com', mtdRevenue: 125000, totalMatters: 8, conversionRate: 92, avatar: '/lovable-uploads/48b04003-693b-4ebf-a070-afcdb65aa0ca.png' },
                     { id: '2', name: 'Erin', email: 'erin@firm.com', mtdRevenue: 98000, totalMatters: 6, conversionRate: 88, avatar: erinAvatar },
@@ -315,28 +315,28 @@ export function CleanAdminDashboard() {
                     { id: '5', name: 'Jennifer Liu', email: 'jennifer@firm.com', mtdRevenue: 69500, totalMatters: 4, conversionRate: 82, avatar: null },
                     { id: '6', name: 'Robert Anderson', email: 'robert@firm.com', mtdRevenue: 62000, totalMatters: 6, conversionRate: 75, avatar: null }
                   ].map((attorney, index) => (
-                    <div key={attorney.id} className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted/30 transition-colors">
+                    <div key={attorney.id} className="flex items-center gap-2 p-2 border border-border rounded-lg hover:bg-muted/30 transition-colors">
                       <div className="flex items-center gap-2 min-w-0 flex-1">
-                        <div className="text-xs font-semibold text-primary w-6 text-center">
+                        <div className="text-xs font-semibold text-primary w-4 text-center flex-shrink-0">
                           #{index + 1}
                         </div>
-                        <Avatar className="h-8 w-8">
+                        <Avatar className="h-6 w-6 flex-shrink-0">
                           {attorney.avatar && <AvatarImage src={attorney.avatar} alt={attorney.name} />}
                           <AvatarFallback className="text-xs">{attorney.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
                           <p className="text-xs font-medium truncate">{attorney.name}</p>
-                          <p className="text-xs text-muted-foreground truncate">{attorney.email}</p>
+                          <p className="text-xs text-muted-foreground truncate">{attorney.email.split('@')[0]}</p>
                         </div>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs font-semibold">${attorney.mtdRevenue.toLocaleString()}</p>
-                        <p className="text-xs text-muted-foreground">{attorney.totalMatters} matters</p>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-xs font-semibold">${(attorney.mtdRevenue / 1000).toFixed(0)}k</p>
+                        <p className="text-xs text-muted-foreground">{attorney.totalMatters}m</p>
                       </div>
                     </div>
                   ))}
-                  <Button variant="ghost" size="sm" className="w-full text-xs mt-3">
-                    View Full Leaderboard
+                  <Button variant="ghost" size="sm" className="w-full text-xs mt-2">
+                    View Full Board
                   </Button>
                 </div>
               </CardContent>
