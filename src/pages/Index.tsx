@@ -7,8 +7,12 @@ import { EnhancedAdminDashboard } from '@/components/dashboards/EnhancedAdminDas
 import { Card, CardContent } from '@/components/ui/card';
 import { Scale, Building2 } from 'lucide-react';
 
-const Index = () => {
-  const [currentRole, setCurrentRole] = useState<UserRole>('attorney');
+interface IndexProps {
+  currentRole: UserRole;
+  onRoleChange: (role: UserRole) => void;
+}
+
+const Index = ({ currentRole, onRoleChange }: IndexProps) => {
 
   const renderDashboard = () => {
     switch (currentRole) {
@@ -44,7 +48,7 @@ const Index = () => {
                 <Building2 className="w-4 h-4" />
                 <span>Prototype Demo</span>
               </div>
-              <RoleSelector currentRole={currentRole} onRoleChange={setCurrentRole} />
+              <RoleSelector currentRole={currentRole} onRoleChange={onRoleChange} />
             </div>
           </div>
         </div>

@@ -205,59 +205,48 @@ export function MatterRecord() {
   };
 
   return (
-    <div className="h-screen flex flex-col lg:flex-row bg-background overflow-hidden">
-      {/* Mobile/Tablet Overlay */}
-      {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Left Sidebar */}
-      <div className={`
-        fixed lg:static inset-y-0 left-0 z-50 w-80 border-r bg-card transform transition-transform duration-300 ease-in-out flex flex-col h-full
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
-      `}>
-        <div className="flex justify-between items-center p-4 lg:hidden">
-          <h2 className="font-semibold">Navigation</h2>
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Header */}
+      <div className="border-b bg-card px-4 lg:px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/" className="text-muted-foreground hover:text-foreground">
+              <ArrowLeft className="w-5 h-5" />
+            </Link>
+            <div className="relative hidden sm:block">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+              <Input
+                placeholder="Search matters, clients, documents..."
+                className="pl-10 w-64 lg:w-96"
+              />
+            </div>
+          </div>
           <Button 
             variant="ghost" 
-            size="sm"
-            onClick={() => setSidebarOpen(false)}
+            size="sm" 
+            className="xl:hidden"
+            onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
           >
-            <X className="w-4 h-4" />
+            <FileText className="w-4 h-4" />
+            <span className="ml-2 hidden sm:inline">Details</span>
           </Button>
         </div>
-        
-        {/* Navigation */}
-        <nav className="p-2 border-b">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.label}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                item.active 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-              }`}
-            >
-              <item.icon className="w-4 h-4" />
-              <span className="lg:inline">{item.label}</span>
-            </button>
-          ))}
-        </nav>
+      </div>
 
-        {/* Document Repository - Moved from main content */}
-        <ScrollArea className="flex-1 h-0 p-4">
-          <div className="space-y-4">
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Documents Sidebar */}
+        <div className="w-80 border-r bg-card overflow-hidden flex flex-col">
+          <div className="p-4 border-b">
             <div className="flex items-center justify-between">
               <h3 className="font-semibold text-base">Documents</h3>
               <Button variant="outline" size="sm">
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
-            
-            <div className="space-y-3">
+          </div>
+          <ScrollArea className="flex-1">
+            <div className="p-4 space-y-3">
               {mockMatterDocuments.map((doc) => (
                 <div key={doc.id} className="p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card">
                   <div className="flex items-start gap-3">
@@ -304,62 +293,23 @@ export function MatterRecord() {
                           >
                             <Download className="w-3.5 h-3.5 text-muted-foreground" />
                           </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                         </div>
+                       </div>
+                     </div>
+                   </div>
+                 </div>
+               ))}
             </div>
-          </div>
-        </ScrollArea>
-      </div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden h-full">
-        {/* Top Search Bar */}
-        <div className="border-b bg-card px-4 lg:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="lg:hidden"
-                onClick={() => setSidebarOpen(true)}
-              >
-                <Menu className="w-5 h-5" />
-              </Button>
-              <Link to="/" className="text-muted-foreground hover:text-foreground">
-                <ArrowLeft className="w-5 h-5" />
-              </Link>
-              <div className="relative hidden sm:block">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                <Input
-                  placeholder="Search matters, clients, documents..."
-                  className="pl-10 w-64 lg:w-96"
-                />
-              </div>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="xl:hidden"
-              onClick={() => setRightSidebarOpen(!rightSidebarOpen)}
-            >
-              <FileText className="w-4 h-4" />
-              <span className="ml-2 hidden sm:inline">Details</span>
-            </Button>
-          </div>
+          </ScrollArea>
         </div>
 
-        <div className="flex-1 flex flex-col xl:flex-row overflow-hidden">
-          {/* Main Panel */}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <ScrollArea className="flex-1 h-0 p-4 lg:p-6">
-              <div className="space-y-6">
-                {/* Matter Header */}
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        {/* Main Panel */}
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <ScrollArea className="flex-1 h-0 p-4 lg:p-6">
+            <div className="space-y-6">
+              {/* Matter Header */}
+              <div className="space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div>
                     <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
                     <p className="text-muted-foreground">Matter Type: {matter.type}</p>
@@ -409,7 +359,7 @@ export function MatterRecord() {
                 </Card>
               </div>
 
-              {/* Notes Section - Moved up in hierarchy */}
+              {/* Notes Section */}
               <Card>
                 <CardHeader>
                   <CardTitle>Matter Notes</CardTitle>
@@ -472,7 +422,7 @@ export function MatterRecord() {
                 </CardContent>
               </Card>
 
-              {/* Tasks Section - Moved up in hierarchy */}
+              {/* Tasks Section */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -525,15 +475,15 @@ export function MatterRecord() {
                   </div>
                 </CardContent>
               </Card>
-              </div>
-            </ScrollArea>
-          </div>
+            </div>
+          </ScrollArea>
+        </div>
 
-          {/* Right Sidebar - Matter Details */}
-          <div className={`
-            fixed xl:static inset-y-0 right-0 z-50 w-80 border-l bg-card transform transition-transform duration-300 ease-in-out flex flex-col
-            ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} xl:translate-x-0
-          `}>
+        {/* Right Sidebar - Matter Details */}
+        <div className={`
+          fixed xl:static inset-y-0 right-0 z-50 w-80 border-l bg-card transform transition-transform duration-300 ease-in-out flex flex-col
+          ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} xl:translate-x-0
+        `}>
             <div className="flex justify-between items-center p-4 xl:hidden border-b">
               <h2 className="font-semibold">Matter Details</h2>
               <Button 
@@ -653,7 +603,6 @@ export function MatterRecord() {
               </div>
               </div>
             </ScrollArea>
-          </div>
         </div>
 
         {/* Mobile/Tablet overlay for right sidebar */}

@@ -115,50 +115,34 @@ export function ClientRecord() {
   };
 
   return (
-    <div className="h-screen flex bg-background">
-      {/* Left Sidebar */}
-      <div className="w-64 border-r bg-card">        
-        <nav className="p-2">
-          {sidebarItems.map((item) => (
-            <button
-              key={item.label}
-              className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                item.active ? "bg-primary text-primary-foreground" : "hover:bg-muted"
-              }`}
-            >
-              <item.icon className="w-4 h-4" />
-              {item.label}
-            </button>
-          ))}
-        </nav>
+    <div className="flex flex-col h-screen overflow-hidden">
+      {/* Header */}
+      <div className="border-b bg-card px-6 py-4">
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back
+          </Button>
+          <div className="flex-1 relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              placeholder="Search contacts, companies..."
+              className="pl-10"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col">
-        {/* Top Search Bar */}
-        <div className="border-b bg-card p-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div className="flex-1 relative max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search contacts, companies..."
-                className="pl-10"
-              />
-            </div>
-          </div>
-        </div>
+      <div className="flex-1 flex overflow-hidden">
+        {/* Main Panel */}
+        <div className="flex-1 overflow-hidden">
 
-        <div className="flex-1 flex overflow-hidden">
-          {/* Contact Overview & Timeline */}
           <div className="flex-1 overflow-y-auto">
             {/* Contact Header */}
             <div className="p-6 border-b bg-card">
@@ -311,8 +295,8 @@ export function ClientRecord() {
             </div>
           </div>
 
-          {/* Right Sidebar - Details Panel */}
-          <div className="w-80 border-l bg-card overflow-y-auto">
+        {/* Right Sidebar - Details Panel */}
+        <div className="w-80 border-l bg-card overflow-y-auto">
             <div className="p-4 border-b">
               <div className="flex gap-1">
                 <Button
