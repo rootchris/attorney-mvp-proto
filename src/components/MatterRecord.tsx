@@ -33,6 +33,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { mockClients, mockMatters } from '@/data/mockData';
 import { WorkflowStage, Document, Note, Task } from '@/types/legal';
 
@@ -164,12 +165,32 @@ const workflowStages: { stage: WorkflowStage; label: string; progress: number }[
 export function MatterRecord() {
   const { matterId } = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
+  const [documentFilter, setDocumentFilter] = useState<'all' | 'wealth-counsel' | 'own-docs'>('all');
   
   // Mock data - in real app, fetch based on matterId
   const matter = mockMatters.find(m => m.id === matterId) || mockMatters[0];
   const client = mockClients.find(c => c.id === matter.clientId);
   
   const currentStage = workflowStages.find(s => s.stage === 'drafting') || workflowStages[3];
+
+  // Filter documents based on selected filter
+  const filteredDocuments = mockMatterDocuments.filter(doc => {
+    switch (documentFilter) {
+      case 'wealth-counsel':
+        return doc.isWealthCounselDoc;
+      case 'own-docs':
+        return !doc.isWealthCounselDoc;
+      default:
+        return true;
+    }
+  });
+
+  // Document counts for each filter
+  const documentCounts = {
+    all: mockMatterDocuments.length,
+    'wealth-counsel': mockMatterDocuments.filter(doc => doc.isWealthCounselDoc).length,
+    'own-docs': mockMatterDocuments.filter(doc => !doc.isWealthCounselDoc).length,
+  };
 
   const formatFileSize = (bytes: number) => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -312,64 +333,100 @@ export function MatterRecord() {
               </div>
 
               <TabsContent value="documents" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold">Documents</h2>
-                  <Button size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Upload Document
-                  </Button>
+                <div className="space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <h2 className="text-lg font-semibold">Documents</h2>
+                    <Button size="sm">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Upload Document
+                    </Button>
+                  </div>
+
+                  {/* Document Filter Toggle */}
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                    <ToggleGroup 
+                      type="single" 
+                      value={documentFilter} 
+                      onValueChange={(value: 'all' | 'wealth-counsel' | 'own-docs') => value && setDocumentFilter(value)}
+                      className="justify-start"
+                    >
+                      <ToggleGroupItem value="all" className="text-sm">
+                        All Documents ({documentCounts.all})
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="wealth-counsel" className="text-sm">
+                        Wealth Counsel ({documentCounts['wealth-counsel']})
+                      </ToggleGroupItem>
+                      <ToggleGroupItem value="own-docs" className="text-sm">
+                        Our Documents ({documentCounts['own-docs']})
+                      </ToggleGroupItem>
+                    </ToggleGroup>
+                  </div>
                 </div>
-                <ScrollArea className="h-full">
-                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {mockMatterDocuments.map((doc) => (
+
+                <ScrollArea className="h-full mt-4">
+                  <div className="space-y-3">
+                    {filteredDocuments.map((doc) => (
                       <Card key={doc.id} className="hover:shadow-sm transition-shadow">
                         <CardContent className="p-4">
-                          <div className="flex items-start gap-3">
-                            <div className="flex-shrink-0 w-8 h-8 rounded bg-muted flex items-center justify-center">
-                              <FileText className="w-4 h-4 text-muted-foreground" />
+                          <div className="flex items-center gap-4">
+                            {/* Document Icon */}
+                            <div className="flex-shrink-0 w-10 h-10 rounded bg-muted flex items-center justify-center">
+                              <FileText className="w-5 h-5 text-muted-foreground" />
                             </div>
-                            <div className="flex-1 min-w-0 space-y-2">
-                              <div className="space-y-1">
-                                <div className="flex items-center gap-2">
-                                  <h4 className="text-sm font-medium leading-tight break-words">{doc.name}</h4>
-                                  {doc.isWealthCounselDoc && (
-                                    <Badge variant="secondary" className="text-xs flex-shrink-0">WC</Badge>
-                                  )}
-                                </div>
-                                <p className="text-xs text-muted-foreground">
-                                  {doc.type} • {formatFileSize(doc.size)}
-                                </p>
+                            
+                            {/* Document Info */}
+                            <div className="flex-1 min-w-0 space-y-1">
+                              <div className="flex items-center gap-3">
+                                <h4 className="text-sm font-semibold leading-tight">{doc.name}</h4>
+                                {doc.isWealthCounselDoc && (
+                                  <div className="flex items-center gap-1">
+                                    <img 
+                                      src="/lovable-uploads/14b38707-140d-4b73-a1ec-440ea4ca4120.png" 
+                                      alt="Wealth Counsel" 
+                                      className="w-5 h-5 object-contain"
+                                    />
+                                    <Badge variant="secondary" className="text-xs bg-teal-100 text-teal-800">
+                                      Wealth Counsel
+                                    </Badge>
+                                  </div>
+                                )}
                               </div>
-                              <div className="flex items-center justify-between">
-                                <div className="flex items-center text-xs text-muted-foreground min-w-0">
-                                  <User className="w-3 h-3 mr-1 flex-shrink-0" />
-                                  <span className="truncate">{doc.uploadedBy}</span>
-                                  <span className="mx-2 flex-shrink-0">•</span>
-                                  <span className="flex-shrink-0">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                                <span>{doc.type}</span>
+                                <span>•</span>
+                                <span>{formatFileSize(doc.size)}</span>
+                                <span>•</span>
+                                <div className="flex items-center gap-1">
+                                  <User className="w-3 h-3" />
+                                  <span>{doc.uploadedBy}</span>
                                 </div>
-                                <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="h-7 w-7 p-0"
-                                    title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
-                                  >
-                                    {doc.clientVisible ? (
-                                      <Eye className="w-3.5 h-3.5 text-green-600" />
-                                    ) : (
-                                      <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
-                                    )}
-                                  </Button>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="h-7 w-7 p-0"
-                                    title="Download document"
-                                  >
-                                    <Download className="w-3.5 h-3.5 text-muted-foreground" />
-                                  </Button>
-                                </div>
+                                <span>•</span>
+                                <span>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
                               </div>
+                            </div>
+                            
+                            {/* Document Actions */}
+                            <div className="flex items-center gap-2 flex-shrink-0">
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0"
+                                title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
+                              >
+                                {doc.clientVisible ? (
+                                  <Eye className="w-4 h-4 text-green-600" />
+                                ) : (
+                                  <EyeOff className="w-4 h-4 text-muted-foreground" />
+                                )}
+                              </Button>
+                              <Button 
+                                variant="ghost" 
+                                size="sm" 
+                                className="h-8 w-8 p-0"
+                                title="Download document"
+                              >
+                                <Download className="w-4 h-4 text-muted-foreground" />
+                              </Button>
                             </div>
                           </div>
                         </CardContent>
