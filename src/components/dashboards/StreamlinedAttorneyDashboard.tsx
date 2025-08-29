@@ -187,7 +187,7 @@ export function StreamlinedAttorneyDashboard() {
             </Card>
 
             {/* Active Matters List */}
-            <Card className="flex-shrink-0 max-h-[32rem] flex flex-col overflow-hidden">
+            <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
               <CardHeader className="flex-shrink-0">
                 <CardTitle className="text-lg flex items-center justify-between">
                   <span>Active Matters ({filteredMatters.length})</span>
@@ -196,7 +196,7 @@ export function StreamlinedAttorneyDashboard() {
                   </Button>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[28rem]">
+              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
                 <div className="flex-1 overflow-y-auto min-h-0">
                   <div className="space-y-2 p-3 sm:p-4 pr-2">
                     {paginatedMatters.map(matter => {
