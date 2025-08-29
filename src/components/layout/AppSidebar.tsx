@@ -206,7 +206,7 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
             src="/lovable-uploads/689355fb-d2ad-4bbc-ab39-21cab7a8edb2.png" 
             alt="TheFolder"
             className={`object-contain transition-all duration-200 ${
-              isCollapsed ? 'w-8 h-8' : 'w-full h-12'
+              isCollapsed ? 'w-4 h-4' : 'w-3/4 h-6'
             }`}
           />
         </div>
