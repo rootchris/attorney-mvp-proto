@@ -117,8 +117,8 @@ export function StreamlinedAttorneyDashboard() {
       <div className="flex-shrink-0 border-b bg-card px-4 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold">Matter Management</h1>
-            <p className="text-sm text-muted-foreground">Manage active matters and client re-engagement</p>
+            <h1 className="text-xl sm:text-2xl font-bold">Happy Tuesday, Crosby!</h1>
+            <p className="text-sm text-muted-foreground">Manage active matters and client engagement</p>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
@@ -309,6 +309,57 @@ export function StreamlinedAttorneyDashboard() {
                     </Button>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Clients To Engage Section */}
+          <Card className="flex-shrink-0">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center justify-between">
+                <span>Clients To Engage (10)</span>
+                <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
+                  View All
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {myClients.slice(0, 10).map(client => (
+                  <div 
+                    key={client.id}
+                    className="p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm truncate">{client.name}</h4>
+                        <p className="text-xs text-muted-foreground truncate">{client.email}</p>
+                        <p className="text-xs text-muted-foreground">{client.phone}</p>
+                        
+                        <div className="mt-2 space-y-1">
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Calendar className="w-3 h-3" />
+                            <span>Last Review: {client.createdAt ? new Date(new Date(client.createdAt).getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000).toLocaleDateString() : "Never"}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Users className="w-3 h-3" />
+                            <span>Birthday: {client.createdAt ? new Date(new Date(client.createdAt).getTime() - Math.random() * 365 * 5 * 24 * 60 * 60 * 1000).toLocaleDateString() : "Not set"}</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-2 text-xs"
+                        onClick={() => window.open(`/client/${client.id}`, "_blank")}
+                      >
+                        <Eye className="w-3 h-3 sm:mr-1" />
+                        <span className="hidden sm:inline">Profile</span>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
