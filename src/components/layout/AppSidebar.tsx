@@ -195,6 +195,11 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
 
   return (
     <Sidebar variant="sidebar" className="border-r">
+      {/* Collapse/Expand Tab - Always visible */}
+      <div className="absolute top-4 -right-3 z-50">
+        <SidebarTrigger className="w-6 h-8 bg-background border border-border rounded-r-md shadow-sm hover:bg-accent" />
+      </div>
+      
       <SidebarHeader className="border-b px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary text-primary-foreground font-bold text-sm">
@@ -347,10 +352,6 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        
-        <div className="flex items-center justify-center pt-2">
-          <SidebarTrigger className="w-8 h-8" />
-        </div>
       </SidebarFooter>
     </Sidebar>
   );
