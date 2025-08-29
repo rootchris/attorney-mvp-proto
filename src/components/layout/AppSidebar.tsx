@@ -65,7 +65,7 @@ const navigationConfig = {
     },
     {
       title: "Clients",
-      url: "/clients",
+      url: "/client/1",
       icon: Users,
     },
     {
@@ -116,7 +116,7 @@ const navigationConfig = {
     },
     {
       title: "Clients",
-      url: "/clients",
+      url: "/client/1",
       icon: Users,
     }
   ],
