@@ -60,13 +60,8 @@ const navigationConfig = {
     },
     {
       title: "Matters",
+      url: "/matter",
       icon: Briefcase,
-      items: [
-        { title: "Active Matters", url: "/matters" },
-        { title: "Draft Pipeline", url: "/matters/draft" },
-        { title: "Ready to Sign", url: "/matters/sign" },
-        { title: "Completed", url: "/matters/completed" }
-      ]
     },
     {
       title: "Clients",
