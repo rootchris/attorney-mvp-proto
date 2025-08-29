@@ -32,6 +32,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { mockClients, mockMatters } from '@/data/mockData';
 import { WorkflowStage, Document, Note, Task } from '@/types/legal';
 
@@ -162,7 +163,6 @@ const workflowStages: { stage: WorkflowStage; label: string; progress: number }[
 
 export function MatterRecord() {
   const { matterId } = useParams();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
   
   // Mock data - in real app, fetch based on matterId
@@ -170,15 +170,6 @@ export function MatterRecord() {
   const client = mockClients.find(c => c.id === matter.clientId);
   
   const currentStage = workflowStages.find(s => s.stage === 'drafting') || workflowStages[3];
-  
-  const sidebarItems = [
-    { icon: Search, label: "Search", active: false },
-    { icon: CheckSquare, label: "Tasks", active: false },
-    { icon: List, label: "Lists", active: false },
-    { icon: Users, label: "Contacts", active: false },
-    { icon: Activity, label: "Timeline", active: false },
-    { icon: Heart, label: "Keep-in-touch", active: false },
-  ];
 
   const formatFileSize = (bytes: number) => {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
@@ -235,269 +226,280 @@ export function MatterRecord() {
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Documents Sidebar */}
-        <div className="w-80 border-r bg-card overflow-hidden flex flex-col">
-          <div className="p-4 border-b">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-base">Documents</h3>
-              <Button variant="outline" size="sm">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-          <ScrollArea className="flex-1">
-            <div className="p-4 space-y-3">
-              {mockMatterDocuments.map((doc) => (
-                <div key={doc.id} className="p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card">
-                  <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded bg-muted flex items-center justify-center">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0 space-y-2">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <h4 className="text-sm font-medium leading-tight break-words">{doc.name}</h4>
-                          {doc.isWealthCounselDoc && (
-                            <Badge variant="secondary" className="text-xs flex-shrink-0">WC</Badge>
-                          )}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {doc.type} • {formatFileSize(doc.size)}
-                        </p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center text-xs text-muted-foreground min-w-0">
-                          <User className="w-3 h-3 mr-1 flex-shrink-0" />
-                          <span className="truncate">{doc.uploadedBy}</span>
-                          <span className="mx-2 flex-shrink-0">•</span>
-                          <span className="flex-shrink-0">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
-                        </div>
-                        <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-7 w-7 p-0"
-                            title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
-                          >
-                            {doc.clientVisible ? (
-                              <Eye className="w-3.5 h-3.5 text-green-600" />
-                            ) : (
-                              <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
-                            )}
-                          </Button>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-7 w-7 p-0"
-                            title="Download document"
-                          >
-                            <Download className="w-3.5 h-3.5 text-muted-foreground" />
-                          </Button>
-                         </div>
-                       </div>
-                     </div>
-                   </div>
-                 </div>
-               ))}
-            </div>
-          </ScrollArea>
-        </div>
-
         {/* Main Panel */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          <ScrollArea className="flex-1 h-0 p-4 lg:p-6">
-            <div className="space-y-6">
-              {/* Matter Header */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  <div>
-                    <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
-                    <p className="text-muted-foreground">Matter Type: {matter.type}</p>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      Add Note
-                    </Button>
-                    <Button size="sm" className="w-full sm:w-auto">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Task
-                    </Button>
-                  </div>
+          <div className="p-4 lg:p-6">
+            {/* Matter Header */}
+            <div className="space-y-4 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl lg:text-3xl font-bold">{matter.title}</h1>
+                  <p className="text-muted-foreground">Matter Type: {matter.type}</p>
                 </div>
-
-                {/* Workflow Progress */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Matter Progress</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <span className="font-medium">Current Stage: {currentStage.label}</span>
-                        <span className="text-sm text-muted-foreground">{currentStage.progress}% Complete</span>
-                      </div>
-                      <Progress value={currentStage.progress} className="h-2" />
-                      <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-xs">
-                        {workflowStages.map((stage, index) => (
-                          <div 
-                            key={stage.stage}
-                            className={`text-center p-2 rounded ${
-                              stage.stage === 'drafting' 
-                                ? 'bg-primary text-primary-foreground' 
-                                : stage.progress < currentStage.progress 
-                                ? 'bg-green-100 text-green-800' 
-                                : 'bg-gray-100 text-gray-600'
-                            }`}
-                          >
-                            <div className="break-words">{stage.label}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
 
-              {/* Notes Section */}
+              {/* Workflow Progress */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Matter Notes</CardTitle>
+                  <CardTitle>Matter Progress</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="space-y-2">
-                      <Textarea 
-                        placeholder="Add a note about this matter..."
-                        className="min-h-[80px]"
-                      />
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <Select>
-                          <SelectTrigger className="w-full sm:w-48">
-                            <SelectValue placeholder="Tag colleagues" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="lisa">Lisa Park</SelectItem>
-                            <SelectItem value="david">David Kim</SelectItem>
-                            <SelectItem value="michael">Michael Chen</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Button size="sm" className="w-full sm:w-auto">Add Note</Button>
-                      </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                      <span className="font-medium">Current Stage: {currentStage.label}</span>
+                      <span className="text-sm text-muted-foreground">{currentStage.progress}% Complete</span>
                     </div>
-                    
-                    <div className="space-y-3">
-                      {mockMatterNotes.map((note) => (
-                        <div key={note.id} className="p-4 border rounded-lg">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
-                            <div className="flex items-center gap-2">
-                              <Avatar className="w-6 h-6">
-                                <AvatarFallback className="text-xs">
-                                  {note.createdBy.split(' ').map(n => n[0]).join('')}
-                                </AvatarFallback>
-                              </Avatar>
-                              <span className="font-medium text-sm">{note.createdBy}</span>
-                            </div>
-                            <span className="text-xs text-muted-foreground">
-                              {new Date(note.createdAt).toLocaleDateString()}
-                            </span>
-                          </div>
-                          <p className="text-sm mb-2">{note.content}</p>
-                          {note.taggedColleagues && note.taggedColleagues.length > 0 && (
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                              <span className="text-xs text-muted-foreground">Tagged:</span>
-                              <div className="flex flex-wrap gap-1">
-                                {note.taggedColleagues.map((colleague) => (
-                                  <Badge key={colleague} variant="outline" className="text-xs">
-                                    {colleague}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
+                    <Progress value={currentStage.progress} className="h-2" />
+                    <div className="grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-2 text-xs">
+                      {workflowStages.map((stage, index) => (
+                        <div 
+                          key={stage.stage}
+                          className={`text-center p-2 rounded ${
+                            stage.stage === 'drafting' 
+                              ? 'bg-primary text-primary-foreground' 
+                              : stage.progress < currentStage.progress 
+                              ? 'bg-green-100 text-green-800' 
+                              : 'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          <div className="break-words">{stage.label}</div>
                         </div>
                       ))}
                     </div>
                   </div>
                 </CardContent>
               </Card>
+            </div>
+          </div>
 
-              {/* Tasks Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <span>Matter Tasks</span>
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Create Task
-                    </Button>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {mockMatterTasks.map((task) => (
-                      <div key={task.id} className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 p-4 border rounded-lg">
-                        <div className="flex-1">
-                          <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-2">
-                            <h4 className="font-medium flex-1">{task.title}</h4>
-                            <div className="flex gap-2">
-                              <Badge className={getTaskStatusColor(task.status)}>
-                                {task.status.replace('_', ' ')}
-                              </Badge>
-                              <Badge className={getPriorityColor(task.priority)}>
-                                {task.priority}
-                              </Badge>
+          {/* Tabbed Content */}
+          <div className="flex-1 overflow-hidden">
+            <Tabs defaultValue="documents" className="flex flex-col h-full">
+              <div className="border-b px-4 lg:px-6">
+                <TabsList className="grid w-full max-w-md grid-cols-3">
+                  <TabsTrigger value="documents">Documents</TabsTrigger>
+                  <TabsTrigger value="notes">Notes</TabsTrigger>
+                  <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="documents" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Documents</h2>
+                  <Button size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Upload Document
+                  </Button>
+                </div>
+                <ScrollArea className="h-full">
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {mockMatterDocuments.map((doc) => (
+                      <Card key={doc.id} className="hover:shadow-sm transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-start gap-3">
+                            <div className="flex-shrink-0 w-8 h-8 rounded bg-muted flex items-center justify-center">
+                              <FileText className="w-4 h-4 text-muted-foreground" />
+                            </div>
+                            <div className="flex-1 min-w-0 space-y-2">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <h4 className="text-sm font-medium leading-tight break-words">{doc.name}</h4>
+                                  {doc.isWealthCounselDoc && (
+                                    <Badge variant="secondary" className="text-xs flex-shrink-0">WC</Badge>
+                                  )}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  {doc.type} • {formatFileSize(doc.size)}
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center text-xs text-muted-foreground min-w-0">
+                                  <User className="w-3 h-3 mr-1 flex-shrink-0" />
+                                  <span className="truncate">{doc.uploadedBy}</span>
+                                  <span className="mx-2 flex-shrink-0">•</span>
+                                  <span className="flex-shrink-0">{new Date(doc.uploadedAt).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-7 w-7 p-0"
+                                    title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
+                                  >
+                                    {doc.clientVisible ? (
+                                      <Eye className="w-3.5 h-3.5 text-green-600" />
+                                    ) : (
+                                      <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+                                    )}
+                                  </Button>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-7 w-7 p-0"
+                                    title="Download document"
+                                  >
+                                    <Download className="w-3.5 h-3.5 text-muted-foreground" />
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="w-3 h-3" />
-                              Due: {new Date(task.dueDate).toLocaleDateString()}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <User className="w-3 h-3" />
-                              Assigned by: {task.assignedBy}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-2 self-start lg:self-center">
-                          <Avatar className="w-8 h-8">
-                            <AvatarImage src="/placeholder.svg" />
-                            <AvatarFallback className="text-xs">
-                              {task.assignedTo.split(' ').map(n => n[0]).join('')}
-                            </AvatarFallback>
-                          </Avatar>
-                          <span className="text-sm font-medium">{task.assignedTo}</span>
-                        </div>
-                      </div>
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </ScrollArea>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="notes" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Matter Notes</h2>
+                  <Button size="sm">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Add Note
+                  </Button>
+                </div>
+                <ScrollArea className="h-full">
+                  <div className="space-y-4">
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="space-y-2">
+                          <Textarea 
+                            placeholder="Add a note about this matter..."
+                            className="min-h-[80px]"
+                          />
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <Select>
+                              <SelectTrigger className="w-full sm:w-48">
+                                <SelectValue placeholder="Tag colleagues" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="lisa">Lisa Park</SelectItem>
+                                <SelectItem value="david">David Kim</SelectItem>
+                                <SelectItem value="michael">Michael Chen</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button size="sm" className="w-full sm:w-auto">Add Note</Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                    
+                    <div className="space-y-3">
+                      {mockMatterNotes.map((note) => (
+                        <Card key={note.id}>
+                          <CardContent className="p-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-6 h-6">
+                                  <AvatarFallback className="text-xs">
+                                    {note.createdBy.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <span className="font-medium text-sm">{note.createdBy}</span>
+                              </div>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(note.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-sm mb-2">{note.content}</p>
+                            {note.taggedColleagues && note.taggedColleagues.length > 0 && (
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <span className="text-xs text-muted-foreground">Tagged:</span>
+                                <div className="flex flex-wrap gap-1">
+                                  {note.taggedColleagues.map((colleague) => (
+                                    <Badge key={colleague} variant="outline" className="text-xs">
+                                      {colleague}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+
+              <TabsContent value="tasks" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-lg font-semibold">Matter Tasks</h2>
+                  <Button size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Task
+                  </Button>
+                </div>
+                <ScrollArea className="h-full">
+                  <div className="space-y-3">
+                    {mockMatterTasks.map((task) => (
+                      <Card key={task.id}>
+                        <CardContent className="p-4">
+                          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex flex-col sm:flex-row sm:items-start gap-2 mb-2">
+                                <h4 className="font-medium flex-1">{task.title}</h4>
+                                <div className="flex gap-2">
+                                  <Badge className={getTaskStatusColor(task.status)}>
+                                    {task.status.replace('_', ' ')}
+                                  </Badge>
+                                  <Badge className={getPriorityColor(task.priority)}>
+                                    {task.priority}
+                                  </Badge>
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-3">{task.description}</p>
+                              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-xs text-muted-foreground">
+                                <div className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  Due: {new Date(task.dueDate).toLocaleDateString()}
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <User className="w-3 h-3" />
+                                  Assigned by: {task.assignedBy}
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2 self-start lg:self-center">
+                              <Avatar className="w-8 h-8">
+                                <AvatarImage src="/placeholder.svg" />
+                                <AvatarFallback className="text-xs">
+                                  {task.assignedTo.split(' ').map(n => n[0]).join('')}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span className="text-sm font-medium">{task.assignedTo}</span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
 
         {/* Right Sidebar - Matter Details */}
         <div className={`
-          fixed xl:static inset-y-0 right-0 z-50 w-80 border-l bg-card transform transition-transform duration-300 ease-in-out flex flex-col
+          fixed xl:static inset-y-0 right-0 z-50 w-80 xl:w-72 border-l bg-card transform transition-transform duration-300 ease-in-out flex flex-col
           ${rightSidebarOpen ? 'translate-x-0' : 'translate-x-full'} xl:translate-x-0
         `}>
-            <div className="flex justify-between items-center p-4 xl:hidden border-b">
-              <h2 className="font-semibold">Matter Details</h2>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => setRightSidebarOpen(false)}
-              >
-                <X className="w-4 h-4" />
-              </Button>
-            </div>
+          <div className="flex justify-between items-center p-4 xl:hidden border-b">
+            <h2 className="font-semibold">Matter Details</h2>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setRightSidebarOpen(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
 
-            <ScrollArea className="flex-1 h-0 p-6">
-              <div className="space-y-6">
-                {/* Client Information - Moved from main content */}
+          <ScrollArea className="flex-1 h-0 p-6">
+            <div className="space-y-6">
+              {/* Client Information */}
               {client && (
                 <div>
                   <h3 className="font-semibold mb-4">Client Information</h3>
@@ -601,8 +603,8 @@ export function MatterRecord() {
                   ))}
                 </div>
               </div>
-              </div>
-            </ScrollArea>
+            </div>
+          </ScrollArea>
         </div>
 
         {/* Mobile/Tablet overlay for right sidebar */}
