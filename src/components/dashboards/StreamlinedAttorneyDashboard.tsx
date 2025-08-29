@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { StatusBadge } from "@/components/StatusBadge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -46,6 +47,11 @@ export function StreamlinedAttorneyDashboard() {
   // Active matters (ongoing work)
   const activeMatters = myMatters.filter(matter => 
     !['signed', 'funding', 'reengage'].includes(matter.workflowStage)
+  );
+
+  // Prospects (potential clients not yet signed)
+  const prospects = myClients.filter(client => 
+    ['scheduled', 'complete', 'ready_for_review'].includes(client.pipelineStage)
   );
 
   // Enhanced matter data with client info
@@ -186,133 +192,248 @@ export function StreamlinedAttorneyDashboard() {
               </CardContent>
             </Card>
 
-            {/* Active Matters List */}
-            <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
-              <CardHeader className="flex-shrink-0">
-                <CardTitle className="text-lg flex items-center justify-between">
-                  <span>Active Matters ({filteredMatters.length})</span>
-                  <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
-                    View All
-                  </Button>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <div className="space-y-2 p-3 sm:p-4 pr-2">
-                    {paginatedMatters.map(matter => {
-                      const client = myClients.find(c => c.id === matter.clientId);
-                      return (
-                        <div 
-                          key={matter.id}
-                          className="p-2 sm:p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
-                          onClick={() => window.open(`/matter/${matter.id}`, '_blank')}
-                        >
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
-                            <div className="flex-1 min-w-0">
-                              <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
-                                <h3 className="font-semibold text-xs sm:text-sm truncate">{matter.title}</h3>
-                                <div className="flex flex-wrap gap-1">
-                                  <StatusBadge status={matter.workflowStage} type="workflow" />
-                                  <Badge variant="outline" className="text-xs whitespace-nowrap">
-                                    {matter.type}
-                                  </Badge>
+            {/* Active Matters / Prospects Section with Toggle */}
+            <Tabs defaultValue="matters" className="flex-shrink-0">
+              <div className="flex items-center justify-between mb-4">
+                <TabsList className="grid w-fit grid-cols-2">
+                  <TabsTrigger value="matters" className="flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Active Matters ({filteredMatters.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="prospects" className="flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Prospects ({prospects.length})
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <TabsContent value="matters">
+                <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
+                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
+                    <div className="flex-1 overflow-y-auto min-h-0">
+                      <div className="space-y-2 p-3 sm:p-4 pr-2">
+                        {paginatedMatters.map(matter => {
+                          const client = myClients.find(c => c.id === matter.clientId);
+                          return (
+                            <div 
+                              key={matter.id}
+                              className="p-2 sm:p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
+                              onClick={() => window.open(`/matter/${matter.id}`, '_blank')}
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
+                                    <h3 className="font-semibold text-xs sm:text-sm truncate">{matter.title}</h3>
+                                    <div className="flex flex-wrap gap-1">
+                                      <StatusBadge status={matter.workflowStage} type="workflow" />
+                                      <Badge variant="outline" className="text-xs whitespace-nowrap">
+                                        {matter.type}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mb-1 truncate">
+                                    Client: {client?.name}
+                                  </p>
+                                  <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-xs text-muted-foreground">
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="w-3 h-3" />
+                                      Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <Clock className="w-3 h-3" />
+                                      Created: {new Date(matter.createdAt).toLocaleDateString()}
+                                    </div>
+                                  </div>
                                 </div>
-                              </div>
-                              <p className="text-xs text-muted-foreground mb-1 truncate">
-                                Client: {client?.name}
-                              </p>
-                              <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-xs text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                  <Calendar className="w-3 h-3" />
-                                  Due: {matter.dueDate ? new Date(matter.dueDate).toLocaleDateString() : 'No due date'}
-                                </div>
-                                <div className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  Created: {new Date(matter.createdAt).toLocaleDateString()}
+                                
+                                <div className="flex flex-col items-end text-right">
+                                  <span className="font-bold text-xs sm:text-sm">${matter.revenue?.toLocaleString()}</span>
+                                  <span className="text-xs text-muted-foreground">Value</span>
+                                  <div className="flex gap-1 mt-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-6 px-1 text-xs"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(`/client/${client?.id}`, '_blank');
+                                      }}
+                                    >
+                                      <Eye className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      className="h-6 px-1 text-xs"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(`/matter/${matter.id}`, '_blank');
+                                      }}
+                                    >
+                                      <FileText className="w-3 h-3" />
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                            
-                            <div className="flex flex-col items-end text-right">
-                              <span className="font-bold text-xs sm:text-sm">${matter.revenue?.toLocaleString()}</span>
-                              <span className="text-xs text-muted-foreground">Value</span>
-                              <div className="flex gap-1 mt-1">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-6 px-1 text-xs"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    window.open(`/client/${client?.id}`, '_blank');
-                                  }}
-                                >
-                                  <Eye className="w-3 h-3" />
-                                </Button>
-                                <Button
-                                  variant="default"
-                                  size="sm"
-                                  className="h-6 px-1 text-xs"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    window.open(`/matter/${matter.id}`, '_blank');
-                                  }}
-                                >
-                                  <FileText className="w-3 h-3" />
-                                </Button>
-                              </div>
-                            </div>
+                          );
+                        })}
+                        
+                        {filteredMatters.length === 0 && (
+                          <div className="text-center py-8">
+                            <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-muted-foreground">No active matters match your current filters</p>
                           </div>
-                        </div>
-                      );
-                    })}
-                    
-                    {filteredMatters.length === 0 && (
-                      <div className="text-center py-8">
-                        <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-muted-foreground">No active matters match your current filters</p>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </div>
-                  
-                {/* Pagination */}
-                <div className="flex-shrink-0 border-t p-3 sm:p-4">
-                  <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
-                    <div className="text-xs sm:text-sm text-muted-foreground text-center xs:text-left">
-                      Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredMatters.length)} of {filteredMatters.length} matters
                     </div>
-                    
-                    <div className="flex items-center gap-1 justify-center xs:justify-end">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                        disabled={currentPage === 1}
-                        className="px-2 sm:px-3"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                        <span className="hidden sm:inline ml-1">Previous</span>
-                      </Button>
                       
-                      <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-muted rounded">
-                        Page {currentPage} of {totalPages}
-                      </span>
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                        disabled={currentPage === totalPages}
-                        className="px-2 sm:px-3"
-                      >
-                        <span className="hidden sm:inline mr-1">Next</span>
-                        <ChevronRight className="w-4 h-4" />
-                      </Button>
+                    {/* Pagination */}
+                    <div className="flex-shrink-0 border-t p-3 sm:p-4">
+                      <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-3">
+                        <div className="text-xs sm:text-sm text-muted-foreground text-center xs:text-left">
+                          Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredMatters.length)} of {filteredMatters.length} matters
+                        </div>
+                        
+                        <div className="flex items-center gap-1 justify-center xs:justify-end">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            disabled={currentPage === 1}
+                            className="px-2 sm:px-3"
+                          >
+                            <ChevronLeft className="w-4 h-4" />
+                            <span className="hidden sm:inline ml-1">Previous</span>
+                          </Button>
+                          
+                          <span className="text-xs sm:text-sm px-2 sm:px-3 py-1 bg-muted rounded">
+                            Page {currentPage} of {totalPages}
+                          </span>
+                          
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            disabled={currentPage === totalPages}
+                            className="px-2 sm:px-3"
+                          >
+                            <span className="hidden sm:inline mr-1">Next</span>
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="prospects">
+                <Card className="flex-shrink-0 max-h-[40rem] flex flex-col overflow-hidden">
+                  <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden max-h-[36rem]">
+                    <div className="flex-1 overflow-y-auto min-h-0">
+                      <div className="space-y-2 p-3 sm:p-4 pr-2">
+                        {prospects.map(prospect => {
+                          // Get engagement type from referral source or notes
+                          const getEngagementType = (client: typeof prospect) => {
+                            if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
+                            if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
+                            if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
+                            if (client.notes?.toLowerCase().includes('succession')) return 'Succession Planning';
+                            return 'Estate Planning';
+                          };
+
+                          const getStatusLabel = (stage: string) => {
+                            switch (stage) {
+                              case 'scheduled': return 'Consultation Scheduled';
+                              case 'complete': return 'Consultation Complete';
+                              case 'ready_for_review': return 'Ready for Review';
+                              default: return 'Pending Contact';
+                            }
+                          };
+
+                          return (
+                            <div 
+                              key={prospect.id}
+                              className="p-2 sm:p-3 border rounded-lg hover:shadow-sm transition-shadow bg-card cursor-pointer"
+                              onClick={() => window.open(`/client/${prospect.id}`, '_blank')}
+                            >
+                              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-3">
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between gap-1 mb-1">
+                                    <h3 className="font-semibold text-xs sm:text-sm truncate">{prospect.name}</h3>
+                                    <StatusBadge status={prospect.pipelineStage} type="pipeline" />
+                                  </div>
+                                  <p className="text-xs text-muted-foreground mb-1 truncate">
+                                    {prospect.email} • {prospect.phone}
+                                  </p>
+                                  <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-xs text-muted-foreground">
+                                    <div className="flex items-center gap-1">
+                                      <Calendar className="w-3 h-3" />
+                                      Entered: {new Date(prospect.createdAt).toLocaleDateString()}
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                      <FileText className="w-3 h-3" />
+                                      Type: {getEngagementType(prospect)}
+                                    </div>
+                                  </div>
+                                  <div className="mt-1">
+                                    <Badge variant="outline" className="text-xs">
+                                      {getStatusLabel(prospect.pipelineStage)}
+                                    </Badge>
+                                  </div>
+                                </div>
+                                
+                                <div className="flex flex-col items-end text-right">
+                                  <div className="flex items-center gap-1 text-xs text-muted-foreground mb-1">
+                                    <Users className="w-3 h-3" />
+                                    <span>Referral</span>
+                                  </div>
+                                  <p className="text-xs text-muted-foreground truncate max-w-24">
+                                    {prospect.referralSource}
+                                  </p>
+                                  <div className="flex gap-1 mt-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-6 px-1 text-xs"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.open(`/client/${prospect.id}`, '_blank');
+                                      }}
+                                    >
+                                      <Eye className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      className="h-6 px-1 text-xs"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        // TODO: Add contact action
+                                      }}
+                                    >
+                                      <UserPlus className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                        
+                        {prospects.length === 0 && (
+                          <div className="text-center py-8">
+                            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                            <p className="text-muted-foreground">No prospects at this time</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Clients To Engage Section */}
