@@ -241,8 +241,8 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton
                             className={groupActive 
-                              ? "relative bg-gradient-to-r from-primary/15 to-primary/5 text-primary border-r-2 border-primary shadow-md shadow-primary/15 font-medium" 
-                              : "hover:bg-accent/50 transition-all duration-200"
+                              ? "font-semibold relative after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-foreground" 
+                              : "hover:bg-accent/50 transition-colors duration-200"
                             }
                             tooltip={item.title}
                           >
@@ -267,13 +267,13 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
                                        to={subItem.url}
                                        className={({ isActive }) => 
                                          isActive 
-                                           ? "relative bg-gradient-to-r from-primary/25 to-primary/15 text-primary border-r-2 border-primary shadow-md shadow-primary/25 font-medium pl-6" 
-                                           : "hover:bg-accent/30 transition-all duration-200 pl-6"
+                                           ? "font-semibold relative after:content-[''] after:absolute after:bottom-0 after:left-6 after:right-2 after:h-0.5 after:bg-foreground" 
+                                           : "hover:bg-accent/30 transition-colors duration-200"
                                        }
                                      >
-                                      {subItem.title}
-                                    </NavLink>
-                                  </SidebarMenuSubButton>
+                                       {subItem.title}
+                                     </NavLink>
+                                   </SidebarMenuSubButton>
                                 </SidebarMenuSubItem>
                               ))}
                             </SidebarMenuSub>
@@ -291,20 +291,12 @@ export function AppSidebar({ currentRole, onRoleChange }: AppSidebarProps) {
                         to={item.url || "#"}
                         className={({ isActive }) => 
                           isActive 
-                            ? "relative bg-gradient-to-r from-primary/20 to-primary/10 text-primary border-r-2 border-primary shadow-lg shadow-primary/20 font-medium" 
-                            : "hover:bg-accent/50 transition-all duration-200"
+                            ? "relative font-semibold after:content-[''] after:absolute after:bottom-0 after:left-4 after:right-4 after:h-0.5 after:bg-foreground" 
+                            : "hover:bg-accent/50 transition-colors duration-200"
                         }
                       >
-                        <item.icon className={`w-4 h-4 transition-colors duration-200 ${
-                          location.pathname === (item.url || "#") ? "text-primary" : ""
-                        }`} />
-                        {!isCollapsed && (
-                          <span className={`transition-colors duration-200 ${
-                            location.pathname === (item.url || "#") ? "text-primary font-semibold" : ""
-                          }`}>
-                            {item.title}
-                          </span>
-                        )}
+                        <item.icon className="w-4 h-4" />
+                        {!isCollapsed && <span>{item.title}</span>}
                       </NavLink>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
