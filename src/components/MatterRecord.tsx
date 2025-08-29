@@ -34,6 +34,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { mockClients, mockMatters } from '@/data/mockData';
 import { WorkflowStage, Document, Note, Task } from '@/types/legal';
 
@@ -217,7 +218,8 @@ export function MatterRecord() {
   };
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
+    <TooltipProvider>
+      <div className="flex flex-col h-screen overflow-hidden">
       {/* Header */}
       <div className="border-b bg-card px-4 lg:px-6 py-4">
         <div className="flex items-center justify-between">
@@ -407,18 +409,29 @@ export function MatterRecord() {
                             
                             {/* Document Actions */}
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-8 w-8 p-0"
-                                title={doc.clientVisible ? "Visible to client" : "Hidden from client"}
-                              >
-                                {doc.clientVisible ? (
-                                  <Eye className="w-4 h-4 text-green-600" />
-                                ) : (
-                                  <EyeOff className="w-4 h-4 text-muted-foreground" />
-                                )}
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button 
+                                    variant="ghost" 
+                                    size="sm" 
+                                    className="h-8 w-8 p-0"
+                                  >
+                                    {doc.clientVisible ? (
+                                      <Eye className="w-4 h-4 text-green-600" />
+                                    ) : (
+                                      <EyeOff className="w-4 h-4 text-muted-foreground" />
+                                    )}
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>
+                                    {doc.clientVisible 
+                                      ? "This document is visible in the Client's Folder" 
+                                      : "This document is NOT visible to your client"
+                                    }
+                                  </p>
+                                </TooltipContent>
+                              </Tooltip>
                               <Button 
                                 variant="ghost" 
                                 size="sm" 
@@ -701,5 +714,6 @@ export function MatterRecord() {
         )}
       </div>
     </div>
+    </TooltipProvider>
   );
 }
