@@ -209,66 +209,122 @@ export function ClientRecord() {
                   {/* Description Widget */}
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">Description</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-sm leading-relaxed">{client.description}</p>
-                    </CardContent>
-                  </Card>
-
-                  {/* Team Activity Widget */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base flex items-center justify-between">
-                        <span>Team Activity</span>
-                        <Badge variant="secondary">{client.teamConnections} connections</Badge>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Users className="w-4 h-4" />
+                        Description
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-center gap-3">
-                        <div className="flex -space-x-2">
-                          {[1, 2, 3].map((i) => (
-                            <Avatar key={i} className="w-8 h-8 border-2 border-background">
-                              <AvatarImage src={`https://images.unsplash.com/photo-150715709${i}785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face`} />
-                              <AvatarFallback>T{i}</AvatarFallback>
-                            </Avatar>
-                          ))}
-                        </div>
-                        <span className="text-sm text-muted-foreground">Your team is connected to Spencer</span>
+                      <div className="space-y-4">
+                        <p className="text-sm leading-relaxed">
+                          <strong>Intro Blurb:</strong> I founded CoachNow 13 years ago, raised VC money, and got acquired twice. For the better part of a decade it's been #1 coaching app worldwide, used in 80 sports across 140 countries.
+                        </p>
+                        <p className="text-sm leading-relaxed">
+                          Since exiting CoachNow, I've been helping early-stage sports tech and SaaS founders with:
+                        </p>
+                        <ul className="text-sm space-y-1 ml-4 list-disc">
+                          <li>Product strategy and development</li>
+                          <li>Go-to-market planning</li>
+                          <li>Fundraising and investor relations</li>
+                          <li>Business development and partnerships</li>
+                        </ul>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* Interaction Timeline */}
+                  {/* Your Team Section */}
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">Recent Activity</CardTitle>
+                      <CardTitle className="text-base flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-4 h-4" />
+                          <span>Your team</span>
+                        </div>
+                        <span className="text-sm text-blue-600 font-normal">1 team connection</span>
+                      </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        {activities.map((activity) => {
-                          const Icon = getActivityIcon(activity.type);
-                          return (
-                            <div key={activity.id} className="flex gap-3 p-3 rounded-lg hover:bg-muted/30">
-                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                                <Icon className="w-4 h-4 text-primary" />
+                      <div className="flex items-center gap-3 p-3 rounded-lg border">
+                        <Avatar className="w-10 h-10">
+                          <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" />
+                          <AvatarFallback>CB</AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium text-sm">Christopher</span>
+                            <Badge variant="secondary" className="text-xs">YOU</Badge>
+                            <Badge variant="outline" className="text-xs">10</Badge>
+                            <Badge variant="outline" className="text-xs bg-orange-100 text-orange-800">📧</Badge>
+                            <Badge variant="outline" className="text-xs">4</Badge>
+                            <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800">📅</Badge>
+                            <Badge variant="outline" className="text-xs bg-green-100 text-green-800">💬</Badge>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Team Activity Section */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Activity className="w-4 h-4" />
+                        Team activity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-6">
+                        {/* 2025 Section */}
+                        <div>
+                          <h3 className="font-semibold text-lg mb-4">2025</h3>
+                          
+                          {/* August */}
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-muted-foreground">August</h4>
+                            
+                            <div className="flex gap-3 p-3 rounded-lg hover:bg-muted/30">
+                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                                <Mail className="w-4 h-4 text-orange-600" />
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm">{activity.title}</p>
-                                <p className="text-sm text-muted-foreground">{activity.description}</p>
-                                {activity.participants && (
-                                  <p className="text-xs text-muted-foreground mt-1">
-                                    {activity.participants.join(', ')}
-                                  </p>
-                                )}
-                                {activity.status && (
-                                  <Badge variant="outline" className="text-xs mt-1">{activity.status}</Badge>
-                                )}
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Avatar className="w-5 h-5">
+                                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop&crop=face" />
+                                    <AvatarFallback>CB</AvatarFallback>
+                                  </Avatar>
+                                  <span className="font-medium text-sm">Christopher Brereton</span>
+                                  <span className="text-sm text-muted-foreground">received an email</span>
+                                  <Badge variant="outline" className="text-xs">🔒</Badge>
+                                </div>
+                                <div className="bg-muted/50 rounded p-2 mt-2">
+                                  <p className="font-medium text-sm">Re: UI/UX</p>
+                                </div>
                               </div>
-                              <span className="text-xs text-muted-foreground">{activity.timestamp}</span>
+                              <span className="text-xs text-muted-foreground">2 days ago</span>
                             </div>
-                          );
-                        })}
+
+                            <div className="flex gap-3 p-3 rounded-lg hover:bg-muted/30">
+                              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
+                                <Mail className="w-4 h-4 text-orange-600" />
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <Avatar className="w-5 h-5">
+                                    <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop&crop=face" />
+                                    <AvatarFallback>CB</AvatarFallback>
+                                  </Avatar>
+                                  <span className="font-medium text-sm">Christopher Brereton</span>
+                                  <span className="text-sm text-muted-foreground">received an email</span>
+                                  <Badge variant="outline" className="text-xs">🔒</Badge>
+                                </div>
+                                <div className="bg-muted/50 rounded p-2 mt-2">
+                                  <p className="font-medium text-sm">Re: UI/UX</p>
+                                </div>
+                              </div>
+                              <span className="text-xs text-muted-foreground">2 days ago</span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
