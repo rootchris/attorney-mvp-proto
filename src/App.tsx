@@ -8,6 +8,7 @@ import { AppLayout } from "./components/layout/AppLayout";
 import { UserRole } from "./components/RoleSelector";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import ClientIntake from "./pages/ClientIntake";
 import { ClientRecord } from "./components/ClientRecord";
 import { MatterRecord } from "./components/MatterRecord";
 
@@ -25,6 +26,7 @@ const App = () => {
           <AppLayout currentRole={currentRole} onRoleChange={setCurrentRole}>
             <Routes>
               <Route path="/" element={<Index currentRole={currentRole} onRoleChange={setCurrentRole} />} />
+              <Route path="/client-intake" element={<ClientIntake />} />
               <Route path="/client/:clientId" element={<ClientRecord />} />
               <Route path="/matter/:matterId" element={<MatterRecord />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
