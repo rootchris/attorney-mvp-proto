@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +10,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Trash2, FileText, Download } from "lucide-react";
+import { Plus, Trash2, FileText, Download, ArrowLeft } from "lucide-react";
 import { EstateIntakeFormData } from "@/types/intake";
 
 const EstateIntakeForm = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const [showSummary, setShowSummary] = useState(false);
+  const navigate = useNavigate();
   
   const { register, control, watch, handleSubmit, formState: { errors } } = useForm<EstateIntakeFormData>({
     defaultValues: {
@@ -519,6 +521,18 @@ const EstateIntakeForm = () => {
             </form>
           </CardContent>
         </Card>
+        
+        {/* Footer with link back to attorney dashboard */}
+        <div className="mt-6 text-center">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/')}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to Attorney Dashboard
+          </Button>
+        </div>
       </div>
     </div>
   );
