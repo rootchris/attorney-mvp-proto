@@ -392,9 +392,24 @@ export function MatterRecord() {
             <Tabs defaultValue="documents" className="flex flex-col h-full">
               <div className="border-b px-4 lg:px-6">
                 <TabsList className="grid w-full max-w-md grid-cols-3">
-                  <TabsTrigger value="documents">Documents</TabsTrigger>
-                  <TabsTrigger value="notes">Notes</TabsTrigger>
-                  <TabsTrigger value="tasks">Tasks</TabsTrigger>
+                  <TabsTrigger value="documents" className="gap-2">
+                    Documents
+                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5">
+                      {mockMatterDocuments.length}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="notes" className="gap-2">
+                    Notes
+                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5">
+                      {mockMatterNotes.length}
+                    </Badge>
+                  </TabsTrigger>
+                  <TabsTrigger value="tasks" className="gap-2">
+                    Tasks
+                    <Badge variant="secondary" className="ml-1 h-5 min-w-5 px-1.5">
+                      {mockMatterTasks.length}
+                    </Badge>
+                  </TabsTrigger>
                 </TabsList>
               </div>
 
