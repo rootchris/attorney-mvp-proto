@@ -70,6 +70,11 @@ const navigationConfig = {
       icon: Users,
     },
     {
+      title: "Network",
+      url: "/network",
+      icon: Network,
+    },
+    {
       title: "Tasks",
       url: "/tasks",
       icon: CheckSquare,
@@ -88,11 +93,6 @@ const navigationConfig = {
       title: "Analytics",
       url: "/analytics",
       icon: BarChart3,
-    },
-    {
-      title: "Network",
-      url: "/network",
-      icon: Network,
     }
   ],
   clerk: [
