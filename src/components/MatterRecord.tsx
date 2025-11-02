@@ -2,31 +2,21 @@ import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { 
   Search, 
-  CheckSquare, 
-  List, 
-  Users, 
-  Activity, 
-  Heart,
   ArrowLeft,
   Phone,
   Mail,
-  MapPin,
-  Download,
-  Eye,
-  EyeOff,
   FileText,
   Plus,
   Calendar,
   User,
   MessageSquare,
   ChevronRight,
-  Menu,
   X,
   UserPlus,
   MoreVertical
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -35,18 +25,73 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import erinAvatar from '@/assets/erin-avatar.jpg';
 import ashleyAvatar from '@/assets/ashley-avatar.jpg';
 import { mockClients, mockMatters } from '@/data/mockData';
-import { WorkflowStage, Document, Note, Task } from '@/types/legal';
+import { WorkflowStage, Document, Note, Task, Folder } from '@/types/legal';
+import { DocumentsSection } from '@/components/matter/DocumentsSection';
+
+const mockMatterFolders: Folder[] = [
+  {
+    id: 'f1',
+    matterId: '1',
+    name: 'Trust Documents',
+    createdBy: 'Michael Chen',
+    createdAt: '2024-02-20',
+    color: 'text-blue-600'
+  },
+  {
+    id: 'f2',
+    matterId: '1',
+    name: 'Drafts',
+    parentFolderId: 'f1',
+    createdBy: 'Michael Chen',
+    createdAt: '2024-02-21',
+    color: 'text-blue-500'
+  },
+  {
+    id: 'f3',
+    matterId: '1',
+    name: 'Final Documents',
+    parentFolderId: 'f1',
+    createdBy: 'Michael Chen',
+    createdAt: '2024-02-21',
+    color: 'text-green-600'
+  },
+  {
+    id: 'f4',
+    matterId: '1',
+    name: 'Client Documents',
+    createdBy: 'Lisa Park',
+    createdAt: '2024-02-22',
+    color: 'text-purple-600'
+  },
+  {
+    id: 'f5',
+    matterId: '1',
+    name: 'Tax Planning',
+    createdBy: 'David Kim',
+    createdAt: '2024-02-25',
+    color: 'text-orange-600'
+  },
+  {
+    id: 'f6',
+    matterId: '1',
+    name: '2024 Tax Year',
+    parentFolderId: 'f5',
+    createdBy: 'David Kim',
+    createdAt: '2024-02-26',
+    color: 'text-orange-500'
+  }
+];
 
 const mockMatterDocuments: Document[] = [
   {
     id: '1',
     matterId: '1',
+    folderId: 'f2',
     name: 'Johnson Family Trust - Draft v3.pdf',
     type: 'Trust Document',
     uploadedBy: 'Michael Chen',
@@ -54,11 +99,13 @@ const mockMatterDocuments: Document[] = [
     size: 245760,
     url: '#',
     isWealthCounselDoc: true,
-    clientVisible: false
+    clientVisible: false,
+    tags: ['draft', 'review-needed']
   },
   {
     id: '2',
     matterId: '1',
+    folderId: 'f4',
     name: 'Property Deed Analysis.pdf',
     type: 'Real Estate Document',
     uploadedBy: 'Lisa Park',
@@ -66,11 +113,13 @@ const mockMatterDocuments: Document[] = [
     size: 156890,
     url: '#',
     isWealthCounselDoc: false,
-    clientVisible: true
+    clientVisible: true,
+    tags: ['client-provided']
   },
   {
     id: '3',
     matterId: '1',
+    folderId: 'f6',
     name: 'Tax Planning Worksheet.xlsx',
     type: 'Tax Document',
     uploadedBy: 'David Kim',
@@ -78,11 +127,13 @@ const mockMatterDocuments: Document[] = [
     size: 89432,
     url: '#',
     isWealthCounselDoc: true,
-    clientVisible: false
+    clientVisible: false,
+    tags: ['tax', 'planning']
   },
   {
     id: '4',
     matterId: '1',
+    folderId: 'f4',
     name: 'Client Information Form.pdf',
     type: 'Intake Document',
     uploadedBy: 'Sarah Johnson',
@@ -90,7 +141,35 @@ const mockMatterDocuments: Document[] = [
     size: 567123,
     url: '#',
     isWealthCounselDoc: false,
-    clientVisible: true
+    clientVisible: true,
+    tags: ['intake', 'client-provided']
+  },
+  {
+    id: '5',
+    matterId: '1',
+    folderId: 'f3',
+    name: 'Signed Trust Agreement.pdf',
+    type: 'Trust Document',
+    uploadedBy: 'Michael Chen',
+    uploadedAt: '2024-03-10',
+    size: 892340,
+    url: '#',
+    isWealthCounselDoc: false,
+    clientVisible: true,
+    tags: ['signed', 'final']
+  },
+  {
+    id: '6',
+    matterId: '1',
+    name: 'Initial Consultation Notes.pdf',
+    type: 'Notes',
+    uploadedBy: 'Michael Chen',
+    uploadedAt: '2024-02-15',
+    size: 125000,
+    url: '#',
+    isWealthCounselDoc: false,
+    clientVisible: false,
+    tags: ['consultation', 'internal']
   }
 ];
 
@@ -171,7 +250,6 @@ const workflowStages: { stage: WorkflowStage; label: string; progress: number }[
 export function MatterRecord() {
   const { matterId } = useParams();
   const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
-  const [documentFilter, setDocumentFilter] = useState<'all' | 'wealth-counsel' | 'own-docs'>('all');
   
   // Mock team data
   const matterTeam = [
@@ -185,32 +263,6 @@ export function MatterRecord() {
   const client = mockClients.find(c => c.id === matter.clientId);
   
   const currentStage = workflowStages.find(s => s.stage === 'drafting') || workflowStages[3];
-
-  // Filter documents based on selected filter
-  const filteredDocuments = mockMatterDocuments.filter(doc => {
-    switch (documentFilter) {
-      case 'wealth-counsel':
-        return doc.isWealthCounselDoc;
-      case 'own-docs':
-        return !doc.isWealthCounselDoc;
-      default:
-        return true;
-    }
-  });
-
-  // Document counts for each filter
-  const documentCounts = {
-    all: mockMatterDocuments.length,
-    'wealth-counsel': mockMatterDocuments.filter(doc => doc.isWealthCounselDoc).length,
-    'own-docs': mockMatterDocuments.filter(doc => !doc.isWealthCounselDoc).length,
-  };
-
-  const formatFileSize = (bytes: number) => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    if (bytes === 0) return '0 Bytes';
-    const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i];
-  };
 
   const getTaskStatusColor = (status: string) => {
     switch (status) {
@@ -347,122 +399,7 @@ export function MatterRecord() {
               </div>
 
               <TabsContent value="documents" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">
-                <div className="space-y-4">
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <h2 className="text-lg font-semibold">Documents</h2>
-                    <Button size="sm">
-                      <Plus className="w-4 h-4 mr-2" />
-                      Upload Document
-                    </Button>
-                  </div>
-
-                  {/* Document Filter Toggle */}
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                    <ToggleGroup 
-                      type="single" 
-                      value={documentFilter} 
-                      onValueChange={(value: 'all' | 'wealth-counsel' | 'own-docs') => value && setDocumentFilter(value)}
-                      className="justify-start"
-                    >
-                      <ToggleGroupItem value="all" className="text-sm">
-                        All Documents ({documentCounts.all})
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="wealth-counsel" className="text-sm">
-                        Wealth Counsel ({documentCounts['wealth-counsel']})
-                      </ToggleGroupItem>
-                      <ToggleGroupItem value="own-docs" className="text-sm">
-                        Our Documents ({documentCounts['own-docs']})
-                      </ToggleGroupItem>
-                    </ToggleGroup>
-                  </div>
-                </div>
-
-                <ScrollArea className="h-full mt-4">
-                  <div className="space-y-3">
-                    {filteredDocuments.map((doc) => (
-                      <Card key={doc.id} className="hover:shadow-sm transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-4">
-                            {/* Document Icon */}
-                            <div className="flex-shrink-0 w-10 h-10 rounded bg-muted flex items-center justify-center">
-                              <FileText className="w-5 h-5 text-muted-foreground" />
-                            </div>
-                            
-                            {/* Document Info */}
-                            <div className="flex-1 min-w-0 space-y-1">
-                              <div className="flex items-center gap-3">
-                                <h4 className="text-sm font-semibold leading-tight">{doc.name}</h4>
-                                {doc.isWealthCounselDoc && (
-                                  <div className="flex items-center gap-1">
-                                    <img 
-                                      src="/lovable-uploads/14b38707-140d-4b73-a1ec-440ea4ca4120.png" 
-                                      alt="Wealth Counsel" 
-                                      className="w-5 h-5 object-contain"
-                                    />
-                                    <Badge variant="secondary" className="text-xs bg-teal-100 text-teal-800">
-                                      Wealth Counsel
-                                    </Badge>
-                                  </div>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                                <span>{doc.type}</span>
-                                <span>•</span>
-                                <span>{formatFileSize(doc.size)}</span>
-                                <span>•</span>
-                                <div className="flex items-center gap-1">
-                                  <User className="w-3 h-3" />
-                                  <span>{doc.uploadedBy}</span>
-                                </div>
-                                <span>•</span>
-                                <span>{new Date(doc.uploadedAt).toLocaleDateString()}</span>
-                              </div>
-                            </div>
-                            
-                            {/* Document Actions */}
-                            <div className="flex items-center gap-2 flex-shrink-0">
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button 
-                                    variant="ghost" 
-                                    size="sm" 
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    {doc.clientVisible ? (
-                                      <Eye className="w-4 h-4 text-green-600" />
-                                    ) : (
-                                      <EyeOff className="w-4 h-4 text-muted-foreground" />
-                                    )}
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent 
-                                  className="z-[9999] bg-popover border border-border shadow-md"
-                                  side="top"
-                                  sideOffset={5}
-                                >
-                                  <p>
-                                    {doc.clientVisible 
-                                      ? "This document is visible in the Client's Folder" 
-                                      : "This document is NOT visible to your client"
-                                    }
-                                  </p>
-                                </TooltipContent>
-                              </Tooltip>
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                className="h-8 w-8 p-0"
-                                title="Download document"
-                              >
-                                <Download className="w-4 h-4 text-muted-foreground" />
-                              </Button>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </ScrollArea>
+                <DocumentsSection documents={mockMatterDocuments} folders={mockMatterFolders} />
               </TabsContent>
 
               <TabsContent value="notes" className="flex-1 mt-0 p-4 lg:p-6 overflow-hidden">

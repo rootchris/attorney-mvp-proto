@@ -46,9 +46,20 @@ export interface Task {
   completedAt?: string;
 }
 
+export interface Folder {
+  id: string;
+  matterId: string;
+  name: string;
+  parentFolderId?: string;
+  createdBy: string;
+  createdAt: string;
+  color?: string;
+}
+
 export interface Document {
   id: string;
   matterId: string;
+  folderId?: string;
   name: string;
   type: string;
   uploadedBy: string;
@@ -57,6 +68,7 @@ export interface Document {
   url: string;
   isWealthCounselDoc?: boolean;
   clientVisible?: boolean;
+  tags?: string[];
 }
 
 export interface Note {
