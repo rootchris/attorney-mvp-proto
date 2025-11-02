@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { 
   Search, 
@@ -34,7 +35,8 @@ import {
   ArrowLeft,
   Menu,
   Info,
-  Check
+  Check,
+  ChevronDown
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -58,6 +60,7 @@ export function ClientRecord() {
     email: "spencer@coachnow.com",
     linkedIn: "linkedin.com/in/spencerdennis",
     phone: "+1 (555) 123-4567",
+    status: "client" as "prospect" | "client",
     interactions: {
       emails: 10,
       events: 4,
@@ -69,6 +72,8 @@ export function ClientRecord() {
     teamConnections: 3,
     description: "Experienced strategist and founder in the sports technology space. Successfully built and exited CoachNow, now focusing on advising other SaaS founders. Strong background in product strategy and business development."
   };
+
+  const [clientStatus, setClientStatus] = useState<"prospect" | "client">(client.status);
 
   const activities = [
     {
@@ -298,7 +303,28 @@ export function ClientRecord() {
                 </Avatar>
                 
                 <div className="flex-1 text-center sm:text-left">
-                  <h1 className="text-xl md:text-2xl font-bold">{client.name}</h1>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                    <h1 className="text-xl md:text-2xl font-bold">{client.name}</h1>
+                    <Select value={clientStatus} onValueChange={(value: "prospect" | "client") => setClientStatus(value)}>
+                      <SelectTrigger className="w-[140px] h-8">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="prospect">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                            Prospect
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="client">
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                            Client
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <p className="text-muted-foreground mt-1 text-sm md:text-base">{client.title}</p>
                 </div>
               </div>
