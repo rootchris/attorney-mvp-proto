@@ -162,6 +162,32 @@ export function ClientRecord() {
 
   const RightSidebarContent = () => (
     <div className="space-y-6">
+      {/* Status */}
+      <div>
+        <label className="text-xs text-muted-foreground uppercase mb-2 block">Status</label>
+        <Select value={clientStatus} onValueChange={(value: "prospect" | "client") => setClientStatus(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="prospect">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                Prospect
+              </div>
+            </SelectItem>
+            <SelectItem value="client">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                Client
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <Separator />
+
       <WealthCounselButton />
       
       {/* Your interaction */}
@@ -204,8 +230,8 @@ export function ClientRecord() {
         </div>
 
         <div>
-          <label className="text-xs text-muted-foreground">Phone numbers</label>
-          <Button variant="ghost" size="sm" className="mt-1 text-muted-foreground hover:text-foreground h-auto p-0">
+          <label className="text-xs text-muted-foreground block mb-2">Phone numbers</label>
+          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground h-auto p-0">
             <Plus className="w-4 h-4 mr-2" />
             Add phone number
           </Button>
@@ -316,28 +342,7 @@ export function ClientRecord() {
                 </Avatar>
                 
                 <div className="flex-1 text-center sm:text-left">
-                  <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                    <h1 className="text-xl md:text-2xl font-bold">{client.name}</h1>
-                    <Select value={clientStatus} onValueChange={(value: "prospect" | "client") => setClientStatus(value)}>
-                      <SelectTrigger className="w-[140px] h-8">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="prospect">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
-                            Prospect
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="client">
-                          <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                            Client
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <h1 className="text-xl md:text-2xl font-bold">{client.name}</h1>
                   <p className="text-muted-foreground mt-1 text-sm md:text-base">{client.title}</p>
                 </div>
               </div>
