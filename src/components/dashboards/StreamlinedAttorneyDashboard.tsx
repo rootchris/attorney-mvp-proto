@@ -132,7 +132,7 @@ export function StreamlinedAttorneyDashboard() {
           <div className="flex flex-col sm:flex-row gap-2">
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <UserPlus className="w-4 h-4 mr-2" />
-              <span className="hidden xs:inline">Create </span>Prospect
+              <span className="hidden xs:inline">Create </span>Client
             </Button>
             <Button variant="outline" size="sm" className="w-full sm:w-auto">
               <FileText className="w-4 h-4 mr-2" />
