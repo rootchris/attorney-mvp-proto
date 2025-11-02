@@ -205,7 +205,8 @@ export function ClientRecord() {
 
         <div>
           <label className="text-xs text-muted-foreground">Phone numbers</label>
-          <Button variant="link" size="sm" className="h-auto p-0 text-primary">
+          <Button variant="ghost" size="sm" className="mt-1 text-muted-foreground hover:text-foreground h-auto p-0">
+            <Plus className="w-4 h-4 mr-2" />
             Add phone number
           </Button>
         </div>
