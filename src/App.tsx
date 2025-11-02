@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import ClientIntake from "./pages/ClientIntake";
 import ClientsList from "./pages/ClientsList";
 import MattersList from "./pages/MattersList";
+import TasksPage from "./pages/TasksPage";
 import { ClientRecord } from "./components/ClientRecord";
 import { MatterRecord } from "./components/MatterRecord";
 
@@ -31,6 +32,7 @@ const App = () => {
               <Route path="/client-intake" element={<ClientIntake />} />
               <Route path="/clients" element={<ClientsList />} />
               <Route path="/matters" element={<MattersList />} />
+              <Route path="/tasks" element={<TasksPage />} />
               <Route path="/client/:clientId" element={<ClientRecord />} />
               <Route path="/matter/:matterId" element={<MatterRecord />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
