@@ -300,33 +300,6 @@ export function ClientRecord() {
                 <div className="flex-1 text-center sm:text-left">
                   <h1 className="text-xl md:text-2xl font-bold">{client.name}</h1>
                   <p className="text-muted-foreground mt-1 text-sm md:text-base">{client.title}</p>
-                  
-                  {/* Social/Contact Icons */}
-                  <ScrollArea className="w-full">
-                    <div className="flex items-center gap-2 mt-4 pb-2 justify-center sm:justify-start">
-                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Mail className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Building2 className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Linkedin className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Users className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <MessageCircle className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <Calendar className="w-4 h-4" />
-                      </button>
-                      <button className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 touch-manipulation min-h-[44px] min-w-[44px] flex items-center justify-center">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </ScrollArea>
                 </div>
               </div>
               
