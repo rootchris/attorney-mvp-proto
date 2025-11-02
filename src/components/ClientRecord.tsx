@@ -354,11 +354,10 @@ export function ClientRecord() {
                     Overview
                   </TabsTrigger>
                   <TabsTrigger 
-                    value="team" 
-                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
+                    value="matters" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
-                    <span className="whitespace-nowrap">Team connections</span>
-                    <Badge variant="secondary" className="ml-1 flex-shrink-0">1</Badge>
+                    Matters
                   </TabsTrigger>
                   <TabsTrigger 
                     value="tasks" 
@@ -367,144 +366,354 @@ export function ClientRecord() {
                     Tasks
                   </TabsTrigger>
                   <TabsTrigger 
-                    value="companies" 
-                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-2"
-                  >
-                    <span className="whitespace-nowrap">Companies</span>
-                    <Badge variant="secondary" className="ml-1 flex-shrink-0">4</Badge>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="linkedin" 
-                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4 flex items-center gap-1"
-                  >
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                    <span className="whitespace-nowrap">LinkedIn</span>
-                  </TabsTrigger>
-                  <TabsTrigger 
-                    value="updates" 
+                    value="notes" 
                     className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
-                    Updates
+                    Notes
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="relationships" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                  >
+                    Relationships
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="network" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                  >
+                    Network
                   </TabsTrigger>
                 </TabsList>
               </ScrollArea>
 
               {/* Tab Content - Scrollable */}
               <div className="flex-1 overflow-y-auto">
+                {/* Overview Tab */}
                 <TabsContent value="overview" className="mt-0 p-4 md:p-6">
-                  <div className="space-y-6">
-                    {/* Description Section */}
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Users className="w-4 h-4" />
-                        <h3 className="font-medium">Description</h3>
-                      </div>
-                      <div className="space-y-3 text-sm">
-                        <p>
-                          <strong>Intro Blurb:</strong> I founded CoachNow 13 years ago, raised VC money, and got acquired twice. For the better part of a decade it's been #1 coaching app worldwide, used in 80 sports across 140 countries.
-                        </p>
-                        <p>
-                          Since exiting CoachNow, I've been helping early-stage sports tech and SaaS founders with:
-                        </p>
-                        <p>Strategic...</p>
-                      </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg">Client Notes</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <textarea
+                        className="w-full min-h-[200px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                        placeholder="Add notes about this client..."
+                        defaultValue="Spencer is an experienced founder with a successful exit from CoachNow. Strong connections in the sports tech space. Looking to establish estate planning for family and business succession planning."
+                      />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Matters Tab */}
+                <TabsContent value="matters" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Matters</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        New Matter
+                      </Button>
+                    </div>
+                    
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <CardTitle className="text-base">Estate Planning Package</CardTitle>
+                            <p className="text-sm text-muted-foreground mt-1">Trust & Estate Documents</p>
+                          </div>
+                          <Badge>Drafting</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Created:</span>
+                            <span>Jan 15, 2025</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Stage:</span>
+                            <span>Client Ready for Draft</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Progress:</span>
+                            <span>45%</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <CardTitle className="text-base">Business Succession Plan</CardTitle>
+                            <p className="text-sm text-muted-foreground mt-1">Business Planning</p>
+                          </div>
+                          <Badge variant="secondary">Consult</Badge>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Created:</span>
+                            <span>Feb 1, 2025</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Stage:</span>
+                            <span>Prospect</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-muted-foreground">Progress:</span>
+                            <span>10%</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </TabsContent>
+
+                {/* Tasks Tab */}
+                <TabsContent value="tasks" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Tasks</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        New Task
+                      </Button>
                     </div>
 
-                    {/* Your Team Section */}
-                    <div className="space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                        <div className="flex items-center gap-2">
-                          <Users className="w-4 h-4" />
-                          <h3 className="font-medium">Your team</h3>
-                        </div>
-                        <span className="text-sm text-blue-600">1 team connection</span>
-                      </div>
-                      
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 p-3 rounded-lg border">
-                        <Avatar className="w-8 h-8 mx-auto sm:mx-0">
-                          <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&crop=face" />
-                          <AvatarFallback>C</AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-                          <span className="font-medium text-sm">Christop...</span>
-                          <Badge variant="secondary" className="text-xs">YOU</Badge>
-                          <Badge variant="outline" className="text-xs">10</Badge>
-                          <Badge variant="outline" className="text-xs bg-orange-100 text-orange-800">📧</Badge>
-                          <Badge variant="outline" className="text-xs">4</Badge>
-                          <Badge variant="outline" className="text-xs bg-blue-100 text-blue-800">📅</Badge>
-                          <Badge variant="outline" className="text-xs bg-green-100 text-green-800">💬</Badge>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Team Activity Section */}
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-2">
-                        <Activity className="w-4 h-4" />
-                        <h3 className="font-medium">Team activity</h3>
-                      </div>
-                      
-                      <div className="space-y-6">
-                        <div>
-                          <h4 className="font-semibold text-lg mb-3">2025</h4>
-                          <div className="space-y-4">
-                            <h5 className="font-medium text-muted-foreground">August</h5>
-                            
-                            {/* Activity Items */}
-                            <div className="space-y-3">
-                              <div className="flex gap-3 p-3 rounded-lg hover:bg-muted/30">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                                  <Mail className="w-4 h-4 text-orange-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <Avatar className="w-5 h-5">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop&crop=face" />
-                                        <AvatarFallback>CB</AvatarFallback>
-                                      </Avatar>
-                                      <span className="font-medium text-sm">Christopher Brereton</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm text-muted-foreground">received an email</span>
-                                      <Badge variant="outline" className="text-xs">🔒</Badge>
-                                    </div>
-                                  </div>
-                                  <div className="bg-muted/50 rounded p-2">
-                                    <p className="font-medium text-sm">Re: UI/UX</p>
-                                  </div>
-                                </div>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">2 days ago</span>
-                              </div>
-
-                              <div className="flex gap-3 p-3 rounded-lg hover:bg-muted/30">
-                                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                                  <Mail className="w-4 h-4 text-orange-600" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                  <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                                    <div className="flex items-center gap-2">
-                                      <Avatar className="w-5 h-5">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=20&h=20&fit=crop&crop=face" />
-                                        <AvatarFallback>CB</AvatarFallback>
-                                      </Avatar>
-                                      <span className="font-medium text-sm">Christopher Brereton</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-sm text-muted-foreground">received an email</span>
-                                      <Badge variant="outline" className="text-xs">🔒</Badge>
-                                    </div>
-                                  </div>
-                                  <div className="bg-muted/50 rounded p-2">
-                                    <p className="font-medium text-sm">Re: UI/UX</p>
-                                  </div>
-                                </div>
-                                <span className="text-xs text-muted-foreground whitespace-nowrap">2 days ago</span>
-                              </div>
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-3">
+                          <input type="checkbox" className="mt-1" />
+                          <div className="flex-1">
+                            <h4 className="font-medium">Review trust documents</h4>
+                            <p className="text-sm text-muted-foreground mt-1">Estate Planning Package</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="outline" className="text-xs">High Priority</Badge>
+                              <span className="text-xs text-muted-foreground">Due: Mar 15, 2025</span>
                             </div>
                           </div>
                         </div>
-                      </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-3">
+                          <input type="checkbox" className="mt-1" />
+                          <div className="flex-1">
+                            <h4 className="font-medium">Schedule follow-up consultation</h4>
+                            <p className="text-sm text-muted-foreground mt-1">Business Succession Plan</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="outline" className="text-xs">Medium Priority</Badge>
+                              <span className="text-xs text-muted-foreground">Due: Mar 20, 2025</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-3">
+                          <input type="checkbox" defaultChecked className="mt-1" />
+                          <div className="flex-1 opacity-60">
+                            <h4 className="font-medium line-through">Send intake questionnaire</h4>
+                            <p className="text-sm text-muted-foreground mt-1">Estate Planning Package</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <span className="text-xs text-muted-foreground">Completed: Feb 28, 2025</span>
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </TabsContent>
+
+                {/* Notes Tab */}
+                <TabsContent value="notes" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Notes</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Note
+                      </Button>
+                    </div>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="w-8 h-8">
+                              <AvatarFallback>AB</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="text-sm font-medium">Ashley Brereton</p>
+                              <p className="text-xs text-muted-foreground">Mar 1, 2025 at 2:30 PM</p>
+                            </div>
+                          </div>
+                          <p className="text-sm mt-2">
+                            Client expressed interest in setting up a revocable living trust. Has significant assets from business sale and wants to ensure smooth transfer to children. Mentioned concerns about estate taxes.
+                          </p>
+                          <Badge variant="secondary" className="text-xs">Estate Planning Package</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Avatar className="w-8 h-8">
+                              <AvatarFallback>ER</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="text-sm font-medium">Erin Rodriguez</p>
+                              <p className="text-xs text-muted-foreground">Feb 20, 2025 at 10:15 AM</p>
+                            </div>
+                          </div>
+                          <p className="text-sm mt-2">
+                            Initial consultation went well. Spencer is very organized and prepared. He brought documentation of all his assets and has clear goals. Will need to discuss guardianship arrangements for minor children.
+                          </p>
+                          <Badge variant="secondary" className="text-xs">General</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </TabsContent>
+
+                {/* Relationships Tab */}
+                <TabsContent value="relationships" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Client Relationships</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Link Client
+                      </Button>
+                    </div>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>JD</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Jennifer Dennis</p>
+                            <p className="text-sm text-muted-foreground">Spouse</p>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            View
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>MD</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Michael Dennis</p>
+                            <p className="text-sm text-muted-foreground">Father</p>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            View
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                      <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Link other client records to track family relationships and related matters
+                      </p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Network Tab */}
+                <TabsContent value="network" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Network Contacts</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Contact
+                      </Button>
+                    </div>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>RJ</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Robert Johnson</p>
+                            <p className="text-sm text-muted-foreground">Financial Advisor - Wells Fargo</p>
+                            <p className="text-xs text-muted-foreground mt-1">robert.johnson@wellsfargo.com</p>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            <Mail className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>SK</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Sarah Kim</p>
+                            <p className="text-sm text-muted-foreground">CPA - Kim & Associates</p>
+                            <p className="text-xs text-muted-foreground mt-1">sarah@kimcpa.com</p>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            <Mail className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>DM</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">David Martinez</p>
+                            <p className="text-sm text-muted-foreground">Insurance Agent - State Farm</p>
+                            <p className="text-xs text-muted-foreground mt-1">d.martinez@statefarm.com</p>
+                          </div>
+                          <Button variant="ghost" size="sm">
+                            <Mail className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                      <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground mb-3">
+                        Add professionals from your network who work with this client
+                      </p>
+                      <Button variant="outline" size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Quick Add New Contact
+                      </Button>
                     </div>
                   </div>
                 </TabsContent>
