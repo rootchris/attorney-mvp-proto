@@ -383,6 +383,12 @@ export function ClientRecord() {
                   >
                     Network
                   </TabsTrigger>
+                  <TabsTrigger 
+                    value="team" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                  >
+                    Team
+                  </TabsTrigger>
                 </TabsList>
               </ScrollArea>
 
@@ -718,21 +724,74 @@ export function ClientRecord() {
                   </div>
                 </TabsContent>
 
-                {/* Other tab contents */}
+                {/* Team Tab */}
                 <TabsContent value="team" className="mt-0 p-4 md:p-6">
-                  <p className="text-muted-foreground">Team connections content...</p>
-                </TabsContent>
-                <TabsContent value="tasks" className="mt-0 p-4 md:p-6">
-                  <p className="text-muted-foreground">Tasks content...</p>
-                </TabsContent>
-                <TabsContent value="companies" className="mt-0 p-4 md:p-6">
-                  <p className="text-muted-foreground">Companies content...</p>
-                </TabsContent>
-                <TabsContent value="linkedin" className="mt-0 p-4 md:p-6">
-                  <p className="text-muted-foreground">LinkedIn content...</p>
-                </TabsContent>
-                <TabsContent value="updates" className="mt-0 p-4 md:p-6">
-                  <p className="text-muted-foreground">Updates content...</p>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-semibold">Team Members</h3>
+                      <Button size="sm">
+                        <Plus className="w-4 h-4 mr-2" />
+                        Add Team Member
+                      </Button>
+                    </div>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarImage src="/src/assets/ashley-avatar.jpg" />
+                            <AvatarFallback>AB</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Ashley Brereton</p>
+                            <p className="text-sm text-muted-foreground">Lead Attorney</p>
+                            <p className="text-xs text-muted-foreground mt-1">Estate Planning · Trust Administration</p>
+                          </div>
+                          <Badge variant="outline">Primary</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarImage src="/src/assets/erin-avatar.jpg" />
+                            <AvatarFallback>ER</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Erin Rodriguez</p>
+                            <p className="text-sm text-muted-foreground">Associate Attorney</p>
+                            <p className="text-xs text-muted-foreground mt-1">Business Planning · Tax Strategy</p>
+                          </div>
+                          <Badge variant="secondary">Collaborating</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="w-10 h-10">
+                            <AvatarFallback>MK</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <p className="font-medium">Michael Kim</p>
+                            <p className="text-sm text-muted-foreground">Paralegal</p>
+                            <p className="text-xs text-muted-foreground mt-1">Document Preparation · Client Coordination</p>
+                          </div>
+                          <Badge variant="secondary">Support</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
+                      <Users className="w-8 h-8 mx-auto text-muted-foreground mb-2" />
+                      <p className="text-sm text-muted-foreground">
+                        Add other attorneys or staff members who are working on this client's matters
+                      </p>
+                    </div>
+                  </div>
                 </TabsContent>
               </div>
             </Tabs>
