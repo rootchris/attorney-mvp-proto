@@ -220,15 +220,27 @@ export function ClientRecord() {
 
       {/* Lists */}
       <div>
-        <label className="text-xs text-muted-foreground">Lists</label>
-        <div className="flex gap-1 mt-2">
-          <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-            🏅 Founders
-          </Badge>
-          <Badge variant="secondary">startups</Badge>
+        <label className="text-xs text-muted-foreground uppercase mb-3 block">Lists</label>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between px-4 py-2 bg-secondary/50 rounded-full">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">🏅 Founders</span>
+            </div>
+            <button className="text-muted-foreground hover:text-foreground">
+              <Plus className="w-3 h-3 rotate-45" />
+            </button>
+          </div>
+          <div className="flex items-center justify-between px-4 py-2 bg-secondary/50 rounded-full">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">Startups</span>
+            </div>
+            <button className="text-muted-foreground hover:text-foreground">
+              <Plus className="w-3 h-3 rotate-45" />
+            </button>
+          </div>
         </div>
-        <Button variant="link" size="sm" className="h-auto p-0 text-primary mt-2">
-          <Plus className="w-3 h-3 mr-1" />
+        <Button variant="ghost" size="sm" className="mt-3 text-muted-foreground hover:text-foreground">
+          <Plus className="w-4 h-4 mr-2" />
           Add to list
         </Button>
       </div>
@@ -237,10 +249,10 @@ export function ClientRecord() {
 
       {/* Tags */}
       <div>
-        <label className="text-xs text-muted-foreground">Tags</label>
-        <Button variant="link" size="sm" className="h-auto p-0 text-primary mt-2">
-          <Plus className="w-3 h-3 mr-1" />
-          Add tag
+        <label className="text-xs text-muted-foreground uppercase mb-3 block">Tags</label>
+        <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+          <Plus className="w-4 h-4 mr-2" />
+          Add tags
         </Button>
       </div>
     </div>
