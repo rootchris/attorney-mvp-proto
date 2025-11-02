@@ -400,6 +400,12 @@ export function ClientRecord() {
                   >
                     Team
                   </TabsTrigger>
+                  <TabsTrigger 
+                    value="activity" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                  >
+                    Activity
+                  </TabsTrigger>
                 </TabsList>
               </ScrollArea>
 
@@ -801,6 +807,146 @@ export function ClientRecord() {
                       <p className="text-sm text-muted-foreground">
                         Add other attorneys or staff members who are working on this client's matters
                       </p>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Activity Tab */}
+                <TabsContent value="activity" className="mt-0 p-4 md:p-6">
+                  <div className="space-y-6">
+                    {/* 2025 */}
+                    <div>
+                      <h3 className="text-sm font-semibold mb-4">2025</h3>
+                      
+                      {/* October */}
+                      <div className="space-y-4">
+                        <h4 className="text-sm text-muted-foreground mb-3">October</h4>
+                        
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-orange-500/10 flex items-center justify-center">
+                            <Mail className="w-4 h-4 text-orange-500" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-5 h-5">
+                                  <AvatarImage src="/src/assets/ashley-avatar.jpg" />
+                                  <AvatarFallback>AB</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className="font-medium">Ashley Brereton</span>
+                                  <span className="text-muted-foreground"> received an email</span>
+                                </p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">1 day ago</span>
+                            </div>
+                            <div className="mt-2 p-3 bg-secondary/50 rounded-md">
+                              <p className="text-sm">Re: UI/UX Feedback Discussion</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-blue-500/10 flex items-center justify-center">
+                            <StickyNote className="w-4 h-4 text-blue-500" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-5 h-5">
+                                  <AvatarFallback>You</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className="font-medium">You</span>
+                                  <span className="text-muted-foreground"> added a note</span>
+                                </p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">2 days ago</span>
+                            </div>
+                            <div className="mt-2 p-3 bg-secondary/50 rounded-md">
+                              <p className="text-sm">Granola feedback - discussed product requirements</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-green-500/10 flex items-center justify-center">
+                            <Calendar className="w-4 h-4 text-green-500" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-5 h-5">
+                                  <AvatarImage src="/src/assets/erin-avatar.jpg" />
+                                  <AvatarFallback>ER</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className="font-medium">Erin Rodriguez</span>
+                                  <span className="text-muted-foreground"> accepted meeting</span>
+                                </p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">3 days ago</span>
+                            </div>
+                            <div className="mt-2 p-3 bg-secondary/50 rounded-md">
+                              <p className="text-sm">Spencer & Team Strategy Call</p>
+                              <p className="text-xs text-muted-foreground mt-1">Fri, 22 Oct 25, 10:30am – 11:15am</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* September */}
+                    <div>
+                      <h4 className="text-sm text-muted-foreground mb-3">September</h4>
+                      
+                      <div className="space-y-4">
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-orange-500/10 flex items-center justify-center">
+                            <Mail className="w-4 h-4 text-orange-500" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-5 h-5">
+                                  <AvatarFallback>SD</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className="font-medium">Spencer Dennis</span>
+                                  <span className="text-muted-foreground"> sent an email</span>
+                                </p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">about 2 months ago</span>
+                            </div>
+                            <div className="mt-2 p-3 bg-secondary/50 rounded-md">
+                              <p className="text-sm">Introduction to Team</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex gap-3">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-md bg-green-500/10 flex items-center justify-center">
+                            <CheckSquare className="w-4 h-4 text-green-500" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-2">
+                                <Avatar className="w-5 h-5">
+                                  <AvatarFallback>You</AvatarFallback>
+                                </Avatar>
+                                <p className="text-sm">
+                                  <span className="font-medium">You</span>
+                                  <span className="text-muted-foreground"> completed task</span>
+                                </p>
+                              </div>
+                              <span className="text-xs text-muted-foreground whitespace-nowrap">2 months ago</span>
+                            </div>
+                            <div className="mt-2 p-3 bg-secondary/50 rounded-md">
+                              <p className="text-sm">Send intake questionnaire</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </TabsContent>
