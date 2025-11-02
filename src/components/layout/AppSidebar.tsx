@@ -61,7 +61,7 @@ const navigationConfig = {
     },
     {
       title: "Matters",
-      url: "/matter/1",
+      url: "/matters",
       icon: Briefcase,
     },
     {
