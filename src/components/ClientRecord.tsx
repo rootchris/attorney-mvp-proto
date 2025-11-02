@@ -273,25 +273,6 @@ export function ClientRecord() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-80 p-0">
-                <div className="p-4 border-b">
-                  <h2 className="font-medium text-muted-foreground text-sm tracking-wider">DETAILS</h2>
-                  <div className="flex gap-1 mt-3">
-                    <Button
-                      variant={rightPanelView === "details" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setRightPanelView("details")}
-                    >
-                      Details
-                    </Button>
-                    <Button
-                      variant={rightPanelView === "custom" ? "default" : "ghost"}
-                      size="sm"
-                      onClick={() => setRightPanelView("custom")}
-                    >
-                      Custom fields
-                    </Button>
-                  </div>
-                </div>
                 <ScrollArea className="h-full">
                   <div className="p-4">
                     <RightSidebarContent />
@@ -300,11 +281,6 @@ export function ClientRecord() {
               </SheetContent>
             </Sheet>
           )}
-          <Button size="sm" variant="outline" className="shrink-0">
-            <Plus className="w-4 h-4 mr-1 md:mr-2" />
-            <span className="hidden sm:inline">Add to Rolodex</span>
-            <span className="sm:hidden">Add</span>
-          </Button>
         </div>
       </div>
 
@@ -554,28 +530,8 @@ export function ClientRecord() {
           </div>
         </div>
 
-        {/* Right Sidebar - DETAILS - Hidden on mobile/tablet */}
+        {/* Right Sidebar - Hidden on mobile/tablet */}
         <div className="hidden lg:block w-80 border-l bg-card overflow-y-auto">
-          <div className="p-4 border-b">
-            <h2 className="font-medium text-muted-foreground text-sm tracking-wider">DETAILS</h2>
-            <div className="flex gap-1 mt-3">
-              <Button
-                variant={rightPanelView === "details" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setRightPanelView("details")}
-              >
-                Details
-              </Button>
-              <Button
-                variant={rightPanelView === "custom" ? "default" : "ghost"}
-                size="sm"
-                onClick={() => setRightPanelView("custom")}
-              >
-                Custom fields
-              </Button>
-            </div>
-          </div>
-
           <div className="p-4">
             <RightSidebarContent />
           </div>
