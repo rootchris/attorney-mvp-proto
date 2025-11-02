@@ -19,7 +19,8 @@ import {
   LogOut,
   ChevronRight,
   ChevronDown,
-  Building2
+  Building2,
+  Network
 } from "lucide-react";
 
 import {
@@ -87,6 +88,11 @@ const navigationConfig = {
       title: "Analytics",
       url: "/analytics",
       icon: BarChart3,
+    },
+    {
+      title: "Network",
+      url: "/network",
+      icon: Network,
     }
   ],
   clerk: [
