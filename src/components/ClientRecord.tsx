@@ -304,7 +304,7 @@ export function ClientRecord() {
       {/* Main Content Area */}
       <div className="flex flex-1 overflow-hidden">
         {/* Center Content */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-y-auto">
           {/* Client Header */}
           <div className="p-4 md:p-6 border-b bg-card">
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
@@ -403,8 +403,8 @@ export function ClientRecord() {
                 </TabsList>
               </ScrollArea>
 
-              {/* Tab Content - Scrollable */}
-              <div className="flex-1 overflow-y-auto">
+              {/* Tab Content */}
+              <div className="flex-1">
                 {/* Overview Tab */}
                 <TabsContent value="overview" className="mt-0 p-4 md:p-6">
                   <Card>
