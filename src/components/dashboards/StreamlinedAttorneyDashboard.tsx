@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { cn } from "@/lib/utils";
 import { 
   Calendar, 
   FileText,
@@ -38,6 +39,13 @@ export function StreamlinedAttorneyDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [reviewClientPage, setReviewClientPage] = useState(1);
   
+  // Prospects filters
+  const [prospectSearch, setProspectSearch] = useState("");
+  const [prospectStageFilter, setProspectStageFilter] = useState("all");
+  const [prospectSortBy, setProspectSortBy] = useState("lastAction");
+  const [prospectViewMode, setProspectViewMode] = useState<"list" | "grouped">("list");
+  const [expandedProspects, setExpandedProspects] = useState<Set<string>>(new Set());
+  
   const itemsPerPage = 6;
   const reviewClientsPerPage = 4;
 
@@ -56,6 +64,63 @@ export function StreamlinedAttorneyDashboard() {
   const prospects = myClients.filter(client => 
     ['scheduled', 'complete', 'ready_for_review'].includes(client.pipelineStage)
   );
+
+  // Helper function to calculate days since last action
+  const getDaysSinceLastAction = (client: typeof prospects[0]) => {
+    const createdDate = new Date(client.createdAt);
+    const today = new Date();
+    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  // Helper function to get urgency level
+  const getUrgencyLevel = (client: typeof prospects[0]) => {
+    const days = getDaysSinceLastAction(client);
+    if (client.pipelineStage === 'scheduled' && days <= 2) return 'hot';
+    if (days > 7) return 'attention';
+    return 'normal';
+  };
+
+  // Filter and sort prospects
+  const filteredProspects = prospects
+    .filter(prospect => {
+      const matchesSearch = prospect.name.toLowerCase().includes(prospectSearch.toLowerCase()) ||
+                          prospect.email.toLowerCase().includes(prospectSearch.toLowerCase());
+      const matchesStage = prospectStageFilter === "all" || prospect.pipelineStage === prospectStageFilter;
+      return matchesSearch && matchesStage;
+    })
+    .sort((a, b) => {
+      switch (prospectSortBy) {
+        case "lastAction":
+          return getDaysSinceLastAction(b) - getDaysSinceLastAction(a);
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "stage":
+          return a.pipelineStage.localeCompare(b.pipelineStage);
+        default:
+          return 0;
+      }
+    });
+
+  // Group prospects by stage if in grouped mode
+  const groupedProspects = {
+    scheduled: filteredProspects.filter(p => p.pipelineStage === 'scheduled'),
+    complete: filteredProspects.filter(p => p.pipelineStage === 'complete'),
+    ready_for_review: filteredProspects.filter(p => p.pipelineStage === 'ready_for_review'),
+  };
+
+  const toggleProspectExpand = (id: string) => {
+    setExpandedProspects(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
 
   // Enhanced matter data with client info
   const enrichedMatters = activeMatters.map(matter => {
@@ -216,7 +281,7 @@ export function StreamlinedAttorneyDashboard() {
                       >
                         <Users className="w-4 h-4" />
                         <span className="font-medium">Prospects</span>
-                        <Badge variant="secondary" className="ml-1 text-xs data-[state=active]:bg-primary-foreground/20 data-[state=active]:text-primary-foreground">{prospects.length}</Badge>
+                        <Badge variant="secondary" className="ml-1 text-xs data-[state=active]:bg-primary-foreground/20 data-[state=active]:text-primary-foreground">{filteredProspects.length}</Badge>
                       </TabsTrigger>
                     </TabsList>
                   </div>
@@ -344,119 +409,366 @@ export function StreamlinedAttorneyDashboard() {
 
                 <TabsContent value="prospects" className="flex-1 flex flex-col min-h-0 mt-0">
                   <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
+                    {/* Search and Filter Bar for Prospects */}
+                    <div className="flex-shrink-0 border-b bg-muted/20 p-3 sm:p-4">
+                      <div className="flex flex-col gap-3">
+                        {/* Search and Filters Row */}
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                          <div className="relative flex-1">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+                            <Input
+                              placeholder="Search prospects by name or email..."
+                              value={prospectSearch}
+                              onChange={(e) => setProspectSearch(e.target.value)}
+                              className="pl-10"
+                            />
+                          </div>
+                          
+                          <div className="flex flex-col xs:flex-row gap-2">
+                            <Select value={prospectStageFilter} onValueChange={setProspectStageFilter}>
+                              <SelectTrigger className="w-full xs:w-36">
+                                <SelectValue placeholder="All Stages" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Stages</SelectItem>
+                                <SelectItem value="scheduled">Scheduled</SelectItem>
+                                <SelectItem value="complete">Complete</SelectItem>
+                                <SelectItem value="ready_for_review">Ready for Review</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            
+                            <Select value={prospectSortBy} onValueChange={setProspectSortBy}>
+                              <SelectTrigger className="w-full xs:w-36">
+                                <SelectValue placeholder="Sort by" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="lastAction">Last Action</SelectItem>
+                                <SelectItem value="name">Name</SelectItem>
+                                <SelectItem value="stage">Stage</SelectItem>
+                              </SelectContent>
+                            </Select>
+
+                            <div className="flex gap-1 border rounded-md p-1 bg-background">
+                              <Button
+                                variant={prospectViewMode === "list" ? "default" : "ghost"}
+                                size="sm"
+                                className="h-8 px-3"
+                                onClick={() => setProspectViewMode("list")}
+                              >
+                                <ClipboardList className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                variant={prospectViewMode === "grouped" ? "default" : "ghost"}
+                                size="sm"
+                                className="h-8 px-3"
+                                onClick={() => setProspectViewMode("grouped")}
+                              >
+                                <Target className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Prospects Content */}
                     <div className="flex-1 overflow-y-auto min-h-0">
-                      <div className="space-y-2 p-3 sm:p-4 pr-2">
-                         {prospects.map(prospect => {
-                           // Get engagement type from referral source or notes
-                           const getEngagementType = (client: typeof prospect) => {
-                             if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
-                             if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
-                             if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
-                             if (client.notes?.toLowerCase().includes('succession')) return 'Succession Planning';
-                             return 'Estate Planning';
-                           };
+                      {prospectViewMode === "list" ? (
+                        // List View
+                        <div className="space-y-2 p-3 sm:p-4 pr-2">
+                          {filteredProspects.map(prospect => {
+                            const urgency = getUrgencyLevel(prospect);
+                            const daysSince = getDaysSinceLastAction(prospect);
+                            const isExpanded = expandedProspects.has(prospect.id);
+                            
+                            const getEngagementType = (client: typeof prospect) => {
+                              if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
+                              if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
+                              if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
+                              if (client.notes?.toLowerCase().includes('succession')) return 'Succession Planning';
+                              return 'Estate Planning';
+                            };
 
-                           const getStatusLabel = (stage: string) => {
-                             switch (stage) {
-                               case 'scheduled': return 'Consultation Scheduled';
-                               case 'complete': return 'Consultation Complete';
-                               case 'ready_for_review': return 'Ready for Review';
-                               default: return 'Pending Contact';
-                             }
-                           };
+                            const getUrgencyStyles = () => {
+                              if (urgency === 'hot') return 'border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20';
+                              if (urgency === 'attention') return 'border-l-4 border-l-red-500 bg-red-50/50 dark:bg-red-950/20';
+                              return 'border-l-2 border-l-muted';
+                            };
 
-                           return (
-                             <div 
-                               key={prospect.id}
-                               className="p-4 border rounded-lg hover:shadow-md transition-all duration-200 bg-card cursor-pointer group border-border/60 hover:border-border"
-                               onClick={() => window.open(`/client/${prospect.id}`, '_blank')}
-                             >
-                               <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-                                 <div className="flex-1 space-y-3">
-                                   {/* Header with name and status */}
-                                   <div className="flex items-start justify-between gap-3">
-                                     <div className="flex-1">
-                                       <h3 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
-                                         {prospect.name}
-                                       </h3>
-                                       <p className="text-sm text-muted-foreground mt-1">
-                                         {prospect.email} • {prospect.phone}
-                                       </p>
-                                     </div>
-                                     <StatusBadge status={prospect.pipelineStage} type="pipeline" />
-                                   </div>
-                                   
-                                   {/* Engagement info */}
-                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                                     <div className="flex items-center gap-2 text-muted-foreground">
-                                       <Calendar className="w-4 h-4 text-primary/60" />
-                                       <div>
-                                         <span className="font-medium text-foreground">Date Entered:</span>
-                                         <span className="ml-1">{new Date(prospect.createdAt).toLocaleDateString()}</span>
-                                       </div>
-                                     </div>
-                                     <div className="flex items-center gap-2 text-muted-foreground">
-                                       <FileText className="w-4 h-4 text-primary/60" />
-                                       <div>
-                                         <span className="font-medium text-foreground">Engagement:</span>
-                                         <span className="ml-1">{getEngagementType(prospect)}</span>
-                                       </div>
-                                     </div>
-                                   </div>
-                                   
-                                   {/* Status and referral info */}
-                                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2 border-t border-border/50">
-                                     <div className="flex items-center gap-2">
-                                       <Badge variant="outline" className="text-xs font-medium">
-                                         {getStatusLabel(prospect.pipelineStage)}
-                                       </Badge>
-                                     </div>
-                                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                       <Users className="w-4 h-4 text-primary/60" />
-                                       <span className="font-medium text-foreground">Referred by:</span>
-                                       <span className="truncate max-w-32">{prospect.referralSource}</span>
-                                     </div>
-                                   </div>
-                                 </div>
-                                 
-                                 {/* Action buttons */}
-                                 <div className="flex lg:flex-col gap-2 lg:items-end">
-                                   <Button
-                                     variant="outline"
-                                     size="sm"
-                                     className="px-3 text-xs"
-                                     onClick={(e) => {
+                            return (
+                              <div 
+                                key={prospect.id}
+                                className={cn(
+                                  "p-3 border rounded-lg hover:shadow-sm transition-all duration-200 bg-card cursor-pointer",
+                                  getUrgencyStyles()
+                                )}
+                                onClick={() => toggleProspectExpand(prospect.id)}
+                              >
+                                {/* Compact Main Info */}
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex-1 min-w-0">
+                                    {/* Name and Stage Badge */}
+                                    <div className="flex items-center gap-2 mb-1">
+                                      <h3 className="font-semibold text-sm truncate">{prospect.name}</h3>
+                                      <StatusBadge status={prospect.pipelineStage} type="pipeline" />
+                                      {urgency === 'hot' && (
+                                        <Badge className="bg-orange-500 text-white text-xs px-1.5 py-0">
+                                          🔥 Hot Lead
+                                        </Badge>
+                                      )}
+                                      {urgency === 'attention' && (
+                                        <Badge variant="destructive" className="text-xs px-1.5 py-0">
+                                          Needs Attention
+                                        </Badge>
+                                      )}
+                                    </div>
+
+                                    {/* Key Info Row */}
+                                    <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                      <div className="flex items-center gap-1">
+                                        <FileText className="w-3 h-3" />
+                                        <span>{getEngagementType(prospect)}</span>
+                                      </div>
+                                      <div className="flex items-center gap-1">
+                                        <Clock className="w-3 h-3" />
+                                        <span className={daysSince > 7 ? 'text-red-600 font-medium' : ''}>
+                                          {daysSince} {daysSince === 1 ? 'day' : 'days'} ago
+                                        </span>
+                                      </div>
+                                    </div>
+
+                                    {/* Expanded Contact Info */}
+                                    {isExpanded && (
+                                      <div className="mt-2 pt-2 border-t border-border/50 space-y-1">
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                          <Mail className="w-3 h-3" />
+                                          <a 
+                                            href={`mailto:${prospect.email}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="hover:text-primary hover:underline"
+                                          >
+                                            {prospect.email}
+                                          </a>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                          <Phone className="w-3 h-3" />
+                                          <a 
+                                            href={`tel:${prospect.phone}`}
+                                            onClick={(e) => e.stopPropagation()}
+                                            className="hover:text-primary hover:underline"
+                                          >
+                                            {prospect.phone}
+                                          </a>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                          <Users className="w-3 h-3" />
+                                          <span>Referred by: {prospect.referralSource}</span>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Quick Action Buttons */}
+                                  <div className="flex gap-1">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      onClick={(e) => {
                                         e.stopPropagation();
                                         window.open(`/client/${prospect.id}`, '_blank');
                                       }}
+                                      title="View Details"
                                     >
                                       <Eye className="w-3 h-3" />
                                     </Button>
-                                     <Button
-                                       variant="default"
-                                       size="sm"
-                                       className="px-3 text-xs"
-                                       onClick={(e) => {
-                                         e.stopPropagation();
-                                         // TODO: Add contact action
-                                       }}
-                                     >
-                                       <UserPlus className="w-3 h-3 mr-1" />
-                                       <span className="hidden sm:inline">Contact</span>
-                                     </Button>
-                                   </div>
-                                 </div>
-                               </div>
-                             );
-                           })}
-                        
-                        {prospects.length === 0 && (
-                          <div className="text-center py-8">
-                            <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                            <p className="text-muted-foreground">No prospects at this time</p>
-                          </div>
-                        )}
-                      </div>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.location.href = `mailto:${prospect.email}`;
+                                      }}
+                                      title="Send Email"
+                                    >
+                                      <Mail className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        window.location.href = `tel:${prospect.phone}`;
+                                      }}
+                                      title="Call"
+                                    >
+                                      <Phone className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      variant="default"
+                                      size="sm"
+                                      className="h-7 px-2"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        // TODO: Open schedule dialog
+                                      }}
+                                      title="Schedule"
+                                    >
+                                      <Calendar className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                         
+                          {filteredProspects.length === 0 && (
+                            <div className="text-center py-8">
+                              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                              <p className="text-muted-foreground font-medium mb-2">No prospects match your filters</p>
+                              <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        // Grouped View
+                        <div className="p-3 sm:p-4 space-y-4">
+                          {(['scheduled', 'complete', 'ready_for_review'] as const).map(stage => {
+                            const stageProspects = groupedProspects[stage];
+                            const stageLabels = {
+                              scheduled: 'Consultation Scheduled',
+                              complete: 'Consultation Complete',
+                              ready_for_review: 'Ready for Review'
+                            };
+
+                            if (stageProspects.length === 0) return null;
+
+                            return (
+                              <div key={stage} className="space-y-2">
+                                <div className="flex items-center gap-2 pb-2 border-b">
+                                  <h3 className="font-semibold text-sm">{stageLabels[stage]}</h3>
+                                  <Badge variant="secondary" className="text-xs">{stageProspects.length}</Badge>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+                                  {stageProspects.map(prospect => {
+                                    const urgency = getUrgencyLevel(prospect);
+                                    const daysSince = getDaysSinceLastAction(prospect);
+                                    const isExpanded = expandedProspects.has(prospect.id);
+                                    
+                                    const getEngagementType = (client: typeof prospect) => {
+                                      if (client.notes?.toLowerCase().includes('trust')) return 'Trust Planning';
+                                      if (client.notes?.toLowerCase().includes('will')) return 'Will & Estate';
+                                      if (client.notes?.toLowerCase().includes('business')) return 'Business Planning';
+                                      return 'Estate Planning';
+                                    };
+
+                                    const getUrgencyStyles = () => {
+                                      if (urgency === 'hot') return 'border-l-4 border-l-orange-500 bg-orange-50/50 dark:bg-orange-950/20';
+                                      if (urgency === 'attention') return 'border-l-4 border-l-red-500 bg-red-50/50 dark:bg-red-950/20';
+                                      return 'border-l-2 border-l-muted';
+                                    };
+
+                                    return (
+                                      <div 
+                                        key={prospect.id}
+                                        className={cn(
+                                          "p-2.5 border rounded-lg hover:shadow-sm transition-all duration-200 bg-card cursor-pointer text-xs",
+                                          getUrgencyStyles()
+                                        )}
+                                        onClick={() => toggleProspectExpand(prospect.id)}
+                                      >
+                                        <div className="flex items-start justify-between gap-2 mb-1.5">
+                                          <div className="flex-1 min-w-0">
+                                            <div className="flex items-center gap-1.5 mb-0.5">
+                                              <h4 className="font-semibold text-xs truncate">{prospect.name}</h4>
+                                              {urgency === 'hot' && (
+                                                <span className="text-orange-500 text-xs">🔥</span>
+                                              )}
+                                              {urgency === 'attention' && (
+                                                <AlertTriangle className="w-3 h-3 text-red-500" />
+                                              )}
+                                            </div>
+                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                              <span>{getEngagementType(prospect)}</span>
+                                              <span>•</span>
+                                              <span className={daysSince > 7 ? 'text-red-600 font-medium' : ''}>
+                                                {daysSince}d ago
+                                              </span>
+                                            </div>
+                                            
+                                            {isExpanded && (
+                                              <div className="mt-1.5 pt-1.5 border-t border-border/50 space-y-0.5">
+                                                <div className="flex items-center gap-1.5">
+                                                  <Mail className="w-3 h-3" />
+                                                  <a 
+                                                    href={`mailto:${prospect.email}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="hover:text-primary hover:underline truncate"
+                                                  >
+                                                    {prospect.email}
+                                                  </a>
+                                                </div>
+                                                <div className="flex items-center gap-1.5">
+                                                  <Phone className="w-3 h-3" />
+                                                  <a 
+                                                    href={`tel:${prospect.phone}`}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                    className="hover:text-primary hover:underline"
+                                                  >
+                                                    {prospect.phone}
+                                                  </a>
+                                                </div>
+                                              </div>
+                                            )}
+                                          </div>
+
+                                          <div className="flex gap-0.5">
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="h-6 px-1.5"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.open(`/client/${prospect.id}`, '_blank');
+                                              }}
+                                              title="View"
+                                            >
+                                              <Eye className="w-3 h-3" />
+                                            </Button>
+                                            <Button
+                                              variant="outline"
+                                              size="sm"
+                                              className="h-6 px-1.5"
+                                              onClick={(e) => {
+                                                e.stopPropagation();
+                                                window.location.href = `mailto:${prospect.email}`;
+                                              }}
+                                              title="Email"
+                                            >
+                                              <Mail className="w-3 h-3" />
+                                            </Button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                          {filteredProspects.length === 0 && (
+                            <div className="text-center py-8">
+                              <Users className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                              <p className="text-muted-foreground font-medium mb-2">No prospects match your filters</p>
+                              <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 </TabsContent>
