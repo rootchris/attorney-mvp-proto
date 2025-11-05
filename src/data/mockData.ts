@@ -324,40 +324,207 @@ export const mockMatters: Matter[] = [
 ];
 
 export const mockTasks: Task[] = [
+  // Overdue tasks
   {
     id: '1',
     matterId: '1',
     clientName: 'Sarah Johnson',
     title: 'Review trust documents',
     description: 'Complete final review of Johnson Family Trust documents before client signing',
-    assignedTo: 'Lisa Park',
-    assignedBy: 'Michael Chen',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
     status: 'in_progress',
     priority: 'high',
-    dueDate: '2024-03-12',
+    dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     createdAt: '2024-03-05'
   },
   {
-    id: '2',
+    id: '4',
     matterId: '2',
     clientName: 'Robert Martinez',
-    title: 'Draft will document',
-    description: 'Prepare will document based on client consultation notes',
-    assignedTo: 'David Kim',
-    assignedBy: 'Michael Chen',
+    title: 'Client intake review',
+    description: 'Review and organize client intake documents - urgent follow-up needed',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'pending',
+    priority: 'high',
+    dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-01'
+  },
+  {
+    id: '10',
+    matterId: '6',
+    clientName: 'James Wilson',
+    title: 'File trust with county recorder',
+    description: 'Submit trust documentation to county recorder office',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Robert Anderson',
     status: 'pending',
     priority: 'medium',
-    dueDate: '2024-03-18',
+    dueDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-10'
+  },
+  
+  // Due today
+  {
+    id: '5',
+    matterId: '3',
+    clientName: 'Emily Davis',
+    title: 'Prepare consultation materials',
+    description: 'Gather all necessary materials and documents for upcoming client consultation',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Michael Chen',
+    status: 'in_progress',
+    priority: 'high',
+    dueDate: new Date().toISOString().split('T')[0],
+    createdAt: '2024-03-12'
+  },
+  {
+    id: '11',
+    matterId: '1',
+    clientName: 'Sarah Johnson',
+    title: 'Schedule signing appointment',
+    description: 'Coordinate with client for final document signing',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'pending',
+    priority: 'medium',
+    dueDate: new Date().toISOString().split('T')[0],
+    createdAt: '2024-03-11'
+  },
+  
+  // Due in 1-3 days
+  {
+    id: '6',
+    matterId: '4',
+    clientName: 'Angela Thompson',
+    title: 'Draft asset protection plan',
+    description: 'Create comprehensive asset protection strategy document',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Robert Anderson',
+    status: 'pending',
+    priority: 'high',
+    dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     createdAt: '2024-03-08'
   },
+  {
+    id: '7',
+    matterId: '5',
+    clientName: 'Marcus Johnson',
+    title: 'Review beneficiary designations',
+    description: 'Verify all beneficiary designations match client wishes',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'pending',
+    priority: 'medium',
+    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-09'
+  },
+  {
+    id: '8',
+    matterId: '3',
+    clientName: 'Emily Davis',
+    title: 'Update healthcare directives',
+    description: 'Revise healthcare directive documents based on recent changes',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Michael Chen',
+    status: 'in_progress',
+    priority: 'low',
+    dueDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-07'
+  },
+  
+  // Due in 4-7 days
+  {
+    id: '9',
+    matterId: '2',
+    clientName: 'Robert Martinez',
+    title: 'Prepare estate tax analysis',
+    description: 'Complete comprehensive estate tax planning analysis',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Robert Anderson',
+    status: 'pending',
+    priority: 'high',
+    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-06'
+  },
+  {
+    id: '12',
+    matterId: '7',
+    clientName: 'Gregory Walsh',
+    title: 'Research charitable trust options',
+    description: 'Investigate best charitable remainder trust structures for client',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'pending',
+    priority: 'medium',
+    dueDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-11'
+  },
+  {
+    id: '13',
+    matterId: '8',
+    clientName: 'Benjamin Carter',
+    title: 'Coordinate with financial advisor',
+    description: 'Schedule meeting with client financial advisor to align estate plan',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Michael Chen',
+    status: 'pending',
+    priority: 'low',
+    dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-10'
+  },
+  
+  // Due in 8+ days
+  {
+    id: '14',
+    matterId: '9',
+    clientName: 'Olivia Henderson',
+    title: 'Draft power of attorney documents',
+    description: 'Prepare durable power of attorney for healthcare and finances',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Robert Anderson',
+    status: 'pending',
+    priority: 'medium',
+    dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-09'
+  },
+  {
+    id: '15',
+    matterId: '10',
+    clientName: 'William Foster',
+    title: 'Review business succession plan',
+    description: 'Analyze current business succession strategy and recommend updates',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'pending',
+    priority: 'high',
+    dueDate: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-08'
+  },
+  {
+    id: '16',
+    matterId: '1',
+    clientName: 'Sarah Johnson',
+    title: 'Finalize trust funding checklist',
+    description: 'Create comprehensive checklist for transferring assets into trust',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Michael Chen',
+    status: 'pending',
+    priority: 'low',
+    dueDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    createdAt: '2024-03-11'
+  },
+  
+  // Completed tasks (should be filtered out)
   {
     id: '3',
     matterId: '1',
     clientName: 'Sarah Johnson',
     title: 'Prepare signing binder',
     description: 'Organize all documents for client signing appointment',
-    assignedTo: 'Lisa Park',
-    assignedBy: 'Michael Chen',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
     status: 'completed',
     priority: 'medium',
     dueDate: '2024-03-10',
@@ -365,17 +532,18 @@ export const mockTasks: Task[] = [
     completedAt: '2024-03-09'
   },
   {
-    id: '4',
+    id: '2',
     matterId: '2',
     clientName: 'Robert Martinez',
-    title: 'Client intake review',
-    description: 'Review and organize client intake documents',
-    assignedTo: 'David Kim',
-    assignedBy: 'Michael Chen',
-    status: 'overdue',
-    priority: 'high',
-    dueDate: '2024-03-05',
-    createdAt: '2024-03-01'
+    title: 'Draft will document',
+    description: 'Prepare will document based on client consultation notes',
+    assignedTo: 'Michael Chen',
+    assignedBy: 'Jennifer Liu',
+    status: 'completed',
+    priority: 'medium',
+    dueDate: '2024-03-18',
+    createdAt: '2024-03-08',
+    completedAt: '2024-03-17'
   }
 ];
 

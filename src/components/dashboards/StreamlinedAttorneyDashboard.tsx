@@ -58,6 +58,7 @@ export function StreamlinedAttorneyDashboard() {
   const [taskFilter, setTaskFilter] = useState<'all' | 'today' | 'overdue' | 'high'>('all');
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  const [taskPage, setTaskPage] = useState(1);
   
   const itemsPerPage = 6;
   const reviewClientsPerPage = 4;
@@ -139,6 +140,20 @@ export function StreamlinedAttorneyDashboard() {
       setSelectedTask(task);
       setTaskDialogOpen(true);
     }
+  };
+
+  // Task pagination
+  const tasksPerPage = 6;
+  const totalTaskPages = Math.ceil(filteredTasksByFilter.length / tasksPerPage);
+  const paginatedTasks = filteredTasksByFilter.slice(
+    (taskPage - 1) * tasksPerPage,
+    taskPage * tasksPerPage
+  );
+
+  // Reset to page 1 when filter changes
+  const handleTaskFilterChange = (newFilter: 'all' | 'today' | 'overdue' | 'high') => {
+    setTaskFilter(newFilter);
+    setTaskPage(1);
   };
 
   // Helper function to calculate days since last action
@@ -1104,7 +1119,7 @@ export function StreamlinedAttorneyDashboard() {
                   variant={taskFilter === "all" ? "default" : "ghost"}
                   size="sm"
                   className="flex-1 h-7 text-xs"
-                  onClick={() => setTaskFilter("all")}
+                  onClick={() => handleTaskFilterChange("all")}
                 >
                   All
                   <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
@@ -1115,7 +1130,7 @@ export function StreamlinedAttorneyDashboard() {
                   variant={taskFilter === "today" ? "default" : "ghost"}
                   size="sm"
                   className="flex-1 h-7 text-xs"
-                  onClick={() => setTaskFilter("today")}
+                  onClick={() => handleTaskFilterChange("today")}
                 >
                   Today
                   <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
@@ -1126,7 +1141,7 @@ export function StreamlinedAttorneyDashboard() {
                   variant={taskFilter === "overdue" ? "default" : "ghost"}
                   size="sm"
                   className="flex-1 h-7 text-xs"
-                  onClick={() => setTaskFilter("overdue")}
+                  onClick={() => handleTaskFilterChange("overdue")}
                 >
                   Overdue
                   <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
@@ -1137,7 +1152,7 @@ export function StreamlinedAttorneyDashboard() {
                   variant={taskFilter === "high" ? "default" : "ghost"}
                   size="sm"
                   className="flex-1 h-7 text-xs"
-                  onClick={() => setTaskFilter("high")}
+                  onClick={() => handleTaskFilterChange("high")}
                 >
                   High
                   <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
@@ -1165,7 +1180,7 @@ export function StreamlinedAttorneyDashboard() {
                       </p>
                     </div>
                   ) : (
-                    filteredTasksByFilter.map(task => (
+                    paginatedTasks.map(task => (
                       <EnhancedTaskItem
                         key={task.id}
                         task={task}
@@ -1178,6 +1193,38 @@ export function StreamlinedAttorneyDashboard() {
                   )}
                 </div>
               </div>
+              
+              {/* Pagination */}
+              {filteredTasksByFilter.length > tasksPerPage && (
+                <div className="flex-shrink-0 border-t p-3 flex items-center justify-between bg-background">
+                  <div className="text-xs text-muted-foreground">
+                    Showing {((taskPage - 1) * tasksPerPage) + 1}-{Math.min(taskPage * tasksPerPage, filteredTasksByFilter.length)} of {filteredTasksByFilter.length}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTaskPage(p => Math.max(1, p - 1))}
+                      disabled={taskPage === 1}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ChevronLeft className="h-3.5 w-3.5" />
+                    </Button>
+                    <div className="text-xs px-2">
+                      {taskPage} / {totalTaskPages}
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setTaskPage(p => Math.min(totalTaskPages, p + 1))}
+                      disabled={taskPage === totalTaskPages}
+                      className="h-7 w-7 p-0"
+                    >
+                      <ChevronRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
           
