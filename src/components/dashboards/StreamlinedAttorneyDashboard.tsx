@@ -902,7 +902,7 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Right Sidebar - Performance & Tasks */}
-        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-hidden">
+        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-y-auto">
           {/* Performance Metrics - Fixed Height */}
           <div className="flex-shrink-0">
             <Card>
