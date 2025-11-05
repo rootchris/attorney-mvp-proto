@@ -278,7 +278,7 @@ export function StreamlinedAttorneyDashboard() {
       {/* Main Content Area */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden px-4 sm:px-6 py-4 gap-6">
         {/* Main Content - Matters and Clients */}
-        <div className="flex-1 lg:flex-[2] min-h-0 overflow-y-auto space-y-6">
+        <div className="flex-1 lg:flex-[2] basis-0 min-h-0 overflow-y-auto space-y-6">
           
           {/* Active Matters Section */}
           <div className="flex-shrink-0">
@@ -902,7 +902,7 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Right Sidebar - Performance & Tasks */}
-        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-y-auto">
+        <div className="flex-1 lg:w-80 basis-0 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-y-auto">
           {/* Performance Metrics - Fixed Height */}
           <div className="flex-shrink-0">
             <Card>
