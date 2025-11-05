@@ -529,6 +529,9 @@ export function StreamlinedAttorneyDashboard() {
 
                                     {/* Key Info Row */}
                                     <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                                      <div className="flex items-center gap-1 font-semibold text-foreground">
+                                        <span>${prospect.estimatedRevenue?.toLocaleString() || '0'}</span>
+                                      </div>
                                       <div className="flex items-center gap-1">
                                         <FileText className="w-3 h-3" />
                                         <span>{getEngagementType(prospect)}</span>
@@ -698,6 +701,8 @@ export function StreamlinedAttorneyDashboard() {
                                               )}
                                             </div>
                                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                                              <span className="font-semibold text-foreground">${prospect.estimatedRevenue?.toLocaleString() || '0'}</span>
+                                              <span>•</span>
                                               <span>{getEngagementType(prospect)}</span>
                                               <span>•</span>
                                               <span className={daysSince > 7 ? 'text-red-600 font-medium' : ''}>

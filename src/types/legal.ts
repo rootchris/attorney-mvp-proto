@@ -17,6 +17,7 @@ export interface Client {
   createdAt: string;
   lastActionDate?: string;
   assignedAttorney: string;
+  estimatedRevenue?: number;
 }
 
 export interface Matter {

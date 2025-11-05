@@ -14,7 +14,8 @@ export const mockClients: Client[] = [
     notes: 'Complex family trust with multiple beneficiaries. Owns significant real estate portfolio.',
     createdAt: '2024-02-10',
     lastActionDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 4500
   },
   {
     id: '22',
@@ -28,7 +29,8 @@ export const mockClients: Client[] = [
     notes: 'Interested in basic will. Just filled out contact form today.',
     createdAt: new Date(Date.now()).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now()).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 1800
   },
   {
     id: '3',
@@ -43,7 +45,8 @@ export const mockClients: Client[] = [
     notes: 'High-net-worth individual seeking comprehensive estate planning.',
     createdAt: '2024-03-05',
     lastActionDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 5000
   },
   {
     id: '23',
@@ -57,7 +60,8 @@ export const mockClients: Client[] = [
     notes: 'Called to discuss trust options. Follow-up scheduled for next week.',
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 3200
   },
   {
     id: '6',
@@ -73,7 +77,8 @@ export const mockClients: Client[] = [
     notes: 'Revocable living trust with healthcare directives.',
     createdAt: '2024-03-08',
     lastActionDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 3800
   },
   {
     id: '25',
@@ -88,7 +93,8 @@ export const mockClients: Client[] = [
     notes: 'Complex trust for high-net-worth individual. Waiting on financial documents from client.',
     createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 4800
   },
   {
     id: '27',
@@ -102,7 +108,8 @@ export const mockClients: Client[] = [
     notes: 'Initial contact made. Requested information packet. Waiting for response.',
     createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 2500
   },
   {
     id: '28',
@@ -116,7 +123,8 @@ export const mockClients: Client[] = [
     notes: 'Website inquiry about guardianship planning. Needs initial contact.',
     createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
     lastActionDate: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 1500
   },
   {
     id: '4',
@@ -131,7 +139,8 @@ export const mockClients: Client[] = [
     notes: 'Decided to work with a different firm due to pricing concerns.',
     createdAt: '2024-02-15',
     lastActionDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Jennifer Liu'
+    assignedAttorney: 'Jennifer Liu',
+    estimatedRevenue: 2200
   },
   {
     id: '29',
@@ -146,7 +155,8 @@ export const mockClients: Client[] = [
     notes: 'Hot lead - consultation in 2 days. All intake forms completed. Ready to discuss revocable trust.',
     createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 4200
   },
   {
     id: '30',
@@ -161,7 +171,8 @@ export const mockClients: Client[] = [
     notes: 'Consultation complete but no follow-up from client in 4 weeks. Needs attention - may be losing interest.',
     createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
     lastActionDate: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    assignedAttorney: 'Michael Chen'
+    assignedAttorney: 'Michael Chen',
+    estimatedRevenue: 3600
   }
 ];
 
