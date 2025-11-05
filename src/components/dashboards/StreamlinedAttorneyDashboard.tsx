@@ -1163,8 +1163,8 @@ export function StreamlinedAttorneyDashboard() {
             </CardHeader>
             
             <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
-              <div className="h-[550px] overflow-y-auto">
-                <div className="space-y-2 p-4 sm:p-6 pr-2 sm:pr-4">
+              <div className="">
+                <div className="space-y-1.5 p-2 pr-2">
                   {filteredTasksByFilter.length === 0 ? (
                     <div className="text-center py-8">
                       <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-2" />

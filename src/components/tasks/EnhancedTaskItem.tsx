@@ -106,7 +106,7 @@ export function EnhancedTaskItem({
   return (
     <div
       className={cn(
-        "group relative flex items-start gap-2 p-2 border rounded-lg transition-all hover:bg-muted/30 cursor-pointer",
+        "group relative flex items-start gap-2 p-1.5 border rounded-lg transition-all hover:bg-muted/30 cursor-pointer",
         isCompleting && "animate-fade-out opacity-0",
         isCompleted && "opacity-60"
       )}
@@ -125,7 +125,7 @@ export function EnhancedTaskItem({
         <Checkbox
           checked={isCompleted}
           onCheckedChange={handleComplete}
-          className="h-4 w-4"
+          className="h-3.5 w-3.5"
         />
       </div>
 
@@ -144,11 +144,11 @@ export function EnhancedTaskItem({
         </p>
 
         {/* Bottom Row - Avatar and Due Date */}
-        <div className="flex items-center gap-2 mt-1.5">
+        <div className="flex items-center gap-2 mt-1">
           <TooltipProvider delayDuration={200}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Avatar className="h-5 w-5 cursor-pointer">
+                <Avatar className="h-4 w-4 cursor-pointer">
                   <AvatarImage src="" />
                   <AvatarFallback className="text-[10px] bg-primary/10">
                     {getInitials(task.assignedTo)}
