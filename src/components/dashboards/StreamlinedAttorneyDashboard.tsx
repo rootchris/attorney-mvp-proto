@@ -9,6 +9,10 @@ import { mockClients, mockTasks, mockMatters } from "@/data/mockData";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { EnhancedTaskItem } from "@/components/tasks/EnhancedTaskItem";
+import { TaskDetailDialog } from "@/components/tasks/TaskDetailDialog";
+import { Task } from "@/types/legal";
 import { 
   Calendar, 
   FileText,
@@ -33,6 +37,7 @@ import {
 
 export function StreamlinedAttorneyDashboard() {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [stageFilter, setStageFilter] = useState("all");
   const [sortBy, setSortBy] = useState("dueDate");
@@ -49,11 +54,16 @@ export function StreamlinedAttorneyDashboard() {
   // Performance period filter
   const [performancePeriod, setPerformancePeriod] = useState<"week" | "month" | "year">("month");
   
+  // Task filters and state
+  const [taskFilter, setTaskFilter] = useState<'all' | 'today' | 'overdue' | 'high'>('all');
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [taskDialogOpen, setTaskDialogOpen] = useState(false);
+  
   const itemsPerPage = 6;
   const reviewClientsPerPage = 4;
 
   const myClients = mockClients.filter(client => client.assignedAttorney === 'Michael Chen');
-  const myTasks = mockTasks.filter(task => task.assignedBy === 'Michael Chen');
+  const myTasks = mockTasks.filter(task => task.assignedTo === 'Michael Chen' && task.status !== 'completed');
   const myMatters = mockMatters.filter(matter => 
     myClients.some(client => client.id === matter.clientId)
   );
@@ -67,6 +77,69 @@ export function StreamlinedAttorneyDashboard() {
   const prospects = myClients.filter(client => 
     ['new_lead', 'contacted', 'scheduled', 'complete', 'ready_for_review'].includes(client.pipelineStage)
   );
+
+  // Task filtering helpers
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const todayTasks = myTasks.filter(task => {
+    const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate.getTime() === today.getTime();
+  });
+
+  const overdueTasks = myTasks.filter(task => {
+    const dueDate = new Date(task.dueDate);
+    dueDate.setHours(0, 0, 0, 0);
+    return dueDate.getTime() < today.getTime();
+  });
+
+  const highPriorityTasks = myTasks.filter(task => task.priority === 'high');
+
+  const filteredTasksByFilter = (() => {
+    switch (taskFilter) {
+      case 'today':
+        return todayTasks;
+      case 'overdue':
+        return overdueTasks;
+      case 'high':
+        return highPriorityTasks;
+      default:
+        return myTasks;
+    }
+  })();
+
+  // Task handlers
+  const handleTaskComplete = (taskId: string) => {
+    toast({
+      title: "Task completed",
+      description: "Task has been marked as complete.",
+    });
+  };
+
+  const handleTaskEdit = (taskId: string) => {
+    const task = myTasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setTaskDialogOpen(true);
+    }
+  };
+
+  const handleTaskDelete = (taskId: string) => {
+    toast({
+      title: "Task deleted",
+      description: "Task has been removed.",
+      variant: "destructive",
+    });
+  };
+
+  const handleTaskClick = (taskId: string) => {
+    const task = myTasks.find(t => t.id === taskId);
+    if (task) {
+      setSelectedTask(task);
+      setTaskDialogOpen(true);
+    }
+  };
 
   // Helper function to calculate days since last action
   const getDaysSinceLastAction = (client: typeof prospects[0]) => {
@@ -231,9 +304,6 @@ export function StreamlinedAttorneyDashboard() {
     totalRevenue: myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0),
     avgMatterValue: myMatters.length > 0 ? myMatters.reduce((sum, matter) => sum + (matter.revenue || 0), 0) / myMatters.length : 0,
   };
-
-  const pendingTasks = myTasks.filter(t => t.status !== 'completed');
-  const overdueTasks = myTasks.filter(t => t.status === 'overdue');
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredMatters.length / itemsPerPage);
@@ -1015,7 +1085,7 @@ export function StreamlinedAttorneyDashboard() {
 
           {/* Tasks - Expanded Height */}
           <Card className="flex-1 flex flex-col min-h-0 overflow-hidden">
-            <CardHeader className="flex-shrink-0">
+            <CardHeader className="flex-shrink-0 pb-2">
               <CardTitle className="text-sm sm:text-base flex items-center justify-between">
                 <span className="flex items-center gap-2">
                   <ClipboardList className="w-4 h-4" />
@@ -1023,60 +1093,100 @@ export function StreamlinedAttorneyDashboard() {
                 </span>
                 <div className="flex items-center gap-2">
                   <Badge variant="secondary" className="text-xs">
-                    {pendingTasks.length}
+                    {myTasks.length}
                   </Badge>
-                  <Button variant="ghost" size="sm" className="text-xs h-6 px-2">
-                    View All
-                  </Button>
                 </div>
               </CardTitle>
+              
+              {/* Filter Tabs */}
+              <div className="flex gap-1 bg-muted/30 p-1 rounded-lg mt-2">
+                <Button
+                  variant={taskFilter === "all" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-7 text-xs"
+                  onClick={() => setTaskFilter("all")}
+                >
+                  All
+                  <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                    {myTasks.length}
+                  </Badge>
+                </Button>
+                <Button
+                  variant={taskFilter === "today" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-7 text-xs"
+                  onClick={() => setTaskFilter("today")}
+                >
+                  Today
+                  <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                    {todayTasks.length}
+                  </Badge>
+                </Button>
+                <Button
+                  variant={taskFilter === "overdue" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-7 text-xs"
+                  onClick={() => setTaskFilter("overdue")}
+                >
+                  Overdue
+                  <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                    {overdueTasks.length}
+                  </Badge>
+                </Button>
+                <Button
+                  variant={taskFilter === "high" ? "default" : "ghost"}
+                  size="sm"
+                  className="flex-1 h-7 text-xs"
+                  onClick={() => setTaskFilter("high")}
+                >
+                  High
+                  <Badge variant="secondary" className="ml-1 h-4 px-1 text-[10px]">
+                    {highPriorityTasks.length}
+                  </Badge>
+                </Button>
+              </div>
             </CardHeader>
+            
             <CardContent className="flex-1 flex flex-col min-h-0 p-0 overflow-hidden">
               <div className="flex-1 overflow-y-auto min-h-0">
-                <div className="space-y-3 p-4 sm:p-6 pr-2 sm:pr-4">
-                  {overdueTasks.length > 0 && (
-                    <div className="p-2 bg-red-50 border border-red-200 rounded-lg">
-                      <div className="flex items-center gap-2 mb-2">
-                        <AlertTriangle className="w-4 h-4 text-red-600" />
-                        <span className="text-sm font-medium text-red-700">Overdue (1)</span>
-                      </div>
-                      <div className="text-sm">
-                        <p className="font-medium">Client intake review</p>
-                        <p className="text-xs text-red-600">Robert Martinez</p>
-                      </div>
+                <div className="space-y-2 p-4 sm:p-6 pr-2 sm:pr-4">
+                  {filteredTasksByFilter.length === 0 ? (
+                    <div className="text-center py-8">
+                      <CheckCircle2 className="w-10 h-10 text-green-500 mx-auto mb-2" />
+                      <p className="text-sm font-medium">
+                        {taskFilter === "all" && "No tasks yet!"}
+                        {taskFilter === "today" && "No tasks for today"}
+                        {taskFilter === "overdue" && "No overdue tasks - you're all caught up!"}
+                        {taskFilter === "high" && "No high priority tasks"}
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {taskFilter === "overdue" && "Great job staying on top of everything!"}
+                        {taskFilter === "today" && "Check back tomorrow for upcoming tasks"}
+                      </p>
                     </div>
-                  )}
-                  
-                  {pendingTasks.slice(0, 5).map(task => (
-                    <div key={task.id} className="p-2 border rounded hover:bg-muted/30">
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{task.title}</p>
-                          <p className="text-xs text-muted-foreground">{task.clientName}</p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <Badge variant="outline" className="text-xs px-1">
-                              {task.assignedTo}
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">
-                              {new Date(task.dueDate).toLocaleDateString()}
-                            </span>
-                          </div>
-                        </div>
-                        <StatusBadge status={task.status} type="task" />
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {pendingTasks.length === 0 && (
-                    <div className="text-center py-4">
-                      <CheckCircle2 className="w-8 h-8 text-green-500 mx-auto mb-2" />
-                      <p className="text-sm text-muted-foreground">All tasks complete!</p>
-                    </div>
+                  ) : (
+                    filteredTasksByFilter.map(task => (
+                      <EnhancedTaskItem
+                        key={task.id}
+                        task={task}
+                        onComplete={handleTaskComplete}
+                        onEdit={handleTaskEdit}
+                        onDelete={handleTaskDelete}
+                        onClick={handleTaskClick}
+                      />
+                    ))
                   )}
                 </div>
               </div>
             </CardContent>
           </Card>
+          
+          {/* Task Detail Dialog */}
+          <TaskDetailDialog
+            task={selectedTask}
+            open={taskDialogOpen}
+            onOpenChange={setTaskDialogOpen}
+          />
         </div>
       </div>
     </div>
