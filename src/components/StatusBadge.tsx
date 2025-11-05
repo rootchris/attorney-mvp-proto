@@ -9,6 +9,8 @@ interface StatusBadgeProps {
 const getStatusConfig = (status: string, type: string) => {
   const configs = {
     pipeline: {
+      new_lead: { label: 'New Lead', variant: 'status-badge-scheduled' },
+      contacted: { label: 'Contacted', variant: 'status-badge-complete' },
       scheduled: { label: 'Consult Scheduled', variant: 'status-badge-scheduled' },
       complete: { label: 'Consult Complete', variant: 'status-badge-complete' },
       signed: { label: 'Retainer Signed', variant: 'status-badge-signed' },

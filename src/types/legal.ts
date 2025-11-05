@@ -1,4 +1,4 @@
-export type PipelineStage = 'scheduled' | 'complete' | 'signed' | 'lost' | 'ready_for_review';
+export type PipelineStage = 'new_lead' | 'contacted' | 'scheduled' | 'complete' | 'signed' | 'lost' | 'ready_for_review';
 export type WorkflowStage = 'prospect' | 'consult' | 'client_ready_for_draft' | 'drafting' | 'binder_creation' | 'sign_ready' | 'signed' | 'funding' | 'reengage';
 export type TaskStatus = 'pending' | 'in_progress' | 'completed' | 'overdue';
 
@@ -15,6 +15,7 @@ export interface Client {
   intakeFormReceived?: boolean;
   notes: string;
   createdAt: string;
+  lastActionDate?: string;
   assignedAttorney: string;
 }
 

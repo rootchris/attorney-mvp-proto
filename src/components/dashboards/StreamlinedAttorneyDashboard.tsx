@@ -62,14 +62,14 @@ export function StreamlinedAttorneyDashboard() {
 
   // Prospects (potential clients not yet signed)
   const prospects = myClients.filter(client => 
-    ['scheduled', 'complete', 'ready_for_review'].includes(client.pipelineStage)
+    ['new_lead', 'contacted', 'scheduled', 'complete', 'ready_for_review'].includes(client.pipelineStage)
   );
 
   // Helper function to calculate days since last action
   const getDaysSinceLastAction = (client: typeof prospects[0]) => {
-    const createdDate = new Date(client.createdAt);
+    const lastActionDate = client.lastActionDate ? new Date(client.lastActionDate) : new Date(client.createdAt);
     const today = new Date();
-    const diffTime = Math.abs(today.getTime() - createdDate.getTime());
+    const diffTime = Math.abs(today.getTime() - lastActionDate.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
@@ -105,6 +105,8 @@ export function StreamlinedAttorneyDashboard() {
 
   // Group prospects by stage if in grouped mode
   const groupedProspects = {
+    new_lead: filteredProspects.filter(p => p.pipelineStage === 'new_lead'),
+    contacted: filteredProspects.filter(p => p.pipelineStage === 'contacted'),
     scheduled: filteredProspects.filter(p => p.pipelineStage === 'scheduled'),
     complete: filteredProspects.filter(p => p.pipelineStage === 'complete'),
     ready_for_review: filteredProspects.filter(p => p.pipelineStage === 'ready_for_review'),
@@ -431,6 +433,8 @@ export function StreamlinedAttorneyDashboard() {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectItem value="all">All Stages</SelectItem>
+                                <SelectItem value="new_lead">New Lead</SelectItem>
+                                <SelectItem value="contacted">Contacted</SelectItem>
                                 <SelectItem value="scheduled">Scheduled</SelectItem>
                                 <SelectItem value="complete">Complete</SelectItem>
                                 <SelectItem value="ready_for_review">Ready for Review</SelectItem>
@@ -635,9 +639,11 @@ export function StreamlinedAttorneyDashboard() {
                       ) : (
                         // Grouped View
                         <div className="p-3 sm:p-4 space-y-4">
-                          {(['scheduled', 'complete', 'ready_for_review'] as const).map(stage => {
+                          {(['new_lead', 'contacted', 'scheduled', 'complete', 'ready_for_review'] as const).map(stage => {
                             const stageProspects = groupedProspects[stage];
                             const stageLabels = {
+                              new_lead: 'New Leads',
+                              contacted: 'Contacted',
                               scheduled: 'Consultation Scheduled',
                               complete: 'Consultation Complete',
                               ready_for_review: 'Ready for Review'

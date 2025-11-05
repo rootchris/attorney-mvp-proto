@@ -14,6 +14,7 @@ export const mockClients: Client[] = [
     intakeFormReceived: true,
     notes: 'Complex family trust with multiple beneficiaries. Owns significant real estate portfolio.',
     createdAt: '2024-02-10',
+    lastActionDate: '2024-02-28',
     assignedAttorney: 'Michael Chen'
   },
   {
@@ -28,6 +29,7 @@ export const mockClients: Client[] = [
     intakeFormReceived: false,
     notes: 'Simple will and power of attorney. First-time client, very detail-oriented.',
     createdAt: '2024-02-25',
+    lastActionDate: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 12 days ago
     assignedAttorney: 'Michael Chen'
   },
   {
@@ -37,11 +39,12 @@ export const mockClients: Client[] = [
     phone: '(555) 345-6789',
     referralSource: 'Attorney referral network',
     pipelineStage: 'scheduled',
-    consultDate: '2024-03-15',
+    consultDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Tomorrow
     intakeFormSent: false,
     intakeFormReceived: false,
     notes: 'High-net-worth individual seeking comprehensive estate planning.',
     createdAt: '2024-03-05',
+    lastActionDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 day ago
     assignedAttorney: 'Michael Chen'
   },
   {
@@ -70,6 +73,7 @@ export const mockClients: Client[] = [
     intakeFormReceived: true,
     notes: 'Business succession planning for family-owned restaurant chain.',
     createdAt: '2024-02-28',
+    lastActionDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 5 days ago
     assignedAttorney: 'Michael Chen'
   },
   {
@@ -85,6 +89,138 @@ export const mockClients: Client[] = [
     intakeFormReceived: true,
     notes: 'Revocable living trust with healthcare directives.',
     createdAt: '2024-03-08',
+    lastActionDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 3 days ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '22',
+    name: 'Angela Thompson',
+    email: 'angela.thompson@email.com',
+    phone: '(555) 234-9876',
+    referralSource: 'Facebook',
+    pipelineStage: 'new_lead',
+    intakeFormSent: false,
+    intakeFormReceived: false,
+    notes: 'Interested in basic will. Just filled out contact form today.',
+    createdAt: new Date(Date.now()).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now()).toISOString().split('T')[0], // Today
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '23',
+    name: 'Marcus Johnson',
+    email: 'marcus.johnson@email.com',
+    phone: '(555) 345-8765',
+    referralSource: 'Google Ads',
+    pipelineStage: 'contacted',
+    intakeFormSent: false,
+    intakeFormReceived: false,
+    notes: 'Called to discuss trust options. Follow-up scheduled for next week.',
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '24',
+    name: 'Sophia Martinez',
+    email: 'sophia.martinez@email.com',
+    phone: '(555) 456-7654',
+    referralSource: 'Referral from existing client',
+    pipelineStage: 'scheduled',
+    consultDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+    intakeFormSent: true,
+    intakeFormReceived: false,
+    notes: 'Estate planning for newly married couple. Consultation set for next week.',
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 4 days ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '25',
+    name: 'Gregory Walsh',
+    email: 'gregory.walsh@email.com',
+    phone: '(555) 567-6543',
+    referralSource: 'LinkedIn',
+    pipelineStage: 'complete',
+    consultDate: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    intakeFormSent: true,
+    intakeFormReceived: true,
+    notes: 'Complex trust for high-net-worth individual. Waiting on financial documents from client.',
+    createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 21 days ago (3 weeks)
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '26',
+    name: 'Nicole Patterson',
+    email: 'nicole.patterson@email.com',
+    phone: '(555) 678-5432',
+    referralSource: 'Attorney referral network',
+    pipelineStage: 'ready_for_review',
+    consultDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    intakeFormSent: true,
+    intakeFormReceived: true,
+    notes: 'Trust documents drafted and ready for attorney review before client presentation.',
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 week ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '27',
+    name: 'Benjamin Carter',
+    email: 'benjamin.carter@email.com',
+    phone: '(555) 789-4321',
+    referralSource: 'Website contact form',
+    pipelineStage: 'contacted',
+    intakeFormSent: false,
+    intakeFormReceived: false,
+    notes: 'Initial contact made. Requested information packet. Waiting for response.',
+    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 weeks ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '28',
+    name: 'Olivia Henderson',
+    email: 'olivia.henderson@email.com',
+    phone: '(555) 890-3210',
+    referralSource: 'Google search',
+    pipelineStage: 'new_lead',
+    intakeFormSent: false,
+    intakeFormReceived: false,
+    notes: 'Website inquiry about guardianship planning. Needs initial contact.',
+    createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+    lastActionDate: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString().split('T')[0],
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '29',
+    name: 'William Foster',
+    email: 'william.foster@email.com',
+    phone: '(555) 901-2109',
+    referralSource: 'Word of mouth',
+    pipelineStage: 'scheduled',
+    consultDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 2 days from now
+    intakeFormSent: true,
+    intakeFormReceived: true,
+    notes: 'Hot lead - consultation in 2 days. All intake forms completed. Ready to discuss revocable trust.',
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 1 day ago
+    assignedAttorney: 'Michael Chen'
+  },
+  {
+    id: '30',
+    name: 'Emma Rodriguez',
+    email: 'emma.rodriguez@email.com',
+    phone: '(555) 012-1098',
+    referralSource: 'Referral from existing client',
+    pipelineStage: 'complete',
+    consultDate: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    intakeFormSent: true,
+    intakeFormReceived: false,
+    notes: 'Consultation complete but no follow-up from client in 4 weeks. Needs attention - may be losing interest.',
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    lastActionDate: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 4 weeks ago
     assignedAttorney: 'Michael Chen'
   },
   {
