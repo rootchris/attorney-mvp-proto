@@ -250,9 +250,9 @@ export function StreamlinedAttorneyDashboard() {
   );
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {/* Header with Quick Actions */}
-      <div className="flex-shrink-0 border-b bg-card px-4 sm:px-6 py-4">
+      <div className="flex-shrink-0 sticky top-0 z-10 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 sm:px-6 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold">Happy Tuesday, Crosby!</h1>
@@ -278,7 +278,7 @@ export function StreamlinedAttorneyDashboard() {
       {/* Main Content Area */}
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row overflow-hidden px-4 sm:px-6 py-4 gap-6">
         {/* Main Content - Matters and Clients */}
-        <div className="flex-1 lg:flex-[2] overflow-y-auto space-y-6">
+        <div className="flex-1 lg:flex-[2] min-h-0 overflow-y-auto space-y-6">
           
           {/* Active Matters Section */}
           <div className="flex-shrink-0">
@@ -902,7 +902,7 @@ export function StreamlinedAttorneyDashboard() {
         </div>
 
         {/* Right Sidebar - Performance & Tasks */}
-        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 h-full overflow-y-auto max-h-[calc(100vh-8rem)]">
+        <div className="flex-1 lg:max-w-80 flex flex-col gap-4 sm:gap-6 min-h-0 overflow-y-auto">
           {/* Performance Metrics - Fixed Height */}
           <div className="flex-shrink-0">
             <Card>
