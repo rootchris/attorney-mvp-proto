@@ -46,6 +46,9 @@ export function StreamlinedAttorneyDashboard() {
   const [prospectViewMode, setProspectViewMode] = useState<"list" | "grouped">("list");
   const [expandedProspects, setExpandedProspects] = useState<Set<string>>(new Set());
   
+  // Performance period filter
+  const [performancePeriod, setPerformancePeriod] = useState<"week" | "month" | "year">("month");
+  
   const itemsPerPage = 6;
   const reviewClientsPerPage = 4;
 
@@ -81,6 +84,65 @@ export function StreamlinedAttorneyDashboard() {
     if (days > 7) return 'attention';
     return 'normal';
   };
+
+  // Calculate performance metrics based on period
+  const getPerformanceMetrics = () => {
+    const now = new Date();
+    const periodStart = new Date();
+    
+    switch (performancePeriod) {
+      case "week":
+        periodStart.setDate(now.getDate() - 7);
+        break;
+      case "month":
+        periodStart.setMonth(now.getMonth() - 1);
+        break;
+      case "year":
+        periodStart.setFullYear(now.getFullYear() - 1);
+        break;
+    }
+
+    // Filter matters and prospects by period
+    const periodMatters = myMatters.filter(matter => 
+      new Date(matter.createdAt) >= periodStart
+    );
+    const periodProspects = prospects.filter(prospect => 
+      new Date(prospect.createdAt) >= periodStart
+    );
+
+    // Client Metrics
+    const activeMattersCount = activeMatters.length;
+    const mattersReadyForReview = activeMatters.filter(m => 
+      m.workflowStage === 'sign_ready' || m.workflowStage === 'binder_creation'
+    ).length;
+    const totalRevenue = myMatters.reduce((sum, m) => sum + (m.revenue || 0), 0);
+    const avgMatterRevenue = totalRevenue / (myMatters.length || 1);
+
+    // Prospect Metrics
+    const prospectCount = prospects.length;
+    const pipelineRevenue = prospects.reduce((sum, p) => sum + (p.estimatedRevenue || 0), 0);
+    const newProspectsThisPeriod = periodProspects.length;
+    const conversionRate = myClients.filter(c => c.pipelineStage === 'signed').length / (myClients.length || 1) * 100;
+    const hotLeads = prospects.filter(p => getUrgencyLevel(p) === 'hot').length;
+
+    return {
+      clients: {
+        activeMatters: activeMattersCount,
+        readyForReview: mattersReadyForReview,
+        totalRevenue,
+        avgRevenue: avgMatterRevenue
+      },
+      prospects: {
+        total: prospectCount,
+        pipelineRevenue,
+        newThisPeriod: newProspectsThisPeriod,
+        conversionRate,
+        hotLeads
+      }
+    };
+  };
+
+  const performanceMetrics = getPerformanceMetrics();
 
   // Filter and sort prospects
   const filteredProspects = prospects
@@ -844,36 +906,107 @@ export function StreamlinedAttorneyDashboard() {
           {/* Performance Metrics - Fixed Height */}
           <div className="flex-shrink-0">
             <Card>
-              <CardHeader className="flex-shrink-0 pb-3">
-                <CardTitle className="text-sm sm:text-base flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+              <CardHeader className="flex-shrink-0 pb-2">
+                <div className="flex items-center justify-between mb-2">
+                  <CardTitle className="text-sm sm:text-base flex items-center gap-2">
                     <TrendingUp className="w-4 h-4 text-green-600" />
-                    <span className="hidden sm:inline">Performance</span>
-                    <span className="sm:hidden">Stats</span>
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <BarChart3 className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-xs text-muted-foreground hidden sm:inline">This Month</span>
-                  </div>
-                </CardTitle>
+                    <span>Performance</span>
+                  </CardTitle>
+                </div>
+                {/* Period Toggle */}
+                <div className="flex gap-1 bg-muted/30 p-1 rounded-lg">
+                  <Button
+                    variant={performancePeriod === "week" ? "default" : "ghost"}
+                    size="sm"
+                    className="flex-1 h-7 text-xs"
+                    onClick={() => setPerformancePeriod("week")}
+                  >
+                    Week
+                  </Button>
+                  <Button
+                    variant={performancePeriod === "month" ? "default" : "ghost"}
+                    size="sm"
+                    className="flex-1 h-7 text-xs"
+                    onClick={() => setPerformancePeriod("month")}
+                  >
+                    Month
+                  </Button>
+                  <Button
+                    variant={performancePeriod === "year" ? "default" : "ghost"}
+                    size="sm"
+                    className="flex-1 h-7 text-xs"
+                    onClick={() => setPerformancePeriod("year")}
+                  >
+                    Year
+                  </Button>
+                </div>
               </CardHeader>
-              <CardContent className="pt-3">
-                <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                  <div className="text-center">
-                    <div className="text-lg sm:text-2xl font-bold text-blue-600">12</div>
-                    <div className="text-xs text-muted-foreground">Active Matters</div>
+              <CardContent className="pt-3 space-y-4">
+                {/* Clients Section */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <FileText className="w-3.5 h-3.5 text-primary" />
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Clients</h4>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg sm:text-2xl font-bold text-orange-600">9</div>
-                    <div className="text-xs text-muted-foreground">For Review</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-blue-600">
+                        {performanceMetrics.clients.activeMatters}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Active Matters</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-orange-600">
+                        {performanceMetrics.clients.readyForReview}
+                      </div>
+                      <div className="text-xs text-muted-foreground">For Review</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-green-600">
+                        ${(performanceMetrics.clients.totalRevenue / 1000).toFixed(0)}K
+                      </div>
+                      <div className="text-xs text-muted-foreground">Total Revenue</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-purple-600">
+                        ${(performanceMetrics.clients.avgRevenue / 1000).toFixed(1)}K
+                      </div>
+                      <div className="text-xs text-muted-foreground">Avg Matter</div>
+                    </div>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg sm:text-2xl font-bold text-green-600">$119K</div>
-                    <div className="text-xs text-muted-foreground">Total Revenue</div>
+                </div>
+
+                {/* Prospects Section */}
+                <div className="space-y-2">
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Users className="w-3.5 h-3.5 text-primary" />
+                    <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Prospects</h4>
                   </div>
-                  <div className="text-center">
-                    <div className="text-lg sm:text-2xl font-bold text-purple-600">$10K</div>
-                    <div className="text-xs text-muted-foreground">Avg Matter</div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-blue-600">
+                        {performanceMetrics.prospects.total}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Total Prospects</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-cyan-600">
+                        {performanceMetrics.prospects.hotLeads}
+                      </div>
+                      <div className="text-xs text-muted-foreground">Hot Leads</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-green-600">
+                        ${(performanceMetrics.prospects.pipelineRevenue / 1000).toFixed(0)}K
+                      </div>
+                      <div className="text-xs text-muted-foreground">Pipeline Value</div>
+                    </div>
+                    <div className="p-2 bg-muted/30 rounded-lg">
+                      <div className="text-lg sm:text-xl font-bold text-purple-600">
+                        {performanceMetrics.prospects.conversionRate.toFixed(0)}%
+                      </div>
+                      <div className="text-xs text-muted-foreground">Conversion</div>
+                    </div>
                   </div>
                 </div>
               </CardContent>
