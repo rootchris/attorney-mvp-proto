@@ -78,21 +78,6 @@ const navigationConfig = {
       title: "Tasks",
       url: "/tasks",
       icon: CheckSquare,
-    },
-    {
-      title: "Calendar",
-      url: "/calendar",
-      icon: Calendar,
-    },
-    {
-      title: "Documents",
-      url: "/documents",
-      icon: FileText,
-    },
-    {
-      title: "Analytics",
-      url: "/analytics",
-      icon: BarChart3,
     }
   ],
   clerk: [
