@@ -70,14 +70,14 @@ const navigationConfig = {
       icon: Briefcase,
     },
     {
-      title: "Network",
-      url: "/network",
-      icon: Network,
-    },
-    {
       title: "Tasks",
       url: "/tasks",
       icon: CheckSquare,
+    },
+    {
+      title: "Network",
+      url: "/network",
+      icon: Network,
     }
   ],
   clerk: [
