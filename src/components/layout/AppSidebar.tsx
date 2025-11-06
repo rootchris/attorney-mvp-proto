@@ -60,14 +60,14 @@ const navigationConfig = {
       icon: LayoutDashboard,
     },
     {
-      title: "Matters",
-      url: "/matters",
-      icon: Briefcase,
-    },
-    {
       title: "Clients",
       url: "/clients",
       icon: Users,
+    },
+    {
+      title: "Matters",
+      url: "/matters",
+      icon: Briefcase,
     },
     {
       title: "Network",
