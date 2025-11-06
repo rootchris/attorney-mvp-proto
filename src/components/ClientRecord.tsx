@@ -10,6 +10,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DocumentsSection } from "@/components/matter/DocumentsSection";
+import { Document, Folder } from "@/types/legal";
 import { 
   Search, 
   Plus, 
@@ -48,6 +50,103 @@ export function ClientRecord() {
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [isAddedToWealthCounsel, setIsAddedToWealthCounsel] = useState(false);
   const isMobile = useIsMobile();
+
+  // Mock client documents data
+  const clientDocuments: Document[] = [
+    {
+      id: 'doc1',
+      matterId: 'matter1',
+      folderId: 'folder1',
+      name: 'Estate Planning Intake Form.pdf',
+      type: 'Intake Form',
+      uploadedBy: 'Ashley Brereton',
+      uploadedAt: '2025-02-28',
+      size: 342567,
+      url: '#',
+      clientVisible: true,
+      tags: ['intake', 'estate-planning']
+    },
+    {
+      id: 'doc2',
+      matterId: 'matter1',
+      folderId: 'folder1',
+      name: 'Asset List.xlsx',
+      type: 'Financial Document',
+      uploadedBy: 'Spencer Dennis',
+      uploadedAt: '2025-03-01',
+      size: 156890,
+      url: '#',
+      clientVisible: false,
+      tags: ['assets', 'financial']
+    },
+    {
+      id: 'doc3',
+      matterId: 'matter1',
+      name: 'Trust Agreement Draft.pdf',
+      type: 'Trust Document',
+      uploadedBy: 'Ashley Brereton',
+      uploadedAt: '2025-03-05',
+      size: 524288,
+      url: '#',
+      isWealthCounselDoc: true,
+      clientVisible: true,
+      tags: ['trust', 'draft']
+    },
+    {
+      id: 'doc4',
+      matterId: 'matter2',
+      folderId: 'folder2',
+      name: 'Business Valuation Report.pdf',
+      type: 'Business Document',
+      uploadedBy: 'Erin Rodriguez',
+      uploadedAt: '2025-03-02',
+      size: 1048576,
+      url: '#',
+      clientVisible: false,
+      tags: ['business', 'valuation']
+    },
+    {
+      id: 'doc5',
+      matterId: 'matter1',
+      folderId: 'folder1',
+      name: 'Healthcare Directive.pdf',
+      type: 'Legal Document',
+      uploadedBy: 'Ashley Brereton',
+      uploadedAt: '2025-02-25',
+      size: 245760,
+      url: '#',
+      clientVisible: true,
+      tags: ['healthcare', 'directive']
+    }
+  ];
+
+  const clientFolders: Folder[] = [
+    {
+      id: 'folder1',
+      matterId: 'matter1',
+      name: 'Estate Planning Package',
+      createdBy: 'Ashley Brereton',
+      createdAt: '2025-02-20',
+      color: 'text-blue-600'
+    },
+    {
+      id: 'folder2',
+      matterId: 'matter2',
+      name: 'Business Succession',
+      createdBy: 'Erin Rodriguez',
+      createdAt: '2025-02-22',
+      color: 'text-green-600'
+    },
+    {
+      id: 'folder3',
+      matterId: 'matter1',
+      name: 'Tax Documents',
+      parentFolderId: 'folder1',
+      createdBy: 'Ashley Brereton',
+      createdAt: '2025-02-25',
+      color: 'text-purple-600'
+    }
+  ];
 
   // Mock client data - in real app this would come from API
   const client = {
@@ -389,6 +488,12 @@ export function ClientRecord() {
                     Notes
                   </TabsTrigger>
                   <TabsTrigger 
+                    value="documents" 
+                    className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
+                  >
+                    Documents
+                  </TabsTrigger>
+                  <TabsTrigger 
                     value="relationships" 
                     className="border-b-2 border-transparent data-[state=active]:border-primary rounded-none touch-manipulation min-h-[44px] px-3 md:px-4"
                   >
@@ -607,6 +712,11 @@ export function ClientRecord() {
                       </CardContent>
                     </Card>
                   </div>
+                </TabsContent>
+
+                {/* Documents Tab */}
+                <TabsContent value="documents" className="mt-0 p-4 md:p-6">
+                  <DocumentsSection documents={clientDocuments} folders={clientFolders} />
                 </TabsContent>
 
                 {/* Relationships Tab */}
