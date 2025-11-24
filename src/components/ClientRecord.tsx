@@ -93,6 +93,7 @@ export function ClientRecord() {
   const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<Note | null>(null);
   const [noteContent, setNoteContent] = useState("");
+  const [quickNoteContent, setQuickNoteContent] = useState("");
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
 
   const handleAddNote = () => {
@@ -111,6 +112,27 @@ export function ClientRecord() {
     setNotes([newNote, ...notes]);
     setNoteContent("");
     setIsAddNoteOpen(false);
+    toast({
+      title: "Note added",
+      description: "Your note has been saved successfully.",
+    });
+  };
+
+  const handleQuickAddNote = () => {
+    if (!quickNoteContent.trim()) return;
+    
+    const newNote: Note = {
+      id: Date.now().toString(),
+      content: quickNoteContent,
+      author: "Current User",
+      authorInitials: "CU",
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      matterTag: "General"
+    };
+    
+    setNotes([newNote, ...notes]);
+    setQuickNoteContent("");
     toast({
       title: "Note added",
       description: "Your note has been saved successfully.",
@@ -779,103 +801,148 @@ export function ClientRecord() {
 
                 {/* Notes Tab */}
                 <TabsContent value="notes" className="mt-0 p-4 md:p-6">
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold">Notes</h3>
-                      <Dialog open={isAddNoteOpen || !!editingNote} onOpenChange={(open) => {
-                        if (!open) {
-                          setIsAddNoteOpen(false);
-                          setEditingNote(null);
-                          setNoteContent("");
-                        }
-                      }}>
-                        <DialogTrigger asChild>
-                          <Button size="sm" onClick={() => setIsAddNoteOpen(true)}>
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Note
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>{editingNote ? "Edit Note" : "Add New Note"}</DialogTitle>
-                            <DialogDescription>
-                              {editingNote ? "Update the note content below." : "Add a new note for this client."}
-                            </DialogDescription>
-                          </DialogHeader>
-                          <Textarea
-                            placeholder="Enter your note here..."
-                            value={noteContent}
-                            onChange={(e) => setNoteContent(e.target.value)}
-                            className="min-h-[150px]"
-                          />
-                          <DialogFooter>
-                            <Button variant="outline" onClick={() => {
-                              setIsAddNoteOpen(false);
-                              setEditingNote(null);
-                              setNoteContent("");
-                            }}>
-                              Cancel
-                            </Button>
-                            <Button onClick={editingNote ? handleEditNote : handleAddNote}>
-                              {editingNote ? "Update" : "Add Note"}
-                            </Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
                     </div>
 
+                    {/* Quick Add Note Form - Always Visible */}
+                    <Card className="border-2 border-dashed bg-muted/30">
+                      <CardContent className="p-4">
+                        <Textarea
+                          placeholder="Add a quick note..."
+                          value={quickNoteContent}
+                          onChange={(e) => setQuickNoteContent(e.target.value)}
+                          className="min-h-[80px] resize-none bg-background"
+                        />
+                        <div className="flex gap-2 mt-3">
+                          <Button 
+                            size="sm" 
+                            onClick={handleQuickAddNote}
+                            disabled={!quickNoteContent.trim()}
+                          >
+                            Save Note
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setQuickNoteContent("")}
+                            disabled={!quickNoteContent.trim()}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Notes List */}
                     {notes.length === 0 ? (
                       <div className="text-center py-12 border-2 border-dashed rounded-lg">
                         <StickyNote className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                        <p className="text-muted-foreground">No notes yet. Click "Add Note" to create one.</p>
+                        <p className="text-muted-foreground">No notes yet. Add your first note above.</p>
                       </div>
                     ) : (
-                      notes.map((note) => (
-                        <Card key={note.id} className="group hover:shadow-md transition-shadow">
-                          <CardContent className="p-4">
-                            <div className="space-y-2">
-                              <div className="flex items-start justify-between">
-                                <div className="flex items-center gap-2">
-                                  <Avatar className="w-8 h-8">
-                                    <AvatarFallback>{note.authorInitials}</AvatarFallback>
-                                  </Avatar>
-                                  <div>
-                                    <p className="text-sm font-medium">{note.author}</p>
-                                    <p className="text-xs text-muted-foreground">{note.date} at {note.timestamp}</p>
+                      <div className="space-y-4">
+                        {notes.map((note) => (
+                          <Card key={note.id} className="hover:shadow-md transition-shadow">
+                            <CardContent className="p-5">
+                              <div className="space-y-4">
+                                {/* Header with always-visible actions */}
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="flex items-start gap-3 flex-1 min-w-0">
+                                    <Avatar className="w-9 h-9 shrink-0">
+                                      <AvatarFallback className="text-sm">{note.authorInitials}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="flex-1 min-w-0">
+                                      <p className="text-sm font-medium">{note.author}</p>
+                                      <p className="text-xs text-muted-foreground/80">{note.date} at {note.timestamp}</p>
+                                    </div>
                                   </div>
+                                  
+                                  {/* Always-visible dropdown menu */}
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button 
+                                        size="sm" 
+                                        variant="ghost" 
+                                        className="h-8 w-8 p-0 shrink-0"
+                                      >
+                                        <MoreHorizontal className="w-4 h-4" />
+                                        <span className="sr-only">Open menu</span>
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end" className="w-40">
+                                      <DropdownMenuItem onClick={() => openEditDialog(note)}>
+                                        <Edit2 className="w-4 h-4 mr-2" />
+                                        Edit
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem 
+                                        onClick={() => setDeleteNoteId(note.id)}
+                                        className="text-destructive focus:text-destructive"
+                                      >
+                                        <Trash2 className="w-4 h-4 mr-2" />
+                                        Delete
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </div>
-                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost" 
-                                    className="h-8 w-8 p-0"
-                                    onClick={() => openEditDialog(note)}
-                                  >
-                                    <Edit2 className="w-4 h-4" />
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="ghost" 
-                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                                    onClick={() => setDeleteNoteId(note.id)}
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </Button>
-                                </div>
+
+                                {/* Note Content - Larger and more prominent */}
+                                <p className="text-base leading-relaxed whitespace-pre-wrap pl-12">
+                                  {note.content}
+                                </p>
+
+                                {/* Matter Tag */}
+                                {note.matterTag && (
+                                  <div className="pl-12">
+                                    <Badge variant="secondary" className="text-xs">
+                                      {note.matterTag}
+                                    </Badge>
+                                  </div>
+                                )}
                               </div>
-                              <p className="text-sm mt-2 whitespace-pre-wrap">
-                                {note.content}
-                              </p>
-                              {note.matterTag && (
-                                <Badge variant="secondary" className="text-xs">{note.matterTag}</Badge>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     )}
                   </div>
 
+                  {/* Edit Note Dialog */}
+                  <Dialog open={!!editingNote} onOpenChange={(open) => {
+                    if (!open) {
+                      setEditingNote(null);
+                      setNoteContent("");
+                    }
+                  }}>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Edit Note</DialogTitle>
+                        <DialogDescription>
+                          Update the note content below.
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Textarea
+                        placeholder="Enter your note here..."
+                        value={noteContent}
+                        onChange={(e) => setNoteContent(e.target.value)}
+                        className="min-h-[150px]"
+                      />
+                      <DialogFooter>
+                        <Button variant="outline" onClick={() => {
+                          setEditingNote(null);
+                          setNoteContent("");
+                        }}>
+                          Cancel
+                        </Button>
+                        <Button onClick={handleEditNote}>
+                          Update
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+
+                  {/* Delete Confirmation Dialog */}
                   <AlertDialog open={!!deleteNoteId} onOpenChange={(open) => !open && setDeleteNoteId(null)}>
                     <AlertDialogContent>
                       <AlertDialogHeader>
