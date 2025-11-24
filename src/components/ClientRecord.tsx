@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DocumentsSection } from "@/components/matter/DocumentsSection";
 import { Document, Folder } from "@/types/legal";
@@ -450,10 +451,22 @@ export function ClientRecord() {
                 <Button size="sm" className="touch-manipulation min-h-[44px]">
                   Add note
                 </Button>
-                <Button size="sm" variant="outline" className="touch-manipulation min-h-[44px]">
-                  Action
-                  <MoreHorizontal className="w-4 h-4 ml-1" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="outline" className="touch-manipulation min-h-[44px]">
+                      Action
+                      <MoreHorizontal className="w-4 h-4 ml-1" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56">
+                    <DropdownMenuItem>
+                      Send Intake Invite (PIF)
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      Send Annual Review Invite
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </div>
           </div>
