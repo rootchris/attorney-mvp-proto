@@ -10,7 +10,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useToast } from "@/hooks/use-toast";
 import { DocumentsSection } from "@/components/matter/DocumentsSection";
 import { Document, Folder } from "@/types/legal";
 import { 
@@ -39,18 +43,117 @@ import {
   Menu,
   Info,
   Check,
-  ChevronDown
+  ChevronDown,
+  Edit2,
+  Trash2
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+
+interface Note {
+  id: string;
+  content: string;
+  author: string;
+  authorInitials: string;
+  date: string;
+  timestamp: string;
+  matterTag?: string;
+}
 
 export function ClientRecord() {
   const navigate = useNavigate();
   const { clientId } = useParams();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const [rightPanelView, setRightPanelView] = useState("details");
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const [isAddedToWealthCounsel, setIsAddedToWealthCounsel] = useState(false);
   const isMobile = useIsMobile();
+
+  // Notes state management
+  const [notes, setNotes] = useState<Note[]>([
+    {
+      id: "1",
+      content: "Client expressed interest in setting up a revocable living trust. Has significant assets from business sale and wants to ensure smooth transfer to children. Mentioned concerns about estate taxes.",
+      author: "Ashley Brereton",
+      authorInitials: "AB",
+      date: "Mar 1, 2025",
+      timestamp: "2:30 PM",
+      matterTag: "Estate Planning Package"
+    },
+    {
+      id: "2",
+      content: "Initial consultation went well. Spencer is very organized and prepared. He brought documentation of all his assets and has clear goals. Will need to discuss guardianship arrangements for minor children.",
+      author: "Erin Rodriguez",
+      authorInitials: "ER",
+      date: "Feb 20, 2025",
+      timestamp: "10:15 AM",
+      matterTag: "General"
+    }
+  ]);
+  const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
+  const [editingNote, setEditingNote] = useState<Note | null>(null);
+  const [noteContent, setNoteContent] = useState("");
+  const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
+
+  const handleAddNote = () => {
+    if (!noteContent.trim()) return;
+    
+    const newNote: Note = {
+      id: Date.now().toString(),
+      content: noteContent,
+      author: "Current User",
+      authorInitials: "CU",
+      date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }),
+      matterTag: "General"
+    };
+    
+    setNotes([newNote, ...notes]);
+    setNoteContent("");
+    setIsAddNoteOpen(false);
+    toast({
+      title: "Note added",
+      description: "Your note has been saved successfully.",
+    });
+  };
+
+  const handleEditNote = () => {
+    if (!editingNote || !noteContent.trim()) return;
+    
+    setNotes(notes.map(note => 
+      note.id === editingNote.id 
+        ? { 
+            ...note, 
+            content: noteContent, 
+            date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }), 
+            timestamp: new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) + " (edited)" 
+          }
+        : note
+    ));
+    
+    setEditingNote(null);
+    setNoteContent("");
+    toast({
+      title: "Note updated",
+      description: "Your changes have been saved.",
+    });
+  };
+
+  const handleDeleteNote = () => {
+    if (!deleteNoteId) return;
+    
+    setNotes(notes.filter(note => note.id !== deleteNoteId));
+    setDeleteNoteId(null);
+    toast({
+      title: "Note deleted",
+      description: "The note has been removed.",
+    });
+  };
+
+  const openEditDialog = (note: Note) => {
+    setEditingNote(note);
+    setNoteContent(note.content);
+  };
 
   // Mock client documents data
   const clientDocuments: Document[] = [
@@ -679,52 +782,116 @@ export function ClientRecord() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <h3 className="text-lg font-semibold">Notes</h3>
-                      <Button size="sm">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Note
-                      </Button>
+                      <Dialog open={isAddNoteOpen || !!editingNote} onOpenChange={(open) => {
+                        if (!open) {
+                          setIsAddNoteOpen(false);
+                          setEditingNote(null);
+                          setNoteContent("");
+                        }
+                      }}>
+                        <DialogTrigger asChild>
+                          <Button size="sm" onClick={() => setIsAddNoteOpen(true)}>
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Note
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>{editingNote ? "Edit Note" : "Add New Note"}</DialogTitle>
+                            <DialogDescription>
+                              {editingNote ? "Update the note content below." : "Add a new note for this client."}
+                            </DialogDescription>
+                          </DialogHeader>
+                          <Textarea
+                            placeholder="Enter your note here..."
+                            value={noteContent}
+                            onChange={(e) => setNoteContent(e.target.value)}
+                            className="min-h-[150px]"
+                          />
+                          <DialogFooter>
+                            <Button variant="outline" onClick={() => {
+                              setIsAddNoteOpen(false);
+                              setEditingNote(null);
+                              setNoteContent("");
+                            }}>
+                              Cancel
+                            </Button>
+                            <Button onClick={editingNote ? handleEditNote : handleAddNote}>
+                              {editingNote ? "Update" : "Add Note"}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     </div>
 
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="w-8 h-8">
-                              <AvatarFallback>AB</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="text-sm font-medium">Ashley Brereton</p>
-                              <p className="text-xs text-muted-foreground">Mar 1, 2025 at 2:30 PM</p>
+                    {notes.length === 0 ? (
+                      <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                        <StickyNote className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                        <p className="text-muted-foreground">No notes yet. Click "Add Note" to create one.</p>
+                      </div>
+                    ) : (
+                      notes.map((note) => (
+                        <Card key={note.id} className="group hover:shadow-md transition-shadow">
+                          <CardContent className="p-4">
+                            <div className="space-y-2">
+                              <div className="flex items-start justify-between">
+                                <div className="flex items-center gap-2">
+                                  <Avatar className="w-8 h-8">
+                                    <AvatarFallback>{note.authorInitials}</AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="text-sm font-medium">{note.author}</p>
+                                    <p className="text-xs text-muted-foreground">{note.date} at {note.timestamp}</p>
+                                  </div>
+                                </div>
+                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    className="h-8 w-8 p-0"
+                                    onClick={() => openEditDialog(note)}
+                                  >
+                                    <Edit2 className="w-4 h-4" />
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    onClick={() => setDeleteNoteId(note.id)}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                              <p className="text-sm mt-2 whitespace-pre-wrap">
+                                {note.content}
+                              </p>
+                              {note.matterTag && (
+                                <Badge variant="secondary" className="text-xs">{note.matterTag}</Badge>
+                              )}
                             </div>
-                          </div>
-                          <p className="text-sm mt-2">
-                            Client expressed interest in setting up a revocable living trust. Has significant assets from business sale and wants to ensure smooth transfer to children. Mentioned concerns about estate taxes.
-                          </p>
-                          <Badge variant="secondary" className="text-xs">Estate Planning Package</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <Avatar className="w-8 h-8">
-                              <AvatarFallback>ER</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <p className="text-sm font-medium">Erin Rodriguez</p>
-                              <p className="text-xs text-muted-foreground">Feb 20, 2025 at 10:15 AM</p>
-                            </div>
-                          </div>
-                          <p className="text-sm mt-2">
-                            Initial consultation went well. Spencer is very organized and prepared. He brought documentation of all his assets and has clear goals. Will need to discuss guardianship arrangements for minor children.
-                          </p>
-                          <Badge variant="secondary" className="text-xs">General</Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
                   </div>
+
+                  <AlertDialog open={!!deleteNoteId} onOpenChange={(open) => !open && setDeleteNoteId(null)}>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Delete Note</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this note? This action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleDeleteNote} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </TabsContent>
 
                 {/* Documents Tab */}
