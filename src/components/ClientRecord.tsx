@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +45,8 @@ import {
   Check,
   ChevronDown,
   Edit2,
-  Trash2
+  Trash2,
+  Loader2
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -95,6 +96,64 @@ export function ClientRecord() {
   const [noteContent, setNoteContent] = useState("");
   const [quickNoteContent, setQuickNoteContent] = useState("");
   const [deleteNoteId, setDeleteNoteId] = useState<string | null>(null);
+
+  // Client Summary state management
+  const [clientSummary, setClientSummary] = useState("Spencer is an experienced founder with a successful exit from CoachNow. Strong connections in the sports tech space. Looking to establish estate planning for family and business succession planning.");
+  const [summaryCharCount, setSummaryCharCount] = useState(0);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [lastSaved, setLastSaved] = useState<Date | null>(new Date());
+
+  // Initialize character count
+  useEffect(() => {
+    setSummaryCharCount(clientSummary.length);
+  }, []);
+
+  // Debounced auto-save function
+  const debouncedSave = useCallback((value: string) => {
+    const timer = setTimeout(() => {
+      setSaveStatus('saving');
+      // Simulate API call
+      setTimeout(() => {
+        setSaveStatus('saved');
+        setLastSaved(new Date());
+        toast({
+          title: "Summary saved",
+          description: "Client summary has been updated.",
+        });
+        // Reset to idle after 2 seconds
+        setTimeout(() => setSaveStatus('idle'), 2000);
+      }, 500);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    if (value.length <= 500) {
+      setClientSummary(value);
+      setSummaryCharCount(value.length);
+      debouncedSave(value);
+    }
+  };
+
+  const getRelativeTime = (date: Date | null) => {
+    if (!date) return "Never";
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
+
+    if (diffMins < 1) return "Just now";
+    if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+    if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+    if (diffDays === 1) return "Yesterday";
+    if (diffDays < 7) return `${diffDays} days ago`;
+    
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + 
+           ' at ' + date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+  };
 
   const handleAddNote = () => {
     if (!noteContent.trim()) return;
@@ -656,16 +715,66 @@ export function ClientRecord() {
               <div className="flex-1">
                 {/* Overview Tab */}
                 <TabsContent value="overview" className="mt-0 p-4 md:p-6">
-                  <Card>
+                  <Card className="border-l-4 border-l-primary/30">
                     <CardHeader>
-                      <CardTitle className="text-lg">Client Notes</CardTitle>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">Client Summary</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Quick overview and key information about this client
+                          </p>
+                        </div>
+                        {/* Save status indicator */}
+                        {saveStatus !== 'idle' && (
+                          <div className="flex items-center gap-2 text-sm">
+                            {saveStatus === 'saving' && (
+                              <>
+                                <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />
+                                <span className="text-muted-foreground">Saving...</span>
+                              </>
+                            )}
+                            {saveStatus === 'saved' && (
+                              <>
+                                <Check className="w-4 h-4 text-green-600" />
+                                <span className="text-green-600">Saved</span>
+                              </>
+                            )}
+                            {saveStatus === 'error' && (
+                              <span className="text-destructive">Failed to save</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </CardHeader>
-                    <CardContent>
-                      <textarea
-                        className="w-full min-h-[200px] p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                        placeholder="Add notes about this client..."
-                        defaultValue="Spencer is an experienced founder with a successful exit from CoachNow. Strong connections in the sports tech space. Looking to establish estate planning for family and business succession planning."
+                    <CardContent className="space-y-3">
+                      <Textarea
+                        value={clientSummary}
+                        onChange={handleSummaryChange}
+                        maxLength={500}
+                        className="min-h-[120px] resize-none"
+                        placeholder="Add a quick summary about this client... (e.g., background, key relationships, preferences, important context)"
                       />
+                      
+                      <div className="flex items-center justify-between text-xs">
+                        <p className="text-muted-foreground">
+                          Last updated: {getRelativeTime(lastSaved)}
+                        </p>
+                        <p className={`text-muted-foreground ${
+                          summaryCharCount >= 500 ? 'text-destructive font-medium' : 
+                          summaryCharCount >= 450 ? 'text-orange-600 font-medium' : ''
+                        }`}>
+                          {summaryCharCount}/500 characters
+                        </p>
+                      </div>
+                      
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => setActiveTab('notes')}
+                        className="w-full justify-center text-primary hover:text-primary/80"
+                      >
+                        View detailed notes →
+                      </Button>
                     </CardContent>
                   </Card>
                 </TabsContent>
